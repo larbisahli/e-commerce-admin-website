@@ -1,0 +1,39 @@
+{
+    "presets": [
+        "next/babel"
+    ],
+    "plugins": [
+        "inline-react-svg",
+        [
+            "styled-components",
+            {
+                "ssr": true,
+                "displayName": true,
+                "preprocess": false
+            }
+        ]
+    ],
+    "env": {
+        "production": {
+            "presets": [
+                "next/babel"
+            ],
+            "plugins": [
+                "inline-react-svg",
+                [
+                    "styled-components",
+                    {
+                        "ssr": true,
+                        "displayName": false,
+                        "preprocess": false
+                    }
+                ]
+            ]
+        },
+        "test": {
+            "plugins": [
+                "transform-dynamic-import"
+            ]
+        }
+    }
+}

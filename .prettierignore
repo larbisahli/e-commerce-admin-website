@@ -1,0 +1,6 @@
+.next
+.now
+.vercel
+.storybook
+coverage
+node_modules
