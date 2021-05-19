@@ -1,6 +1,4 @@
-import { MenuBtn } from '@/styles/Buttons';
 import { NoResultsContainer, NoResultsWrapper, CartHeader } from './styles';
-import Link from 'next/link';
 
 const NotificationEmpty = () => {
   return (

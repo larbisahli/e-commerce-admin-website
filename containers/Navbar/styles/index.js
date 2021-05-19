@@ -85,7 +85,7 @@ export const NotificationWrapper = styled.div`
   }
 `;
 
-const NotificationCartContainer = styled(AbsolutePosition)`
+const NotificationCart_Container = styled(AbsolutePosition)`
   display: none;
   top: 50px;
   background: #fff;
@@ -134,7 +134,7 @@ const SRcAX = css`
   width: 100%;
 `;
 
-export const NotificationCart = styled(NotificationCartContainer)`
+export const NotificationCartContainer = styled(NotificationCart_Container)`
   ${(props) => props.isMobileMode && SRcAX}
 `;
 
@@ -155,8 +155,7 @@ export const NotificationCartWrap = styled(RelativePosition)`
     } else if (props.isMobileMode && props.isMobile) {
       return css`
         max-height: calc(100% - 69px) !important;
-        ${
-          '' /* // browser default navbar that has url */
+        ${'' /* // browser default navbar that has url */
         }/* max-height: calc(100vh - (2*56px + 69px)) !important; */
       `;
     }
@@ -200,7 +199,7 @@ export const CartHeader = styled.div`
   color: var(--green-txt);
 `;
 
-export const ProfileCart = styled(AbsolutePosition)`
+export const ProfileCartContainer = styled(AbsolutePosition)`
   display: none;
   top: 50px;
   background: #fff;

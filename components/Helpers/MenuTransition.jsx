@@ -8,8 +8,6 @@ const MenuTransition = forwardRef(
       children,
       disTran = false,
       Show = false,
-      onEnterFunc = () => void 0,
-      onExitedFunc = () => void 0,
       unMount = false
     },
     ref
@@ -30,8 +28,8 @@ const MenuTransition = forwardRef(
         in={Show}
         timeout={disable ? 0 : 200}
         unmountOnExit={unMount}
-        onEnter={onEnterFunc}
-        onExited={onExitedFunc}
+        onEnter={()=> ref.current && (ref.current.style.display = 'block')}
+        onExited={()=> ref.current && (ref.current.style.display = 'none')}
         classNames={{
           enter: 'menu-enter',
           enterActive: 'menu-enter-active',
