@@ -10,3 +10,7 @@ export { default as HighlightSvg } from './HighlightSvg';
 export { default as CompassSvg } from './CompassSvg';
 export { default as AddToCartSvg } from './AddToCartSvg';
 export { default as AddedToCartSvg } from './AddedToCartSvg';
+export { default as DashboardSvg } from './DashboardSvg';
+export { default as DollarSvg } from './DollarSvg';
+export { default as InvoiceSvg } from './InvoiceSvg';
+export { default as BookmarkSvg } from './BookmarkSvg';

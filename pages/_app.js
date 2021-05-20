@@ -3,6 +3,8 @@ import GlobalStyle from '@/styles/Globals';
 import Head from 'next/head';
 import PropTypes from 'prop-types';
 import '../styles/tailwind.css';
+import { Guide, MiniGuide, Navbar } from '@/containers/index';
+
 function App({ Component, pageProps }) {
   useEffect(() => {
     document.documentElement.lang = 'en';
@@ -44,7 +46,9 @@ function App({ Component, pageProps }) {
         <meta name="msapplication-TileColor" content="#2d89ef" />
         <meta name="theme-color" content="#ffffff" />
       </Head>
-      {/* <Navigation /> */}
+      <Navbar />
+      <Guide />
+      <MiniGuide />
       <Component {...pageProps} />
     </Fragment>
   );

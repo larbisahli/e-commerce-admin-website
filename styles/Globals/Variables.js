@@ -7,8 +7,8 @@ export const RootVariables = css`
     --nav-link-fg: #f1eee4;
     --Nav-animation-duration: 0s;
     --orangy-general-color: #f3b41d;
-    --general-bg: #f5f8fb;
-    --general-bg2: #e9e9e9;
+    --general-bg: #f9f9f9;
+    --Navigation-bg: hsla(0,0%,99.6%,0.98);
     --green-txt: #569a3e;
     --orangy-100: #feb062;
     --orangy-200: #ffa355;

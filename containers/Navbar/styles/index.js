@@ -7,10 +7,11 @@ import {
 } from '@/styles/index';
 
 export const Nav = styled(DisFlex_AIC)`
-  min-height: 53px;
+  height: 56px;
   border-bottom: 1px solid #ddd;
   justify-content: space-between;
-  padding: 0.5rem 1em;
+  background: var(--Navigation-bg);
+  padding: 0.5rem 1em 0.5em 0;
   position: fixed;
   top: 0;
   left: 0;
@@ -19,20 +20,33 @@ export const Nav = styled(DisFlex_AIC)`
 `;
 
 export const LeftContainer = styled(DisFlex_AIC)`
-  padding: 3px;
-
   span {
     color: #333;
-    margin-left: 8px;
+    margin-left: 15px;
     font-size: 1.4em;
     font-weight: 500;
     letter-spacing: 0.5px;
     text-transform: capitalize;
   }
 `;
-export const RightContainer = styled(DisFlex_AIC)`
-  /* background: green; */
-`;
+
+export const MenuContainer = styled(DisFlex_AIC_JCC)`
+
+  width:80px;
+  height: 100%;
+  
+  .menu-btn {
+    cursor: pointer;
+    border: 1px solid #cfcfcfab;
+    border-radius: 2px;
+
+    &:hover {
+      border: 1px solid #87be6dbe;
+    }
+  }
+`
+
+export const RightContainer = styled(DisFlex_AIC)``;
 
 export const ProfileContainer = styled(RelativePosition)``;
 

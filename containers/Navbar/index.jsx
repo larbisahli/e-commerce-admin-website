@@ -1,8 +1,9 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, memo } from 'react';
 import {
   Nav,
   LeftContainer,
   RightContainer,
+  MenuContainer,
   ProfileContainer,
   NotificationContainer,
   NotificationWrapper,
@@ -13,9 +14,8 @@ import Image from 'next/image';
 import { RippleEffect } from '@/components/index';
 import { Menuburger } from '@/components/svg/index';
 import { MenuTransition } from '@/components/index';
-import NotificationCart from './NotificationCart'
-import ProfileCart from './ProfileCart'
-
+import NotificationCart from './NotificationCart';
+import ProfileCart from './ProfileCart';
 
 const Navbar = () => {
   const ProfileDropNodeRef = useRef(null);
@@ -23,16 +23,31 @@ const Navbar = () => {
 
   const [ShowNotificationDrop, setShowNotificationDrop] = useState(false);
   const [ShowProfileDrop, setShowProfileDrop] = useState(false);
- 
+
   return (
     <Nav>
       <LeftContainer>
-        {false && <Menuburger menuIsOpen={false} />}
+        <MenuContainer>
+          <div
+            onClick={() => void 0}
+            role="button"
+            tabIndex={0}
+            onKeyDown={() => void 0}
+            className="menu-btn"
+          >
+            <RippleEffect Style={{ padding: '10px', borderRadius: '3px' }}>
+              <Menuburger menuIsOpen={false} />
+            </RippleEffect>
+          </div>
+        </MenuContainer>
         <span>{`dashboard`}</span>
       </LeftContainer>
       <RightContainer>
         <NotificationContainer>
-          <NotificationWrapper id="notification-btn" onClick={()=>setShowNotificationDrop((prev) => !prev)}>
+          <NotificationWrapper
+            id="notification-btn"
+            onClick={() => setShowNotificationDrop((prev) => !prev)}
+          >
             <RippleEffect Style={{ padding: '8px', borderRadius: '50%' }}>
               <BellSvg />
             </RippleEffect>
@@ -45,14 +60,13 @@ const Navbar = () => {
             <NotificationCart
               ref={NotificationDropNodeRef}
               setShowNotificationDrop={setShowNotificationDrop}
-            >
-            </NotificationCart>
+            ></NotificationCart>
           </MenuTransition>
         </NotificationContainer>
         <ProfileContainer>
           <RippleEffect
             Id="profile-btn"
-            onClick={()=>setShowProfileDrop((prev) => !prev)}
+            onClick={() => setShowProfileDrop((prev) => !prev)}
             Style={{ margin: '0 1em 0 1em', borderRadius: '999px' }}
           >
             <ProfileWrapper>
@@ -67,12 +81,11 @@ const Navbar = () => {
               <span>{`Jane Doe`}</span>
             </ProfileWrapper>
           </RippleEffect>
-          <MenuTransition
-            ref={ProfileDropNodeRef}
-            Show={ShowProfileDrop}
-          >
-            <ProfileCart setShowProfileDrop={setShowProfileDrop} ref={ProfileDropNodeRef}>
-            </ProfileCart>
+          <MenuTransition ref={ProfileDropNodeRef} Show={ShowProfileDrop}>
+            <ProfileCart
+              setShowProfileDrop={setShowProfileDrop}
+              ref={ProfileDropNodeRef}
+            ></ProfileCart>
           </MenuTransition>
         </ProfileContainer>
       </RightContainer>
@@ -80,4 +93,4 @@ const Navbar = () => {
   );
 };
 
-export default Navbar;
+export default memo(Navbar);
