@@ -1,48 +1,27 @@
 import React, { memo } from 'react';
 import {
-  Container,
-  IconContainer,
-  TextContainer,
-  LinkWrapper
+  Container
 } from './styles/MiniGuideStyle';
-import Link from 'next/link';
-import PropTypes from 'prop-types';
 import {DashboardSvg,DollarSvg,InvoiceSvg,BookmarkSvg} from '@/components/svg/index'
+import ItemLink from './ItemLink'
 
 const MiniGuide = () => {
   return (
     <Container>
-        <ItemLink href='/' label="Dashboard">
+        <ItemLink mode={1} href='/dashboard' label="Dashboard">
             <DashboardSvg width={24} height={24}/>
         </ItemLink>
-        <ItemLink href='/' label="Orders">
+        <ItemLink mode={1} href='/orders' label="Orders">
             <DollarSvg width={24} height={24}/>
         </ItemLink>
-        <ItemLink href='/' label="Invoices">
+        <ItemLink mode={1} href='/invoices' label="Invoices">
             <InvoiceSvg width={24} height={24}/>
         </ItemLink>
-        <ItemLink href='/' label="Categories">
+        <ItemLink mode={1} href='/categories' label="Categories">
             <BookmarkSvg width={24} height={24}/>
         </ItemLink>
     </Container>
     )
-};
-
-const ItemLink = ({ href, label, children }) => {
-  return (
-        <Link href={href} passHref>
-            <LinkWrapper as="a">
-                <IconContainer>{children}</IconContainer>
-                <TextContainer>{label}</TextContainer>
-            </LinkWrapper>
-        </Link>
-    )
-};
-
-ItemLink.propTypes = {
-  href: PropTypes.string,
-  label: PropTypes.func,
-  children: PropTypes.elementType
 };
 
 export default memo(MiniGuide);

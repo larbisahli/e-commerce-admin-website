@@ -1,9 +1,8 @@
 import styled from 'styled-components';
 import {
   DisFlex,
-  DisFlex_AIC,
-  DisFlex_AIC_JCC
 } from '@/styles/index';
+
 
 export const Container = styled(DisFlex)`
   position: fixed;
@@ -15,42 +14,34 @@ export const Container = styled(DisFlex)`
   color: #222;
   padding: 10px 0;
   flex-direction: column;
-  border-right: 1px solid #ddd;
+  border-right: 1px solid var(--border-color);
+
+  .svg-active{
+    fill: #626262;
+  }
+
+  .svg-active-stroke{
+      stroke: #626262;
+    }
+
+  .link-active{
+    color: #000;
+    background: #cececec9;
+
+    &:hover {
+        background: #cececec9;
+      }
+
+    .svg-active{
+      fill: #70bb00 !important;
+    }
+
+    .svg-active-stroke{
+      stroke: #70bb00 !important;
+    }
+  }
 
   /* @media screen and (max-width: 810px) {
         display: none !important;
     } */
-`;
-
-export const LinkWrapper = styled(DisFlex_AIC_JCC)`
-  flex-flow: column nowrap;
-  margin-top: 4px;
-  width: 80px;
-  height: 80px;
-  padding: 16px 0 14px;
-  outline: 0;
-  cursor: pointer;
-  text-decoration: none;
-  color: inherit;
-
-  &:hover {
-    background: #e9e9e9c9;
-  }
-
-  &:active {
-    background: #cececec9;
-  }
-
-  /* &--active {
-            color: var(--guide-active-txt-color);
-            background-color: var(--bgc-hover);
-        } */
-`;
-
-export const IconContainer = styled(DisFlex_AIC)``;
-
-export const TextContainer = styled(DisFlex)`
-  padding-top: 5px;
-  font-size:.8em;
-  font-weight: 500;
 `;

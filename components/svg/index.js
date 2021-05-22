@@ -14,3 +14,4 @@ export { default as DashboardSvg } from './DashboardSvg';
 export { default as DollarSvg } from './DollarSvg';
 export { default as InvoiceSvg } from './InvoiceSvg';
 export { default as BookmarkSvg } from './BookmarkSvg';
+export { default as BellSvg } from './BellSvg';

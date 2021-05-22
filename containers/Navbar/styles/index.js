@@ -8,7 +8,7 @@ import {
 
 export const Nav = styled(DisFlex_AIC)`
   height: 56px;
-  border-bottom: 1px solid #ddd;
+  border-bottom: 1px solid var(--border-color);
   justify-content: space-between;
   background: var(--Navigation-bg);
   padding: 0.5rem 1em 0.5em 0;
@@ -54,7 +54,7 @@ export const ProfileWrapper = styled(DisFlex_AIC)`
   cursor: pointer;
   padding-right: 10px;
   border-radius: 999px;
-  border: 1px solid #ddd;
+  border: 1px solid var(--border-color);
   border-left: none;
 
   &:hover {
@@ -87,7 +87,27 @@ export const ProfileWrapper = styled(DisFlex_AIC)`
   }
 `;
 
-export const NotificationContainer = styled(RelativePosition)``;
+export const NotificationContainer = styled(RelativePosition)`
+  .notify-container{
+    display:block;
+    position: absolute;
+    align-self: flex-start;
+    z-index: 3;
+    margin: 2px 0 0 12px;
+    right: 1px;
+    color: #fff;
+    width: 17px;
+    height: 17px;
+    border-radius: 50%;
+    line-height: 17px;
+    font-size: .7rem;
+    font-weight: 600;
+    text-align: center;
+    cursor: pointer;
+    background-color: #fa5252;
+    box-shadow: 0 0 0 1px var(--Navigation-bg);
+  }
+`;
 
 export const NotificationWrapper = styled.div`
   cursor: pointer;

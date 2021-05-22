@@ -9,11 +9,11 @@ import {
   NotificationWrapper,
   ProfileWrapper
 } from './styles';
-import BellSvg from '../../assets/svg/bell.svg';
+import {BellSvg} from '@/components/svg';
 import Image from 'next/image';
 import { RippleEffect } from '@/components/index';
 import { Menuburger } from '@/components/svg/index';
-import { MenuTransition } from '@/components/index';
+import { LoadingBar,MenuTransition } from '@/components/index';
 import NotificationCart from './NotificationCart';
 import ProfileCart from './ProfileCart';
 
@@ -26,6 +26,7 @@ const Navbar = () => {
 
   return (
     <Nav>
+    <LoadingBar></LoadingBar>
       <LeftContainer>
         <MenuContainer>
           <div
@@ -44,12 +45,16 @@ const Navbar = () => {
       </LeftContainer>
       <RightContainer>
         <NotificationContainer>
+        <div className="notify-container">
+            <span>2</span>
+          </div>
           <NotificationWrapper
             id="notification-btn"
             onClick={() => setShowNotificationDrop((prev) => !prev)}
           >
+          
             <RippleEffect Style={{ padding: '8px', borderRadius: '50%' }}>
-              <BellSvg />
+              <BellSvg width={24} height={24} isNav />
             </RippleEffect>
           </NotificationWrapper>
           <MenuTransition

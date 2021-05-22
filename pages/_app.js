@@ -48,7 +48,7 @@ function App({ Component, pageProps }) {
       </Head>
       <Navbar />
       <Guide />
-      <MiniGuide />
+      {/* <MiniGuide /> */}
       <Component {...pageProps} />
     </Fragment>
   );
