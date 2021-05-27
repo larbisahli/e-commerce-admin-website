@@ -5,7 +5,7 @@ import PropTypes from 'prop-types';
 const ProfileCart = forwardRef(({ setShowProfileDrop }, ref) => {
   const handleClick = (e) => {
     const NotificationBtn = document.getElementById('profile-btn');
-    if (ref.current.contains(e.target)) {
+    if (ref.current?.contains(e.target)) {
       // inside click
       return;
     }
@@ -17,7 +17,6 @@ const ProfileCart = forwardRef(({ setShowProfileDrop }, ref) => {
     // add when mounted
     document.addEventListener('click', handleClick);
     // return function to be called when unmounted
-    console.log('useEffect :>> ');
     return () => {
       document.removeEventListener('click', handleClick);
     };

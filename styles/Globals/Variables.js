@@ -5,11 +5,13 @@ export const RootVariables = css`
     --cart-radius: 2px;
     --nav-link-hover-fg: #fff;
     --nav-link-fg: #f1eee4;
+    --primary-fg: #111;
+    --secondary-fg: #424242;
     --Nav-animation-duration: 0s;
     --orangy-general-color: #f3b41d;
     --border-color: #ddd;
     --general-bg: #f9f9f9;
-    --Navigation-bg: hsla(0,0%,99.6%,0.98);
+    --Navigation-bg: hsla(0, 0%, 99.6%, 0.98);
     --green-txt: #569a3e;
     --orangy-100: #feb062;
     --orangy-200: #ffa355;

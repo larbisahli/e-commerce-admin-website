@@ -52,18 +52,18 @@ export const ScaleIn = keyframes`
 export const CountPulse = keyframes`
     0% {
         opacity: 1;
-        transform: scale3d(0.4, 0.4, 1)
+        transform: scale3d(0.4, 0.4, 1);
     }
 
     80% {
         box-shadow: inset 0 0 0 2px var(--color-info-200);
-        opacity: 0.1
+        opacity: 0.1;
     }
 
     100% {
         box-shadow: inset 0 0 0 2px rgba(111,148,182,0.8);
         opacity: 0;
-        transform: scale3d(1.2, 1.2, 1)
+        transform: scale3d(1.2, 1.2, 1);
     }
 `;
 
@@ -128,8 +128,20 @@ export const FadeInTr = keyframes`
 `;
 
 export const LoadingBarProgress = keyframes`
-  0%
-    {background-position: 0% 0%}
-  100%
-    {background-position: -200% 0%}
+  0% {
+    background-position: 0% 0%;
+  }
+  
+  100% {
+    background-position: -200% 0%;
+    }
+`;
+
+export const SpinSpinner = keyframes`
+  from {
+            transform: rotate(0deg);
+        }
+        to {
+            transform: rotate(360deg);
+        }
 `;

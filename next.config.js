@@ -12,5 +12,14 @@ module.exports = {
     GTAG_MEASUREMENT_ID: '',
     FB_APPID: '',
     NEXT_PUBLIC_LOGROCKET_ID: ''
+  },
+  async redirects() {
+    return [
+      {
+        source: '/',
+        destination: '/dashboard',
+        permanent: true
+      }
+    ];
   }
 };

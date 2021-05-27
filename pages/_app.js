@@ -1,14 +1,59 @@
-import React, { Fragment, useEffect } from 'react';
+import React, { Fragment, useEffect, useState } from 'react';
 import GlobalStyle from '@/styles/Globals';
 import Head from 'next/head';
 import PropTypes from 'prop-types';
 import '../styles/tailwind.css';
 import { Guide, MiniGuide, Navbar } from '@/containers/index';
+import { useMediaQuery } from '@/hooks/useMediaQuery';
+import { PageContainer } from '@/styles/index';
+import 'simplebar/dist/simplebar.min.css';
 
 function App({ Component, pageProps }) {
+  const [GuideState, setGuideState] = useState({
+    show: false,
+    mode: null
+  });
+
+  const [InitUseEffect, setInitUseEffect] = useState(false)
+
+  console.log(`GuideState`, GuideState);
+
+  const MediaQueryMatches800 = useMediaQuery('max-width', 800);
+  const MediaQueryMatches1330 = useMediaQuery('max-width', 1330);
+
   useEffect(() => {
     document.documentElement.lang = 'en';
+    setInitUseEffect(true)
   }, []);
+
+  useEffect(() => {
+    // 800px >= mode: 1
+    // 1330px >= mode: 2
+    if (InitUseEffect) {
+      let mode = 0;
+      let show = false;
+
+      if (MediaQueryMatches800 && !MediaQueryMatches1330) {
+        mode = 0;
+        show = false;
+      }
+      if (!MediaQueryMatches800 && MediaQueryMatches1330) {
+        mode = 1;
+        show = false;
+      }
+      if (!MediaQueryMatches800 && !MediaQueryMatches1330) {
+        mode = 2;
+        show = true;
+      }
+
+      setGuideState(() => {
+        return {
+          show,
+          mode
+        };
+      });
+    }
+  }, [MediaQueryMatches800, MediaQueryMatches1330, InitUseEffect]);
 
   return (
     <Fragment>
@@ -20,7 +65,7 @@ function App({ Component, pageProps }) {
           crossOrigin="anonymous"
         />
         <link
-          href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600&display=swap"
+          href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap"
           rel="stylesheet"
         />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -46,10 +91,12 @@ function App({ Component, pageProps }) {
         <meta name="msapplication-TileColor" content="#2d89ef" />
         <meta name="theme-color" content="#ffffff" />
       </Head>
-      <Navbar />
-      <Guide />
-      {/* <MiniGuide /> */}
-      <Component {...pageProps} />
+      <Navbar setGuideState={setGuideState} />
+      <Guide GuideState={GuideState} setGuideState={setGuideState} />
+      <MiniGuide GuideState={GuideState} />
+      <PageContainer Mode={GuideState.mode} Show={GuideState.show} id="page-container">
+        <Component {...pageProps} />
+      </PageContainer>
     </Fragment>
   );
 }

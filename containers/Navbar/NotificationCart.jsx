@@ -6,7 +6,7 @@ import PropTypes from 'prop-types';
 const NotificationCart = forwardRef(({ setShowNotificationDrop }, ref) => {
   const handleClick = (e) => {
     const NotificationBtn = document.getElementById('notification-btn');
-    if (ref.current.contains(e.target)) {
+    if (ref.current?.contains(e.target)) {
       // inside click
       return;
     }

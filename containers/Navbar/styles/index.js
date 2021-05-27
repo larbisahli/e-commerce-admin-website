@@ -11,30 +11,43 @@ export const Nav = styled(DisFlex_AIC)`
   border-bottom: 1px solid var(--border-color);
   justify-content: space-between;
   background: var(--Navigation-bg);
-  padding: 0.5rem 1em 0.5em 0;
+  padding: 0.5em 1em 0.5em 0;
   position: fixed;
   top: 0;
   left: 0;
   right: 0;
-  /* MEDIA */
+  z-index: 5;
+  font-size: 1em;
+ 
+  @media screen and (max-width: 1330px) {
+    font-size: .85em;
+  }
+
+  @media screen and (max-width: 800px) {
+    font-size: .7em;
+    padding: 0;
+  }
 `;
 
 export const LeftContainer = styled(DisFlex_AIC)`
   span {
-    color: #333;
-    margin-left: 15px;
+    color: var(--secondary-fg);
+    margin-left: 0.938em;
     font-size: 1.4em;
     font-weight: 500;
     letter-spacing: 0.5px;
     text-transform: capitalize;
+
+    @media screen and (max-width: 800px) {
+      margin-left: 0;
+    }
   }
 `;
 
 export const MenuContainer = styled(DisFlex_AIC_JCC)`
-
-  width:80px;
+  width: 5.625em;
   height: 100%;
-  
+
   .menu-btn {
     cursor: pointer;
     border: 1px solid #cfcfcfab;
@@ -44,7 +57,7 @@ export const MenuContainer = styled(DisFlex_AIC_JCC)`
       border: 1px solid #87be6dbe;
     }
   }
-`
+`;
 
 export const RightContainer = styled(DisFlex_AIC)``;
 
@@ -52,60 +65,60 @@ export const ProfileContainer = styled(RelativePosition)``;
 
 export const ProfileWrapper = styled(DisFlex_AIC)`
   cursor: pointer;
-  padding-right: 10px;
   border-radius: 999px;
   border: 1px solid var(--border-color);
-  border-left: none;
+  padding: 0.125em;
+  padding-right: 0.938em;
 
   &:hover {
     border: 1px solid #87be6dbe;
-    border-left: none;
-    .profile-img-wrap {
-      img {
-        border: 1px solid #87be6dbe !important;
-      }
-    }
   }
 
   span {
-    color: #333;
-    margin-left: 8px;
+    color: var(--primary-fg);
+    margin-left: 0.5;
     font-size: 0.93em;
     font-weight: 500;
+    padding: 0 5px;
   }
 
   .profile-img-wrap {
-    box-shadow: 0 0 3px 1px rgba(0, 0, 0, 0.1);
     border-radius: 50%;
-    width: 40px;
-    height: 40px;
+    width: 2.5em;
+    height: 2.5em;
 
     img {
       border-radius: 50%;
-      border: 1px solid rgba(0, 0, 0, 0.08) !important;
+      width: 2.5em;
+      height: 2.5em;
     }
   }
 `;
 
 export const NotificationContainer = styled(RelativePosition)`
-  .notify-container{
-    display:block;
+  .notify-container {
+    display: block;
     position: absolute;
     align-self: flex-start;
     z-index: 3;
-    margin: 2px 0 0 12px;
+    margin: 0.125em 0 0 0.75em;
     right: 1px;
     color: #fff;
-    width: 17px;
-    height: 17px;
+    width: 1.063em;
+    height: 1.063em;
     border-radius: 50%;
-    line-height: 17px;
-    font-size: .7rem;
-    font-weight: 600;
     text-align: center;
     cursor: pointer;
     background-color: #fa5252;
     box-shadow: 0 0 0 1px var(--Navigation-bg);
+    display: flex;
+    justify-content: center;
+    align-items:center;
+
+    span{
+      font-size: .75em;
+      font-weight: 500;
+    }
   }
 `;
 
@@ -117,6 +130,11 @@ export const NotificationWrapper = styled.div`
   &:hover {
     border: 1px solid #87be6dbe;
   }
+
+  .svg-bell-responsive{
+    width: 1.5em;
+    height: 1.5em;
+  }
 `;
 
 const NotificationCart_Container = styled(AbsolutePosition)`
@@ -125,7 +143,7 @@ const NotificationCart_Container = styled(AbsolutePosition)`
   background: #fff;
   z-index: 100;
   right: 0;
-  width: 300px;
+  width: 18.75em;
   color: #4c4c4c;
   border: 1px solid #9bbad3a4;
   border-radius: 4px;
@@ -146,8 +164,8 @@ const NotificationCart_Container = styled(AbsolutePosition)`
   &::after {
     content: '';
     position: absolute;
-    width: 12px;
-    height: 12px;
+    width: 0.75em;
+    height: 0.75em;
     background: #fff;
     border-top-left-radius: 2px;
     z-index: 0;
@@ -178,7 +196,7 @@ export const NotificationCartWrap = styled(RelativePosition)`
   overflow-y: auto;
   overflow-x: hidden;
   width: 100%;
-  max-height: 452px;
+  max-height: 28.25em;
   border-radius: 5px;
 
   ${(props) => {
@@ -188,7 +206,7 @@ export const NotificationCartWrap = styled(RelativePosition)`
       `;
     } else if (props.isMobileMode && props.isMobile) {
       return css`
-        max-height: calc(100% - 69px) !important;
+        max-height: calc(100% - 4.313em) !important;
         ${'' /* // browser default navbar that has url */
         }/* max-height: calc(100vh - (2*56px + 69px)) !important; */
       `;
@@ -211,7 +229,7 @@ export const NoResultsWrapper = styled(DisFlex_AIC_JCC)`
   left: 50%;
   color: gray;
   transform: translate(-50%, -50%);
-  width: 440px;
+  width: 27.5em;
   flex-direction: column;
   text-align: center;
 
@@ -221,7 +239,7 @@ export const NoResultsWrapper = styled(DisFlex_AIC_JCC)`
 
   span {
     max-width: 50%;
-    margin: 10px 0;
+    margin: 0.625em 0;
     font-size: 0.9em;
     line-height: 1.2em;
   }
@@ -239,9 +257,9 @@ export const ProfileCartContainer = styled(AbsolutePosition)`
   background: #fff;
   z-index: 100;
   left: 0;
-  width: 100px;
+  width: 6.25em;
   color: #4c4c4c;
-  padding: 15px 8px 8px 8px;
+  padding: 0.625em 0.5em 0.5em 0.5em;
   border: 1px solid #9bbad3a4;
   border-radius: 4px;
   cursor: pointer;
@@ -262,8 +280,8 @@ export const ProfileCartContainer = styled(AbsolutePosition)`
   &::after {
     content: '';
     position: absolute;
-    width: 12px;
-    height: 12px;
+    width: 0.75em;
+    height: 0.75em;
     background: #fff;
     border-top-left-radius: 2px;
     z-index: 0;

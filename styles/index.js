@@ -46,25 +46,32 @@ export const Visible = css`
   visibility: visible;
 `;
 
-export const PageContainer = styled.div`
+const PageContainerMain = styled.div`
   font-size: 1rem;
-  margin-top: 5em;
-  width: 100%;
-  flex: 1 0 auto;
+  margin-top: 56px;
   overflow: hidden;
-  margin-right: auto;
-  margin-left: auto;
-  max-width: 1150px;
+  margin-left: 240px;
+  background: red;
+  padding: 50px;
 
-  /* background: red; */
-
-  @media screen and (max-width: 1150px) {
-    max-width: 95vw;
-    font-size: 0.95rem;
+  @media screen and (max-width: 1330px) {
+    margin-left: 90px;
+    background: yellow;
   }
 
-  @media screen and (max-width: 735px) {
-    max-width: 100%;
-    font-size: 0.88rem;
+  @media screen and (max-width: 800px) {
+    margin-left: 0;
+    font-size: 0.9rem;
+    background: green;
   }
+`;
+
+export const PageContainer = styled(PageContainerMain)`
+  ${props => {
+    if (props.Mode === 1) {
+      return css`margin-left: 90px !important;`
+    } else if (props.Mode === 2) {
+      return css`margin-left: 240px !important;`
+    }
+  }}
 `;

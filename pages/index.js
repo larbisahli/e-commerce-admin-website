@@ -1,12 +1,11 @@
-import Head from 'next/head';
+import React, { useState } from 'react'
+import { PageLoading } from '@/containers/index';
+
+// LOGIN PAGE
 
 export default function Home() {
-  return (
-    <div className="">
-      <Head>
-        <title>Create Next App</title>
-        <link rel="icon" href="/favicon.ico" />
-      </Head>
-    </div>
-  );
+
+  const [PageIsLoading, setPageIsLoading] = useState(true)
+
+  return <div>{/* {PageIsLoading && <PageLoading />} */}</div>;
 }
