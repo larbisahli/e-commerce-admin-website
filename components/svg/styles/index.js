@@ -49,7 +49,7 @@ const XSpan = styled(RelativePosition)`
   left: 0;
   height: 2px;
   width: 100%;
-  background: #333;
+  background: #f1f1f1;
   opacity: 1;
   transition: 0.25s all ease-in-out;
 `;

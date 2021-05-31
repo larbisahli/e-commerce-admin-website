@@ -73,11 +73,13 @@ const Guide = ({ GuideState, setGuideState }) => {
                 <BookmarkSvg width={20} height={20} />
               </ItemLink>
               <ItemLink mode={2} href="/notifications" label="Notifications">
-                <BellSvg width={20} height={20} />
+                <BellSvg width={20} height={20}/>
+                <span style={{display: 'block'}} className="new-notify-dot"></span>
               </ItemLink>
               <div className="line"></div>
               <ItemLink mode={2} href="/orders" label="Orders">
                 <DollarSvg width={20} height={20} />
+                <span className='num-notify'>4</span>
               </ItemLink>
               <ItemLink mode={2} href="/invoices" label="Invoices">
                 <InvoiceSvg width={20} height={20} />

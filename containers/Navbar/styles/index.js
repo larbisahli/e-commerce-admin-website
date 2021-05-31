@@ -5,6 +5,7 @@ import {
   RelativePosition,
   DisFlex_AIC_JCC
 } from '@/styles/index';
+import { NotificationPulse } from '@/styles/keyframes'
 
 export const Nav = styled(DisFlex_AIC)`
   height: 56px;
@@ -31,7 +32,7 @@ export const Nav = styled(DisFlex_AIC)`
 
 export const LeftContainer = styled(DisFlex_AIC)`
   span {
-    color: var(--secondary-fg);
+    color: #f1f1f1;
     margin-left: 0.938em;
     font-size: 1.4em;
     font-weight: 500;
@@ -50,8 +51,8 @@ export const MenuContainer = styled(DisFlex_AIC_JCC)`
 
   .menu-btn {
     cursor: pointer;
-    border: 1px solid #cfcfcfab;
-    border-radius: 2px;
+    border: 1px solid var(--border-color);
+    border-radius: 3px;
 
     &:hover {
       border: 1px solid #87be6dbe;
@@ -69,6 +70,7 @@ export const ProfileWrapper = styled(DisFlex_AIC)`
   border: 1px solid var(--border-color);
   padding: 0.125em;
   padding-right: 0.938em;
+  background: #ecf0f1;
 
   &:hover {
     border: 1px solid #87be6dbe;
@@ -97,26 +99,31 @@ export const ProfileWrapper = styled(DisFlex_AIC)`
 
 export const NotificationContainer = styled(RelativePosition)`
   .notify-container {
-    display: block;
+    display: flex;
+    justify-content: center;
+    align-items:center;
     position: absolute;
     align-self: flex-start;
     z-index: 3;
     margin: 0.125em 0 0 0.75em;
     right: 1px;
     color: #fff;
-    width: 1.063em;
-    height: 1.063em;
+    width: 1.1rem;
+    height: 1.1rem;
     border-radius: 50%;
     text-align: center;
     cursor: pointer;
-    background-color: #fa5252;
-    box-shadow: 0 0 0 1px var(--Navigation-bg);
-    display: flex;
-    justify-content: center;
-    align-items:center;
+    background: rgba(255, 82, 82, 1);
+    z-index: 5;
+    transform: scale(1);
+    box-shadow: 0 0 0 0 rgba(255, 82, 82, 1);
+    animation: ${NotificationPulse} 2s infinite;
+    user-select: none;
+    box-sizing: border-box;
+    border: 2px solid #ecf0f1;
 
     span{
-      font-size: .75em;
+      font-size: .7em;
       font-weight: 500;
     }
   }
@@ -124,8 +131,9 @@ export const NotificationContainer = styled(RelativePosition)`
 
 export const NotificationWrapper = styled.div`
   cursor: pointer;
-  border: 1px solid #cfcfcfab;
+  border: 1px solid var(--border-color);
   border-radius: 50%;
+  background: #ecf0f1;
 
   &:hover {
     border: 1px solid #87be6dbe;

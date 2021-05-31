@@ -8,7 +8,7 @@ export const MainContainer = styled(DisFlex)`
   top: 56px;
   bottom: 0;
   font-size: 1.05em;
-  background-color: var(--Navigation-bg);
+  background-color: var(--guide-bg);
   padding: 10px 0;
   flex-direction: column;
   width: 90px;
@@ -24,11 +24,11 @@ export const MainContainer = styled(DisFlex)`
 
   .link-active {
     color: var(--primary-fg);
-    background: #cececec9;
+    background: #444753;
     color: #5c9900;
 
     &:hover {
-      background: #cececec9;
+      background: rgb(0 0 0 / 10%);
     }
 
     .svg-active {

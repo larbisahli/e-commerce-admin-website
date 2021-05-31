@@ -9,9 +9,10 @@ export const RootVariables = css`
     --secondary-fg: #424242;
     --Nav-animation-duration: 0s;
     --orangy-general-color: #f3b41d;
-    --border-color: #ddd;
+    --border-color: #555;
     --general-bg: #f9f9f9;
-    --Navigation-bg: hsla(0, 0%, 99.6%, 0.98);
+    --guide-bg: #393b45;
+    --Navigation-bg: linear-gradient(to right, #111, #252525);
     --green-txt: #569a3e;
     --orangy-100: #feb062;
     --orangy-200: #ffa355;

@@ -1,5 +1,6 @@
 import styled, { css } from 'styled-components';
 import { DisFlex_AIC, DisFlex_AIC_JCC, DisFlex } from '@/styles/index';
+import { NotificationPulseDot } from '@/styles/keyframes'
 
 export const Bg = styled.div`
   display: none;
@@ -124,7 +125,7 @@ export const Wrapper = styled(DisFlex)`
   height: 100%;
   width: 240px;
   border-right: 1px solid var(--border-color);
-  background-color: var(--Navigation-bg);
+  background-color: var(--guide-bg);
 `;
 
 export const ContentContainer = styled(DisFlex)`
@@ -150,8 +151,8 @@ export const ContentContainer = styled(DisFlex)`
   }
 
   .link-active {
-    color: var(--primary-fg);
-    background: rgb(0 0 0 / 10%);
+    color: #fafafa;
+    background: #444753;
 
     &:hover {
       background: rgb(0 0 0 / 10%);
@@ -170,8 +171,9 @@ export const ContentContainer = styled(DisFlex)`
 export const LinkWrapper = styled(DisFlex_AIC_JCC)`
   outline: 0;
   cursor: pointer;
+  color: #bbb;
   text-decoration: none;
-  color: var(--secondary-fg);
+
 
   ${(props) => {
     if (props.Mode === 1) {
@@ -179,7 +181,7 @@ export const LinkWrapper = styled(DisFlex_AIC_JCC)`
         flex-flow: column nowrap;
         margin-top: 4px;
         width: 90px;
-        height: 90px;
+        height: 70px;
         padding: 16px 0 14px;
       `;
     } else {
@@ -190,11 +192,11 @@ export const LinkWrapper = styled(DisFlex_AIC_JCC)`
   }}
 
   &:hover {
-    background: #e9e9e9c9;
+    background: rgb(0 0 0 / 10%);
   }
 
   &:active {
-    background: #cececec9;
+    background: rgb(0 0 0 / 20%);
   }
 `;
 
@@ -205,16 +207,46 @@ export const IconContainer = styled(DisFlex_AIC)`
   ${(props) => {
     if (props.Mode === 2) {
       return css`
-        margin-right: 24px;
+        margin-right: 12px;
       `;
     }
   }}
+
+  .new-notify-dot{
+    background: rgba(255, 82, 82, 1);
+    position: absolute;
+    right: 8px;
+    z-index: 5;
+    border-radius: 50%;
+    height: 8px;
+    width: 8px;
+    transform: scale(1);
+    box-shadow: 0 0 0 0 rgba(255, 82, 82, 1);
+    animation: ${NotificationPulseDot} 2s infinite;
+  }
+
+  .num-notify{
+    position: absolute;
+    right:8px;
+    user-select: none;
+    cursor: default;
+    font-size: 0.6rem;
+    background: #e74c3c;
+    width: 1.2rem;
+    height: 1.2rem;
+    color: #ecf0f1;
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 50%;
+    box-sizing: border-box;
+    background: rgba(255, 255, 255, 0.2);
+  }
 `;
 
 export const TextContainer = styled(DisFlex)`
   text-transform: capitalize;
-  letter-spacing: 0.8px;
-
+  
   ${(props) => {
     if (props.Mode === 1) {
       return css`
@@ -225,9 +257,10 @@ export const TextContainer = styled(DisFlex)`
     } else {
       return css`
         flex: 1;
-        font-size: 1.1em;
-        ${'' /* background: red; */} 
+        font-size: 1em;
       `;
     }
   }}
 `;
+
+// color: #7fa6ec;

@@ -42,17 +42,17 @@ const MiniGuide = ({ GuideState }) => {
         <ItemLink mode={1} href="/dashboard" label="Dashboard">
           <DashboardSvg width={24} height={24} />
         </ItemLink>
-        <ItemLink mode={1} href="/orders" label="Orders">
-          <DollarSvg width={24} height={24} />
-        </ItemLink>
-        <ItemLink mode={1} href="/invoices" label="Invoices">
-          <InvoiceSvg width={24} height={24} />
-        </ItemLink>
         <ItemLink mode={1} href="/categories" label="Categories">
           <BookmarkSvg width={24} height={24} />
         </ItemLink>
         <ItemLink mode={1} href="/notifications" label="Notifications">
           <BellSvg width={20} height={20} />
+        </ItemLink>
+        <ItemLink mode={1} href="/orders" label="Orders">
+          <DollarSvg width={24} height={24} />
+        </ItemLink>
+        <ItemLink mode={1} href="/invoices" label="Invoices">
+          <InvoiceSvg width={24} height={24} />
         </ItemLink>
       </SimpleBarReact>
     </Container>

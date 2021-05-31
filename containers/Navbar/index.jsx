@@ -82,7 +82,7 @@ const Navbar = ({ setGuideState }) => {
             onClick={() => setShowNotificationDrop((prev) => !prev)}
           >
             <RippleEffect Style={{ padding: '8px', borderRadius: '50%' }}>
-              <BellSvg width={24} height={24} />
+              <BellSvg width={24} height={24} IsNav/>
             </RippleEffect>
           </NotificationWrapper>
           <MenuTransition
