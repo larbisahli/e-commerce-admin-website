@@ -3,7 +3,15 @@ import GlobalStyle from '@/styles/Globals';
 import Head from 'next/head';
 import PropTypes from 'prop-types';
 import '../styles/tailwind.css';
+import { NavGuide } from '@/containers/index';
+import { PageContainer } from '@/styles/index';
+import 'simplebar/dist/simplebar.min.css';
+import { NextSeo } from 'next-seo';
+import { useRouter } from 'next/router';
 function App({ Component, pageProps }) {
+  const { asPath } = useRouter();
+
+  console.log(`====>`, { asPath });
   useEffect(() => {
     document.documentElement.lang = 'en';
   }, []);
@@ -11,6 +19,7 @@ function App({ Component, pageProps }) {
   return (
     <Fragment>
       <GlobalStyle />
+      <NextSeo nofollow={true} noindex={true} />
       <Head>
         <link
           rel="preconnect"
@@ -18,7 +27,7 @@ function App({ Component, pageProps }) {
           crossOrigin="anonymous"
         />
         <link
-          href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600&display=swap"
+          href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap"
           rel="stylesheet"
         />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -40,12 +49,14 @@ function App({ Component, pageProps }) {
           href="/static/favicons/favicon-16x16.png"
         />
         <link rel="manifest" href="/manifest.webmanifest" />
-        <link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5" />
-        <meta name="msapplication-TileColor" content="#2d89ef" />
+        <link rel="mask-icon" href="/safari-pinned-tab.svg" color="#ffffff" />
+        <meta name="msapplication-TileColor" content="#ffffff" />
         <meta name="theme-color" content="#ffffff" />
       </Head>
-      {/* <Navigation /> */}
-      <Component {...pageProps} />
+      {asPath !== '/' && <NavGuide />}
+      <PageContainer id="page-container">
+        <Component {...pageProps} />
+      </PageContainer>
     </Fragment>
   );
 }

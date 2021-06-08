@@ -1,58 +1,112 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, memo } from 'react';
+import { BellSvg } from '@/components/svg';
+import Image from 'next/image';
+import { RippleEffect } from '@/components/index';
+import { Menuburger } from '@/components/svg/index';
+import { LoadingBar, EventDrop } from '@/components/index';
+import PropTypes from 'prop-types';
+import NotificationEmpty from './NotificationEmpty';
 import {
   Nav,
   LeftContainer,
   RightContainer,
+  MenuContainer,
   ProfileContainer,
   NotificationContainer,
   NotificationWrapper,
-  ProfileWrapper
+  ProfileWrapper,
+  NotificationCartContainer,
+  NotificationCartWrap,
+  ProfileCartContainer
 } from './styles';
-import BellSvg from '../../assets/svg/bell.svg';
-import Image from 'next/image';
-import { RippleEffect } from '@/components/index';
-import { Menuburger } from '@/components/svg/index';
-import { MenuTransition } from '@/components/index';
-import NotificationCart from './NotificationCart'
-import ProfileCart from './ProfileCart'
 
-
-const Navbar = () => {
+const Navbar = ({ setGuideState }) => {
   const ProfileDropNodeRef = useRef(null);
   const NotificationDropNodeRef = useRef(null);
 
   const [ShowNotificationDrop, setShowNotificationDrop] = useState(false);
   const [ShowProfileDrop, setShowProfileDrop] = useState(false);
- 
+
+  const HandleGuide = () => {
+    setGuideState((prev) => {
+      const absWidth = window.innerWidth;
+      if (prev.mode === 2) {
+        return {
+          show: !prev.show,
+          mode: prev.mode === 2 ? 1 : 2
+        };
+      } else if (prev.mode === 1 && absWidth >= 1330) {
+        return {
+          show: !prev.show,
+          mode: 2
+        };
+      } else if (prev.mode === 1 && absWidth <= 1330) {
+        return {
+          show: !prev.show,
+          mode: 1
+        };
+      } else if (prev.mode === 0) {
+        return {
+          show: !prev.show,
+          mode: 0
+        };
+      }
+      return prev;
+    });
+  };
+
   return (
     <Nav>
+      <LoadingBar></LoadingBar>
       <LeftContainer>
-        {false && <Menuburger menuIsOpen={false} />}
-        <span>{`dashboard`}</span>
+        <MenuContainer>
+          <div
+            onClick={HandleGuide}
+            role="button"
+            tabIndex={0}
+            onKeyDown={() => void 0}
+            className="menu-btn"
+          >
+            <RippleEffect Style={{ padding: '10px', borderRadius: '3px' }}>
+              <Menuburger menuIsOpen={false} />
+            </RippleEffect>
+          </div>
+        </MenuContainer>
+        <div className="page-title-container">
+          <div className="ptc-slash"></div>
+          {`dashboard`}
+        </div>
       </LeftContainer>
       <RightContainer>
         <NotificationContainer>
-          <NotificationWrapper id="notification-btn" onClick={()=>setShowNotificationDrop((prev) => !prev)}>
+          <div className="notify-container"></div>
+          <NotificationWrapper
+            id="notification-btn"
+            onClick={() => setShowNotificationDrop((prev) => !prev)}
+          >
             <RippleEffect Style={{ padding: '8px', borderRadius: '50%' }}>
-              <BellSvg />
+              <BellSvg width={24} height={24} isNav={true} />
             </RippleEffect>
           </NotificationWrapper>
-          <MenuTransition
+          {/* Start Notification DropDown */}
+          <EventDrop
             ref={NotificationDropNodeRef}
-            Show={ShowNotificationDrop}
-            unMount={true}
+            btnId="notification-btn"
+            setState={setShowNotificationDrop}
+            state={ShowNotificationDrop}
           >
-            <NotificationCart
-              ref={NotificationDropNodeRef}
-              setShowNotificationDrop={setShowNotificationDrop}
-            >
-            </NotificationCart>
-          </MenuTransition>
+            <NotificationCartContainer ref={NotificationDropNodeRef}>
+              <NotificationCartWrap>
+                <NotificationEmpty />
+              </NotificationCartWrap>
+            </NotificationCartContainer>
+          </EventDrop>
+          {/* End Notification DropDown */}
         </NotificationContainer>
         <ProfileContainer>
           <RippleEffect
             Id="profile-btn"
-            onClick={()=>setShowProfileDrop((prev) => !prev)}
+            onClick={() => setShowProfileDrop((prev) => !prev)}
             Style={{ margin: '0 1em 0 1em', borderRadius: '999px' }}
           >
             <ProfileWrapper>
@@ -67,17 +121,26 @@ const Navbar = () => {
               <span>{`Jane Doe`}</span>
             </ProfileWrapper>
           </RippleEffect>
-          <MenuTransition
+          {/* Start Profile DropDown */}
+          <EventDrop
             ref={ProfileDropNodeRef}
-            Show={ShowProfileDrop}
+            btnId="profile-btn"
+            setState={setShowProfileDrop}
+            state={ShowProfileDrop}
           >
-            <ProfileCart setShowProfileDrop={setShowProfileDrop} ref={ProfileDropNodeRef}>
-            </ProfileCart>
-          </MenuTransition>
+            <ProfileCartContainer ref={ProfileDropNodeRef}>
+              <span>Sign out</span>
+            </ProfileCartContainer>
+          </EventDrop>
+          {/* End Profile DropDown */}
         </ProfileContainer>
       </RightContainer>
     </Nav>
   );
 };
 
-export default Navbar;
+Navbar.propTypes = {
+  setGuideState: PropTypes.func
+};
+
+export default memo(Navbar);

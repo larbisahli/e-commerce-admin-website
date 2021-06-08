@@ -18,7 +18,8 @@ export const ElementsCollection = css`
   html,
   body {
     display: block !important;
-    font-family: 'Lato', -apple-system, sans-serif, Segoe UI, Roboto, Helvetica;
+    font-family: 'Roboto', -apple-system, sans-serif, Segoe UI, Roboto,
+      Helvetica;
     font-size: 1rem;
     font-weight: 400;
     line-height: 1;
@@ -63,14 +64,6 @@ export const ElementsCollection = css`
     cursor: pointer;
     outline: none;
     -webkit-tap-highlight-color: transparent;
-    transition: transform 0.2s ease-in-out 0s;
-    transform: translateY(0);
-
-    &:hover {
-      transform: translateY(-1.5px);
-      box-shadow: 0 7px 14px rgba(50, 50, 93, 0.1),
-        0 3px 6px rgba(0, 0, 0, 0.08);
-    }
   }
 
   div {
