@@ -46,32 +46,28 @@ export const Visible = css`
   visibility: visible;
 `;
 
-const PageContainerMain = styled.div`
+export const PageContainer = styled.div`
   font-size: 1rem;
   margin-top: 56px;
   overflow: hidden;
   margin-left: 240px;
-  background: red;
-  padding: 50px;
+  padding-top: 50px;
 
   @media screen and (max-width: 1330px) {
-    margin-left: 90px;
-    background: yellow;
+    margin-left: 90px !important;
   }
 
   @media screen and (max-width: 800px) {
-    margin-left: 0;
+    margin-left: 0 !important;
     font-size: 0.9rem;
-    background: green;
   }
 `;
 
-export const PageContainer = styled(PageContainerMain)`
-  ${props => {
-    if (props.Mode === 1) {
-      return css`margin-left: 90px !important;`
-    } else if (props.Mode === 2) {
-      return css`margin-left: 240px !important;`
-    }
-  }}
-`;
+export const CardContainer = styled.div`
+    background-color: #fff;
+    background-clip: border-box;
+    border: .0625rem solid rgba(46,54,80,.125);
+    border-radius: .5rem;
+    box-shadow: 0 2px 18px rgba(0,0,0,.02)!important;
+    transition: all .2s ease;
+`

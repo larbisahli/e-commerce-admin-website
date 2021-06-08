@@ -15,20 +15,21 @@ export const MainContainer = styled(DisFlex)`
   border-right: 1px solid var(--border-color);
 
   .svg-active {
-    fill: #626262;
+    fill: #909090;
   }
 
   .svg-active-stroke {
-    stroke: #626262;
+    stroke: #909090;
   }
 
   .link-active {
     color: var(--primary-fg);
-    background: #444753;
+    background: rgba(255, 255, 255, 0.2);
     color: #5c9900;
+    border-left: 3px solid var(--color-success-600);
 
     &:hover {
-      background: rgb(0 0 0 / 10%);
+      background: rgba(255, 255, 255, 0.25);
     }
 
     .svg-active {
@@ -67,8 +68,7 @@ export const Container = styled(MainContainer)`
       return css`
         display: flex !important;
       `;
-    }
-    else if (props.Mode === 2) {
+    } else if (props.Mode === 2) {
       if (props.Show) {
         return css`
           display: none !important;

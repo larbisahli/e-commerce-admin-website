@@ -17,7 +17,7 @@ ItemLink.propTypes = {
   href: PropTypes.string,
   label: PropTypes.string,
   mode: PropTypes.number,
-  children: PropTypes.object
+  children: PropTypes.oneOfType([PropTypes.object, PropTypes.array])
 };
 
 export default ItemLink;

@@ -1,6 +1,5 @@
 import styled, { css } from 'styled-components';
 import { DisFlex_AIC, DisFlex_AIC_JCC, DisFlex } from '@/styles/index';
-import { NotificationPulseDot } from '@/styles/keyframes'
 
 export const Bg = styled.div`
   display: none;
@@ -79,26 +78,25 @@ export const Container = styled(MainContainer)`
       if (props.QueryMatches) {
         if (props.Show) {
           return css`
-          display: block !important;
-        `;
+            display: block !important;
+          `;
         }
         return css`
-            display: none !important;
-          `;
+          display: none !important;
+        `;
       } else {
         if (props.Show) {
           return css`
-          display: block !important;
-          transform: translateX(0%);
-        `;
+            display: block !important;
+            transform: translateX(0%);
+          `;
         }
         return css`
-        display: block !important;
-        transform: translateX(-100%);
-      `;
+          display: block !important;
+          transform: translateX(-100%);
+        `;
       }
-    }
-    else if (props.Mode === 2) {
+    } else if (props.Mode === 2) {
       if (props.Show) {
         return css`
           display: block !important;
@@ -124,7 +122,7 @@ export const Wrapper = styled(DisFlex)`
   max-height: 100%;
   height: 100%;
   width: 240px;
-  border-right: 1px solid var(--border-color);
+  border-right: 1px solid var(--guide-border-color);
   background-color: var(--guide-bg);
 `;
 
@@ -134,28 +132,30 @@ export const ContentContainer = styled(DisFlex)`
   font-size: 0.88rem;
   padding-top: 10px;
   overflow: hidden;
+  box-sizing: border-box;
 
   .line {
     margin: 10px 0;
     height: 0px !important;
-    padding: .5px 0;
-    background-color: var(--border-color);
+    padding: 0.5px 0;
+    background-color: var(--guide-border-color);
   }
 
   .svg-active {
-    fill: #626262;
+    fill: #909090;
   }
 
   .svg-active-stroke {
-    stroke: #626262;
+    stroke: #909090;
   }
 
   .link-active {
     color: #fafafa;
-    background: #444753;
+    background: rgba(255, 255, 255, 0.2);
+    border-left: 3px solid var(--color-success-600);
 
     &:hover {
-      background: rgb(0 0 0 / 10%);
+      background: rgba(255, 255, 255, 0.25);
     }
 
     .svg-active {
@@ -173,7 +173,8 @@ export const LinkWrapper = styled(DisFlex_AIC_JCC)`
   cursor: pointer;
   color: #bbb;
   text-decoration: none;
-
+  position: relative;
+  border-left: 3px solid transparent;
 
   ${(props) => {
     if (props.Mode === 1) {
@@ -192,11 +193,11 @@ export const LinkWrapper = styled(DisFlex_AIC_JCC)`
   }}
 
   &:hover {
-    background: rgb(0 0 0 / 10%);
+    background: rgba(255, 255, 255, 0.1);
   }
 
   &:active {
-    background: rgb(0 0 0 / 20%);
+    background: rgba(255, 255, 255, 0.2);
   }
 `;
 
@@ -212,41 +213,33 @@ export const IconContainer = styled(DisFlex_AIC)`
     }
   }}
 
-  .new-notify-dot{
-    background: rgba(255, 82, 82, 1);
+  .num-notify {
+    display: none;
     position: absolute;
     right: 8px;
-    z-index: 5;
-    border-radius: 50%;
-    height: 8px;
-    width: 8px;
-    transform: scale(1);
-    box-shadow: 0 0 0 0 rgba(255, 82, 82, 1);
-    animation: ${NotificationPulseDot} 2s infinite;
-  }
-
-  .num-notify{
-    position: absolute;
-    right:8px;
     user-select: none;
     cursor: default;
     font-size: 0.6rem;
-    background: #e74c3c;
     width: 1.2rem;
     height: 1.2rem;
-    color: #ecf0f1;
+    color: #f1f1f1;
     display: inline-flex;
     justify-content: center;
     align-items: center;
     border-radius: 50%;
     box-sizing: border-box;
     background: rgba(255, 255, 255, 0.2);
+    font-weight: 600;
+  }
+
+  .mode-2-top {
+    top: 5px !important;
   }
 `;
 
 export const TextContainer = styled(DisFlex)`
   text-transform: capitalize;
-  
+
   ${(props) => {
     if (props.Mode === 1) {
       return css`
@@ -262,5 +255,3 @@ export const TextContainer = styled(DisFlex)`
     }
   }}
 `;
-
-// color: #7fa6ec;

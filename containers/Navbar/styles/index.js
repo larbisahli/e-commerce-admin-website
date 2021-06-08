@@ -5,11 +5,11 @@ import {
   RelativePosition,
   DisFlex_AIC_JCC
 } from '@/styles/index';
-import { NotificationPulse } from '@/styles/keyframes'
+import { NotificationPulse } from '@/styles/keyframes';
 
 export const Nav = styled(DisFlex_AIC)`
   height: 56px;
-  border-bottom: 1px solid var(--border-color);
+  border-bottom: 1px solid var(--guide-border-color);
   justify-content: space-between;
   background: var(--Navigation-bg);
   padding: 0.5em 1em 0.5em 0;
@@ -19,25 +19,35 @@ export const Nav = styled(DisFlex_AIC)`
   right: 0;
   z-index: 5;
   font-size: 1em;
- 
+
   @media screen and (max-width: 1330px) {
-    font-size: .85em;
+    font-size: 0.85em;
   }
 
   @media screen and (max-width: 800px) {
-    font-size: .7em;
+    font-size: 0.7em;
     padding: 0;
   }
 `;
 
 export const LeftContainer = styled(DisFlex_AIC)`
-  span {
+  .page-title-container {
     color: #f1f1f1;
     margin-left: 0.938em;
     font-size: 1.4em;
     font-weight: 500;
     letter-spacing: 0.5px;
     text-transform: capitalize;
+    display: flex;
+    align-items: center;
+
+    .ptc-slash {
+      margin-right: 5px;
+      height: 25px;
+      border-radius: 10px;
+      width: 2px;
+      background: #888;
+    }
 
     @media screen and (max-width: 800px) {
       margin-left: 0;
@@ -51,7 +61,7 @@ export const MenuContainer = styled(DisFlex_AIC_JCC)`
 
   .menu-btn {
     cursor: pointer;
-    border: 1px solid var(--border-color);
+    border: 1px solid var(--nav-border-color);
     border-radius: 3px;
 
     &:hover {
@@ -67,17 +77,16 @@ export const ProfileContainer = styled(RelativePosition)``;
 export const ProfileWrapper = styled(DisFlex_AIC)`
   cursor: pointer;
   border-radius: 999px;
-  border: 1px solid var(--border-color);
+  border: 1px solid var(--nav-border-color);
   padding: 0.125em;
   padding-right: 0.938em;
-  background: #ecf0f1;
 
   &:hover {
     border: 1px solid #87be6dbe;
   }
 
   span {
-    color: var(--primary-fg);
+    color: #f1f1f1;
     margin-left: 0.5;
     font-size: 0.93em;
     font-weight: 500;
@@ -99,47 +108,31 @@ export const ProfileWrapper = styled(DisFlex_AIC)`
 
 export const NotificationContainer = styled(RelativePosition)`
   .notify-container {
-    display: flex;
-    justify-content: center;
-    align-items:center;
-    position: absolute;
-    align-self: flex-start;
-    z-index: 3;
-    margin: 0.125em 0 0 0.75em;
-    right: 1px;
-    color: #fff;
-    width: 1.1rem;
-    height: 1.1rem;
-    border-radius: 50%;
-    text-align: center;
-    cursor: pointer;
     background: rgba(255, 82, 82, 1);
+    position: absolute;
+    right: 8px;
+    top: 8px;
     z-index: 5;
+    border-radius: 50%;
+    height: 9px;
+    width: 9px;
     transform: scale(1);
     box-shadow: 0 0 0 0 rgba(255, 82, 82, 1);
     animation: ${NotificationPulse} 2s infinite;
-    user-select: none;
-    box-sizing: border-box;
-    border: 2px solid #ecf0f1;
-
-    span{
-      font-size: .7em;
-      font-weight: 500;
-    }
+    border: 1px solid #000;
   }
 `;
 
 export const NotificationWrapper = styled.div`
   cursor: pointer;
-  border: 1px solid var(--border-color);
+  border: 1px solid var(--nav-border-color);
   border-radius: 50%;
-  background: #ecf0f1;
 
   &:hover {
     border: 1px solid #87be6dbe;
   }
 
-  .svg-bell-responsive{
+  .svg-bell-responsive {
     width: 1.5em;
     height: 1.5em;
   }
@@ -215,7 +208,8 @@ export const NotificationCartWrap = styled(RelativePosition)`
     } else if (props.isMobileMode && props.isMobile) {
       return css`
         max-height: calc(100% - 4.313em) !important;
-        ${'' /* // browser default navbar that has url */
+        ${
+          '' /* // browser default navbar that has url */
         }/* max-height: calc(100vh - (2*56px + 69px)) !important; */
       `;
     }

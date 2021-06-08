@@ -6,18 +6,29 @@ export const Move100 = keyframes`
     }
 
   100% {
-      transform: translateX(0px);
+      transform: translateX(0);
     }
 `;
 
 export const GoogleRipple = keyframes`
-  from {transform: scale3d(1, 1, 1);opacity: 0.7;}
-  to {transform: scale3d(50, 50, 1);opacity: 0;}
+  from {
+    transform: scale3d(1, 1, 1);
+    opacity: 0.7;
+  }
+  to {
+    transform: scale3d(50, 50, 1);
+    opacity: 0;
+    }
 `;
 
 export const TransRipple = keyframes`
-  0% {transform: translateY(0);}
-  100% {transform: translateY(-5px);}
+  0% {
+    transform: translateY(0);
+  }
+
+  100% {
+    transform: translateY(-5px);
+    }
 `;
 
 export const FadeOpacity = keyframes`
@@ -71,7 +82,6 @@ export const Move200opa = keyframes`
     0% {
        transform: translateX(200%);
        opacity: 0;
-       
     }
 
     100% {
@@ -146,7 +156,7 @@ export const SpinSpinner = keyframes`
         }
 `;
 
-export const NotificationPulseDot = keyframes`
+export const NotificationPulse = keyframes`
   0% {
     transform: scale(0.85);
     box-shadow: 0 0 0 0 rgba(255, 82, 82, 0.7);
@@ -161,18 +171,13 @@ export const NotificationPulseDot = keyframes`
     transform: scale(0.85);
     box-shadow: 0 0 0 0 rgba(255, 82, 82, 0);
   }
-`
+`;
 
-export const NotificationPulse = keyframes`
+export const WavesMovement = keyframes`
   0% {
-    box-shadow: 0 0 0 0 rgba(255, 82, 82, 0.7);
+   transform: translate3d(-90px,0,0);
   }
-  
-  70% {
-    box-shadow: 0 0 0 8px rgba(255, 82, 82, 0);
+  100% { 
+    transform: translate3d(85px,0,0);
   }
-  
-  100% {
-    box-shadow: 0 0 0 0 rgba(255, 82, 82, 0);
-  }
-`
+`;

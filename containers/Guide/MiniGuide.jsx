@@ -25,20 +25,27 @@ const MiniGuide = ({ GuideState }) => {
   const MediaQueryMatchesMax1330 = useMediaQuery('max-width', 1330);
 
   useEffect(() => {
-    const absWidth = window.innerWidth
-    if(MediaQueryMatchesMin1330  && !MediaQueryMatchesMax1330 || absWidth >= 1330){
-      setQueryMatches1330(true)
-    }else{
-      setQueryMatches1330(false)
+    const absWidth = window.innerWidth;
+    if (
+      (MediaQueryMatchesMin1330 && !MediaQueryMatchesMax1330) ||
+      absWidth >= 1330
+    ) {
+      setQueryMatches1330(true);
+    } else {
+      setQueryMatches1330(false);
     }
-  }, [MediaQueryMatchesMin1330, MediaQueryMatchesMax1330])
+  }, [MediaQueryMatchesMin1330, MediaQueryMatchesMax1330]);
 
   return (
     <Container Mode={mode} Show={show} QueryMatches={QueryMatches1330}>
       <SimpleBarReact
-              style={{ maxHeight: '100%', padding: '.9em 0 1.15em 0', overflowX: 'hidden' }}
-              autoHide={true}
-            >
+        style={{
+          maxHeight: '100%',
+          padding: '.9em 0 1.15em 0',
+          overflowX: 'hidden'
+        }}
+        autoHide={true}
+      >
         <ItemLink mode={1} href="/dashboard" label="Dashboard">
           <DashboardSvg width={24} height={24} />
         </ItemLink>
@@ -47,9 +54,15 @@ const MiniGuide = ({ GuideState }) => {
         </ItemLink>
         <ItemLink mode={1} href="/notifications" label="Notifications">
           <BellSvg width={20} height={20} />
+          <span styles={{ display: 'block' }} className="num-notify mode-2-top">
+            2
+          </span>
         </ItemLink>
         <ItemLink mode={1} href="/orders" label="Orders">
           <DollarSvg width={24} height={24} />
+          <span styles={{ display: 'block' }} className="num-notify mode-2-top">
+            4
+          </span>
         </ItemLink>
         <ItemLink mode={1} href="/invoices" label="Invoices">
           <InvoiceSvg width={24} height={24} />

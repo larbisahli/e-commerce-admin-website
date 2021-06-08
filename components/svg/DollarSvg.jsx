@@ -8,7 +8,7 @@ const DollarSvg = (props) => {
       viewBox="0 0 24 24"
       fill="none"
       className="svg-active-stroke"
-      stroke="#626262"
+      stroke="#909090"
       strokeWidth="2"
       strokeLinecap="round"
       strokeLinejoin="round"

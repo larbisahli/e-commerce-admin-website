@@ -1,4 +1,11 @@
 import React, { useState, useRef, memo } from 'react';
+import { BellSvg } from '@/components/svg';
+import Image from 'next/image';
+import { RippleEffect } from '@/components/index';
+import { Menuburger } from '@/components/svg/index';
+import { LoadingBar, EventDrop } from '@/components/index';
+import PropTypes from 'prop-types';
+import NotificationEmpty from './NotificationEmpty';
 import {
   Nav,
   LeftContainer,
@@ -7,16 +14,11 @@ import {
   ProfileContainer,
   NotificationContainer,
   NotificationWrapper,
-  ProfileWrapper
+  ProfileWrapper,
+  NotificationCartContainer,
+  NotificationCartWrap,
+  ProfileCartContainer
 } from './styles';
-import { BellSvg } from '@/components/svg';
-import Image from 'next/image';
-import { RippleEffect } from '@/components/index';
-import { Menuburger } from '@/components/svg/index';
-import { LoadingBar, MenuTransition } from '@/components/index';
-import NotificationCart from './NotificationCart';
-import ProfileCart from './ProfileCart';
-import PropTypes from 'prop-types';
 
 const Navbar = ({ setGuideState }) => {
   const ProfileDropNodeRef = useRef(null);
@@ -27,7 +29,7 @@ const Navbar = ({ setGuideState }) => {
 
   const HandleGuide = () => {
     setGuideState((prev) => {
-      const absWidth = window.innerWidth
+      const absWidth = window.innerWidth;
       if (prev.mode === 2) {
         return {
           show: !prev.show,
@@ -70,31 +72,36 @@ const Navbar = ({ setGuideState }) => {
             </RippleEffect>
           </div>
         </MenuContainer>
-        <span>{`dashboard`}</span>
+        <div className="page-title-container">
+          <div className="ptc-slash"></div>
+          {`dashboard`}
+        </div>
       </LeftContainer>
       <RightContainer>
         <NotificationContainer>
-          <div className="notify-container">
-            <span>2</span>
-          </div>
+          <div className="notify-container"></div>
           <NotificationWrapper
             id="notification-btn"
             onClick={() => setShowNotificationDrop((prev) => !prev)}
           >
             <RippleEffect Style={{ padding: '8px', borderRadius: '50%' }}>
-              <BellSvg width={24} height={24} IsNav/>
+              <BellSvg width={24} height={24} isNav={true} />
             </RippleEffect>
           </NotificationWrapper>
-          <MenuTransition
+          {/* Start Notification DropDown */}
+          <EventDrop
             ref={NotificationDropNodeRef}
-            Show={ShowNotificationDrop}
-            unMount={true}
+            btnId="notification-btn"
+            setState={setShowNotificationDrop}
+            state={ShowNotificationDrop}
           >
-            <NotificationCart
-              ref={NotificationDropNodeRef}
-              setShowNotificationDrop={setShowNotificationDrop}
-            ></NotificationCart>
-          </MenuTransition>
+            <NotificationCartContainer ref={NotificationDropNodeRef}>
+              <NotificationCartWrap>
+                <NotificationEmpty />
+              </NotificationCartWrap>
+            </NotificationCartContainer>
+          </EventDrop>
+          {/* End Notification DropDown */}
         </NotificationContainer>
         <ProfileContainer>
           <RippleEffect
@@ -114,12 +121,18 @@ const Navbar = ({ setGuideState }) => {
               <span>{`Jane Doe`}</span>
             </ProfileWrapper>
           </RippleEffect>
-          <MenuTransition ref={ProfileDropNodeRef} Show={ShowProfileDrop}>
-            <ProfileCart
-              setShowProfileDrop={setShowProfileDrop}
-              ref={ProfileDropNodeRef}
-            ></ProfileCart>
-          </MenuTransition>
+          {/* Start Profile DropDown */}
+          <EventDrop
+            ref={ProfileDropNodeRef}
+            btnId="profile-btn"
+            setState={setShowProfileDrop}
+            state={ShowProfileDrop}
+          >
+            <ProfileCartContainer ref={ProfileDropNodeRef}>
+              <span>Sign out</span>
+            </ProfileCartContainer>
+          </EventDrop>
+          {/* End Profile DropDown */}
         </ProfileContainer>
       </RightContainer>
     </Nav>

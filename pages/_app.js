@@ -1,63 +1,25 @@
-import React, { Fragment, useEffect, useState } from 'react';
+import React, { Fragment, useEffect } from 'react';
 import GlobalStyle from '@/styles/Globals';
 import Head from 'next/head';
 import PropTypes from 'prop-types';
 import '../styles/tailwind.css';
-import { Guide, MiniGuide, Navbar } from '@/containers/index';
-import { useMediaQuery } from '@/hooks/useMediaQuery';
+import { NavGuide } from '@/containers/index';
 import { PageContainer } from '@/styles/index';
 import 'simplebar/dist/simplebar.min.css';
-
+import { NextSeo } from 'next-seo';
+import { useRouter } from 'next/router';
 function App({ Component, pageProps }) {
-  const [GuideState, setGuideState] = useState({
-    show: false,
-    mode: null
-  });
+  const { asPath } = useRouter();
 
-  const [InitUseEffect, setInitUseEffect] = useState(false)
-
-  console.log(`GuideState`, GuideState);
-
-  const MediaQueryMatches800 = useMediaQuery('max-width', 800);
-  const MediaQueryMatches1330 = useMediaQuery('max-width', 1330);
-
+  console.log(`====>`, { asPath });
   useEffect(() => {
     document.documentElement.lang = 'en';
-    setInitUseEffect(true)
   }, []);
-
-  useEffect(() => {
-    // 800px >= mode: 1
-    // 1330px >= mode: 2
-    if (InitUseEffect) {
-      let mode = 0;
-      let show = false;
-
-      if (MediaQueryMatches800 && !MediaQueryMatches1330) {
-        mode = 0;
-        show = false;
-      }
-      if (!MediaQueryMatches800 && MediaQueryMatches1330) {
-        mode = 1;
-        show = false;
-      }
-      if (!MediaQueryMatches800 && !MediaQueryMatches1330) {
-        mode = 2;
-        show = true;
-      }
-
-      setGuideState(() => {
-        return {
-          show,
-          mode
-        };
-      });
-    }
-  }, [MediaQueryMatches800, MediaQueryMatches1330, InitUseEffect]);
 
   return (
     <Fragment>
       <GlobalStyle />
+      <NextSeo nofollow={true} noindex={true} />
       <Head>
         <link
           rel="preconnect"
@@ -87,14 +49,12 @@ function App({ Component, pageProps }) {
           href="/static/favicons/favicon-16x16.png"
         />
         <link rel="manifest" href="/manifest.webmanifest" />
-        <link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5" />
-        <meta name="msapplication-TileColor" content="#2d89ef" />
+        <link rel="mask-icon" href="/safari-pinned-tab.svg" color="#ffffff" />
+        <meta name="msapplication-TileColor" content="#ffffff" />
         <meta name="theme-color" content="#ffffff" />
       </Head>
-      <Navbar setGuideState={setGuideState} />
-      <Guide GuideState={GuideState} setGuideState={setGuideState} />
-      <MiniGuide GuideState={GuideState} />
-      <PageContainer Mode={GuideState.mode} Show={GuideState.show} id="page-container">
+      {asPath !== '/' && <NavGuide />}
+      <PageContainer id="page-container">
         <Component {...pageProps} />
       </PageContainer>
     </Fragment>
