@@ -7,3 +7,8 @@ export { default as InvoiceSvg } from './InvoiceSvg';
 export { default as BookmarkSvg } from './BookmarkSvg';
 export { default as BellSvg } from './BellSvg';
 export { default as ChartSvg } from './ChartSvg';
+export { default as ArrowAnalyticsSvg } from './ArrowAnalyticsSvg';
+export { default as RevenueSvg } from './RevenueSvg';
+export { default as EditSvg } from './EditSvg';
+export { default as SubCategorySvg } from './SubCategorySvg';
+export { default as ProductSvg } from './ProductSvg';

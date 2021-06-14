@@ -112,7 +112,7 @@ const Navbar = ({ setGuideState }) => {
             <ProfileWrapper>
               <div className="profile-img-wrap">
                 <Image
-                  src="/images/profile.jpg"
+                  src="/static/images/profile.jpg"
                   width={40}
                   height={40}
                   quality={95}

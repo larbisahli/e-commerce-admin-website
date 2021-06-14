@@ -1,5 +1,4 @@
 import React, { useState, useRef } from 'react';
-import { PageLoading } from '@/containers/index';
 import { useRouter } from 'next/router';
 import { getAppCookies, verifyToken } from '../middleware/utils';
 import {
@@ -8,6 +7,7 @@ import {
   FormWrapper,
   Form
 } from '@/styles/Pages/index';
+import { ToastContainer, toast, Slide } from 'react-toastify';
 
 const Home = () => {
   const email = useRef(null);
@@ -16,13 +16,25 @@ const Home = () => {
   const Router = useRouter();
 
   const [Loading, setLoading] = useState(false);
+  const [Message, setMessage] = useState('');
+
+  const notify = () => toast.dark(Message, {
+    position: "bottom-right",
+    autoClose: 5000,
+    hideProgressBar: true,
+    closeOnClick: true,
+    pauseOnHover: true,
+    draggable: true,
+    progress: undefined,
+  });
+
 
   const LogIn = async (e) => {
     e.preventDefault();
     setLoading(true);
 
     const HostUrl =
-      process.env.NODE_ENV === 'production' ? '' : 'http://localhost:5000';
+      process.env.NODE_ENV === 'production' ? '' : 'http://127.0.0.1:5001';
 
     if (email.current.value && password.current.value) {
       try {
@@ -31,7 +43,8 @@ const Home = () => {
           credentials: 'include',
           body: JSON.stringify({
             email: email.current.value,
-            password: password.current.value
+            password: password.current.value,
+            remember_me: rememberMe.current.checked
           }),
           mode: 'cors',
           headers: {
@@ -40,28 +53,14 @@ const Home = () => {
           method: 'POST'
         });
 
-        const { message, success, token } = await res.json();
+        const { success, message } = await res.json();
+        console.log(`message`, { message })
 
-        if (success && token) {
-          // setInfoMessage(() => {
-          //   return {
-          //     msg:
-          //       'Successfully logged in, you will be redirected to the admin dashboard.',
-          //     show: true,
-          //     isError: false,
-          //     success
-          //   };
-          // });
+        if (success) {
           Router.push('/dashboard');
         } else {
-          // setInfoMessage(() => {
-          //   return {
-          //     msg: message,
-          //     show: true,
-          //     isError: !success,
-          //     success
-          //   };
-          // });
+          setMessage(message)
+          notify()
         }
       } catch (err) {
         console.log('err :>> ', err);
@@ -70,12 +69,23 @@ const Home = () => {
     setLoading(false);
     email.current.value = '';
     password.current.value = '';
+    rememberMe.current.checked = false
   };
-
-  // return <div>{Loading && <PageLoading />}</div>;
 
   return (
     <Container>
+      <ToastContainer
+        position="bottom-right"
+        autoClose={5000}
+        hideProgressBar
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        transition={Slide}
+      />
       <FormContainer>
         <FormWrapper>
           <div className="col-left">
@@ -85,7 +95,7 @@ const Home = () => {
             </div>
           </div>
           <div className="col-right">
-            <Form as="form">
+            <Form as="form" onSubmit={LogIn}>
               <h1>Login</h1>
               <span>
                 Username or email address<span style={{ color: 'red' }}>*</span>
@@ -118,7 +128,10 @@ const Home = () => {
                 />
                 <label htmlFor="remember_me">Remember me for 7 days</label>
               </div>
-              <button>Submit</button>
+              <button>
+                {Loading && <i className="spinner"></i>}
+                <span>Log in</span>
+              </button>
             </Form>
           </div>
           <div className="forget-pass">
@@ -193,9 +206,12 @@ const Home = () => {
 export async function getServerSideProps(context) {
   const { req } = context;
   const { token } = getAppCookies(req);
-  const profile = token ? verifyToken(token.split(' ')[1]) : null;
+  const userInfo = token ? verifyToken(token) : null;
 
-  if (token || profile) {
+  console.log(`/index userInfo`, userInfo)
+
+
+  if (userInfo) {
     return {
       redirect: {
         permanent: false,

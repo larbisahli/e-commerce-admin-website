@@ -6,3 +6,7 @@ export { default as LazyRender } from './Helpers/LazyRender';
 export { default as LoadingBar } from './LoadingBar/';
 export { default as MenuTransition } from './Helpers/MenuTransition';
 export { default as EventDrop } from './Helpers/EventDrop';
+export { default as RevenueAnalyticCard } from './AnalyticsCard/RevenueAnalyticCard'
+export { default as NewOrdersAnalyticCard } from './AnalyticsCard/NewOrdersAnalyticCard'
+export { default as CustomersAnalyticCard } from './AnalyticsCard/CustomersAnalyticCard'
+export { default as SalesChart } from './SalesChart'

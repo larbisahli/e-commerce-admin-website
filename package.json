@@ -10,12 +10,15 @@
     "prettier": "prettier --write \"**/*.{js,jsx,scss,json,md,yml}\""
   },
   "dependencies": {
+    "chart.js": "^3.3.2",
     "cookie": "^0.4.1",
     "jsonwebtoken": "^8.5.1",
     "next": "10.2.0",
     "next-seo": "^4.24.0",
     "react": "17.0.2",
+    "react-chartjs-2": "^3.0.3",
     "react-dom": "17.0.2",
+    "react-toastify": "^7.0.4",
     "react-transition-group": "^4.4.1",
     "simplebar-react": "^2.3.3",
     "styled-components": "^5.3.0"

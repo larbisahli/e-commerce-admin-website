@@ -2,16 +2,16 @@ import React, { Fragment, useEffect } from 'react';
 import GlobalStyle from '@/styles/Globals';
 import Head from 'next/head';
 import PropTypes from 'prop-types';
-import '../styles/tailwind.css';
 import { NavGuide } from '@/containers/index';
 import { PageContainer } from '@/styles/index';
+import '../styles/tailwind.css';
 import 'simplebar/dist/simplebar.min.css';
+import 'react-toastify/dist/ReactToastify.css';
 import { NextSeo } from 'next-seo';
 import { useRouter } from 'next/router';
 function App({ Component, pageProps }) {
   const { asPath } = useRouter();
 
-  console.log(`====>`, { asPath });
   useEffect(() => {
     document.documentElement.lang = 'en';
   }, []);

@@ -1,7 +1,8 @@
 import jwt from 'jsonwebtoken';
 import cookie from 'cookie';
+import fs from 'fs';
 
-const SECRET_KEY = process.env.JWT_KEY;
+const PublicKEY = fs.readFileSync('./middleware/jwtRS256.key.pub', 'utf8');
 
 /*
  * @params {jwtToken} extracted from cookies
@@ -9,7 +10,9 @@ const SECRET_KEY = process.env.JWT_KEY;
  */
 export function verifyToken(jwtToken) {
   try {
-    return jwt.verify(jwtToken, SECRET_KEY);
+    return jwt.verify(jwtToken, PublicKEY, {
+      algorithm: ['RS256']
+    });
   } catch (error) {
     console.log('verifyToken Error:>>', error);
     return null;
@@ -21,10 +24,6 @@ export function verifyToken(jwtToken) {
  * @return {object} object of parse jwt cookie decode object
  */
 export function getAppCookies(req) {
-  let token = null;
-  if (req.headers.cookie) {
-    const { pl_gp_token } = cookie.parse(req.headers.cookie || '');
-    token = pl_gp_token;
-  }
+  const token = cookie.parse(req?.headers?.cookie || '')['DGALA-TOKEN'] ?? null;
   return { token };
 }
