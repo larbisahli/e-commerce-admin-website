@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 
 const Card = ({ children, color, bg, label, value, percentile, date }) => {
   return (
-    <div className="card-container m-3 px-4 p-1">
+    <div className="card-container rounded-lg m-3 px-4 p-1">
       <div className="flex justify-start ms:justify-center items-center">
         <div className="w-16 h-16 rounded flex justify-center items-center m-7" style={{ color, backgroundColor: bg }}>
           {children}

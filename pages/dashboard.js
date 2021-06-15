@@ -4,6 +4,7 @@ import { getAppCookies, verifyToken } from '@/middleware/utils';
 import { ToastContainer, toast, Slide } from 'react-toastify';
 import { RevenueAnalyticCard, NewOrdersAnalyticCard, CustomersAnalyticCard, SalesChart } from '@/components/index'
 import Add from '../assets/svg/add.svg'
+import Link from 'next/link'
 
 const IsProduction = process.env.NODE_ENV === 'production';
 
@@ -38,18 +39,20 @@ const Dashboard = ({ token, userInfo }) => {
         pauseOnHover
         transition={Slide}
       />
-      <section className="flex justify-between items-center mx-3">
-        <div>Hello</div>
-        <a href="/">
-          <div className="flex justify-center items-center py-2 px-3 bg-blue-500 text-white rounded-sm">
-            <div className="pr-1">
-              <Add width={18} height={18} />
+      <section className="flex justify-end items-center mx-3">
+        <Link href="/dashboard">
+          <a>
+            <div className="flex justify-center items-center py-2 px-3 bg-blue-600 hover:bg-blue-700 
+          text-white rounded-sm hover:shadow-inner shadow-lg">
+              <div className="pr-1">
+                <Add width={18} height={18} />
+              </div>
+              <span>Add New Products</span>
             </div>
-            <span>Add New Products</span>
-          </div>
-        </a>
+          </a>
+        </Link>
       </section>
-      <section style={{ backgroundColor: '#acebfd' }} className="m-3 card-container">
+      <section style={{ backgroundColor: '#acebfd' }} className="m-3 rounded-lg card-container">
         <SalesChart />
       </section>
       <section className="sm:flex justify-center items-center flex-wrap">

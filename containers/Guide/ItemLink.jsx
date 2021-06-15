@@ -4,7 +4,7 @@ import { ActiveLink } from '@/components/index';
 
 const ItemLink = ({ href, label, children, mode }) => {
   return (
-    <ActiveLink activeClassName="link-active" href={href} passHref>
+    <ActiveLink activeClassName="link-active" includes={href.split('/')[1]} href={href} passHref>
       <LinkWrapper Mode={mode} as="a">
         <IconContainer Mode={mode}>{children}</IconContainer>
         <TextContainer Mode={mode}>{label}</TextContainer>

@@ -4,13 +4,13 @@ import PropTypes from 'prop-types';
 import Link from 'next/link';
 import React, { Children } from 'react';
 
-const ActiveLink = ({ children, activeClassName, ...props }) => {
+const ActiveLink = ({ children, activeClassName, includes,  ...props }) => {
   const { asPath } = useRouter();
   const child = Children.only(children);
   const childClassName = child.props.className || '';
 
   const className =
-    asPath === props.href || asPath === props.as
+    asPath === props.href || asPath === props.as || asPath.includes(includes)
       ? `${childClassName} ${activeClassName}`.trim()
       : childClassName;
 
