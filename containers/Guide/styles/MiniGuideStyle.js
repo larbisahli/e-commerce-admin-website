@@ -79,4 +79,11 @@ export const Container = styled(MainContainer)`
       `;
     }
   }}
+
+  .line {
+    margin: 5px 0;
+    height: 0px !important;
+    padding: 0.5px 0;
+    background-color: var(--guide-border-color);
+  }
 `;

@@ -1,6 +1,6 @@
-import React, { memo, useEffect, useState, forwardRef } from 'react';
-import { CSSTransition } from 'react-transition-group';
 import PropTypes from 'prop-types';
+import React, { forwardRef, memo, useEffect, useState } from 'react';
+import { CSSTransition } from 'react-transition-group';
 
 const MenuTransition = forwardRef(
   ({ children, disTran = false, Show = false, unMount = false }, ref) => {

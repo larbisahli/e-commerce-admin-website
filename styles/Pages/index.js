@@ -172,8 +172,6 @@ export const FormWrapper = styled.div`
   }
 
   /* Loader */
-
- 
 `;
 
 export const Form = styled(DisFlex_AIC_JCC)`
@@ -233,7 +231,7 @@ export const Form = styled(DisFlex_AIC_JCC)`
     box-shadow: inset 0 0 0 0 #44c7f5;
     transition: 0.3s;
 
-    span{
+    span {
       color: #44c7f5;
     }
 
@@ -243,30 +241,29 @@ export const Form = styled(DisFlex_AIC_JCC)`
       height: 15px;
       position: absolute;
       border: 2px solid #44c7f5;
-      border-top-color: rgba(255,255,255,0.3);
+      border-top-color: rgba(255, 255, 255, 0.3);
       border-radius: 100%;
       top: 25%;
       left: 61%;
       animation: ${LogInSpinner} 0.6s infinite linear;
-      transition: top 0.3s 0.3s ease,
-                opacity 0.3s 0.3s ease,
-                border-radius 0.3s ease;
-      box-shadow: 0px 1px 0px rgba(0,0,0,0.2);
+      transition: top 0.3s 0.3s ease, opacity 0.3s 0.3s ease,
+        border-radius 0.3s ease;
+      box-shadow: 0px 1px 0px rgba(0, 0, 0, 0.2);
     }
 
     @media (max-width: 575.98px) {
-        .spinner{
-          left: 56%;
-        }
+      .spinner {
+        left: 56%;
+      }
     }
 
     &:hover {
       box-shadow: inset 250px 0 0 0 #44c7f5;
 
-      span{
+      span {
         color: #ffffff;
       }
-      .spinner{
+      .spinner {
         border: 2px solid #ffff;
         border-top-color: #44c7f5;
       }

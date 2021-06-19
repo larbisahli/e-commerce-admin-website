@@ -1,4 +1,5 @@
 import styled, { css } from 'styled-components';
+
 import { RelativePosition } from '@/styles/index';
 // import { NavLinkContainer } from '@/containers/Navigation/styles';
 // import { SubMenuItem } from '@/containers/Navigation/Menu/styles';
@@ -78,10 +79,6 @@ const Arrow = styled(RelativePosition)`
   & > path {
     fill: currentColor;
     transition: fill 0.1s ease-out;
-
-    /* ${NavLinkContainer}:hover & {
-      fill: var(--nav-link-hover-fg) !important;
-    } */
   }
 `;
 
@@ -91,17 +88,9 @@ export const NavArrow = styled(Arrow)`
 
 // -------------
 
-export const G1 = styled.g`
-  /* ${SubMenuItem}:hover & {
-    fill: #000;
-  } */
-`;
+export const G1 = styled.g``;
 
-export const G2 = styled.g`
-  /* ${SubMenuItem}:hover & {
-    fill: #000;
-  } */
-`;
+export const G2 = styled.g``;
 
 export const ChevronSvg = styled.svg`
   transform: rotate(-90deg);

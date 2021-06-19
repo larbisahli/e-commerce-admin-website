@@ -1,9 +1,10 @@
-import React, { useCallback, useState, memo } from 'react';
 import PropTypes from 'prop-types';
+import React, { memo, useCallback, useState } from 'react';
+
 import {
   GoogleRippleEffect,
-  GoogleRippleEffect_wrapper,
-  GoogleRippleEffect_circle
+  GoogleRippleEffect_circle,
+  GoogleRippleEffect_wrapper
 } from './styles';
 
 const RippleEffect = ({

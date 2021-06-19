@@ -1,8 +1,9 @@
-import React, { memo, forwardRef, useEffect } from 'react';
 import PropTypes from 'prop-types';
+import React, { forwardRef, memo, useEffect } from 'react';
+
 import MenuTransition from './MenuTransition';
 
-const EventDrop = forwardRef(({children, state, setState, btnId}, ref) => {
+const EventDrop = forwardRef(({ children, state, setState, btnId }, ref) => {
   const handleClick = (e) => {
     const NodeBtn = document.getElementById(btnId);
 
@@ -11,7 +12,7 @@ const EventDrop = forwardRef(({children, state, setState, btnId}, ref) => {
       return;
     }
     // Close if Outside click except drop btn
-    if (!NodeBtn?.contains(e.target)) setState(false)
+    if (!NodeBtn?.contains(e.target)) setState(false);
   };
 
   useEffect(() => {
@@ -21,17 +22,13 @@ const EventDrop = forwardRef(({children, state, setState, btnId}, ref) => {
     return () => {
       document.removeEventListener('click', handleClick);
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return (
-         <MenuTransition
-            ref={ref}
-            Show={state}
-            unMount={true}
-          >
-              {children}
-          </MenuTransition>
-    
+    <MenuTransition ref={ref} Show={state} unMount={true}>
+      {children}
+    </MenuTransition>
   );
 });
 

@@ -1,7 +1,9 @@
 /* eslint-disable no-undef */
-import { render, cleanup, screen } from '@testing-library/react';
-import ActiveLink from '../ActiveLink';
 import '@testing-library/jest-dom/extend-expect';
+
+import { cleanup, render, screen } from '@testing-library/react';
+
+import ActiveLink from '../ActiveLink';
 export * from '@testing-library/react';
 
 afterEach(cleanup);

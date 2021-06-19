@@ -1,5 +1,6 @@
-import { Container, Wrapper } from './styles';
 import DropGala from '@/components/svg/DropGala';
+
+import { Container, Wrapper } from './styles';
 
 const PageLoading = () => {
   return (

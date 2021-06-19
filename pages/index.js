@@ -1,13 +1,16 @@
-import React, { useState, useRef } from 'react';
+import Link from 'next/link';
 import { useRouter } from 'next/router';
-import { getAppCookies, verifyToken } from '../middleware/utils';
+import React, { useRef, useState } from 'react';
+import { Slide, toast, ToastContainer } from 'react-toastify';
+
 import {
   Container,
+  Form,
   FormContainer,
-  FormWrapper,
-  Form
+  FormWrapper
 } from '@/styles/Pages/index';
-import { ToastContainer, toast, Slide } from 'react-toastify';
+
+import { getAppCookies, verifyToken } from '../middleware/utils';
 
 const Home = () => {
   const email = useRef(null);
@@ -18,16 +21,16 @@ const Home = () => {
   const [Loading, setLoading] = useState(false);
   const [Message, setMessage] = useState('');
 
-  const notify = () => toast.dark(Message, {
-    position: "bottom-right",
-    autoClose: 5000,
-    hideProgressBar: true,
-    closeOnClick: true,
-    pauseOnHover: true,
-    draggable: true,
-    progress: undefined,
-  });
-
+  const notify = () =>
+    toast.dark(Message, {
+      position: 'bottom-right',
+      autoClose: 5000,
+      hideProgressBar: true,
+      closeOnClick: true,
+      pauseOnHover: true,
+      draggable: true,
+      progress: undefined
+    });
 
   const LogIn = async (e) => {
     e.preventDefault();
@@ -54,13 +57,13 @@ const Home = () => {
         });
 
         const { success, message } = await res.json();
-        console.log(`message`, { message })
+        console.log(`message`, { message });
 
         if (success) {
           Router.push('/dashboard');
         } else {
-          setMessage(message)
-          notify()
+          setMessage(message);
+          notify();
         }
       } catch (err) {
         console.log('err :>> ', err);
@@ -69,7 +72,7 @@ const Home = () => {
     setLoading(false);
     email.current.value = '';
     password.current.value = '';
-    rememberMe.current.checked = false
+    rememberMe.current.checked = false;
   };
 
   return (
@@ -135,7 +138,9 @@ const Home = () => {
             </Form>
           </div>
           <div className="forget-pass">
-            <a href="/">Forget Password?</a>
+            <Link href="/" passHref>
+              <a>Forget Password?</a>
+            </Link>
           </div>
         </FormWrapper>
       </FormContainer>
@@ -185,17 +190,23 @@ const Home = () => {
         <div className="footer">
           <p>© dropgala 2021 All rights reserved</p>
           <span className="h-line"></span>
-          <a href="/">
-            <p>Contact Us</p>
-          </a>
+          <Link href="/" passHref>
+            <a>
+              <p>Contact Us</p>
+            </a>
+          </Link>
           <span className="h-line"></span>
-          <a href="/">
-            <p>Terms</p>
-          </a>
+          <Link href="/" passHref>
+            <a>
+              <p>Terms</p>
+            </a>
+          </Link>
           <span className="h-line"></span>
-          <a href="/">
-            <p>Privacy</p>
-          </a>
+          <Link href="/" passHref>
+            <a>
+              <p>Privacy</p>
+            </a>
+          </Link>
         </div>
       </div>
       {/* <!--Waves end--> */}
@@ -208,8 +219,7 @@ export async function getServerSideProps(context) {
   const { token } = getAppCookies(req);
   const userInfo = token ? verifyToken(token) : null;
 
-  console.log(`/index userInfo`, userInfo)
-
+  console.log(`/index userInfo`, userInfo);
 
   if (userInfo) {
     return {

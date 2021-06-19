@@ -1,16 +1,26 @@
-import React, {useEffect,memo} from 'react'
-import Card from './Card'
-import { ChartSvg } from '@/components/svg'
+import React, { memo, useEffect } from 'react';
 
-const CustomersAnalyticCard = ()=>{
+import { ChartSvg } from '@/components/svg';
 
-    useEffect(() => {
-        // api call
-    }, [])
+import Card from './Card';
 
-    return <Card color='#61dafb' bg='rgba(97,218,251,.3)' label='Customers' value='324k' percentile={20} date="Feb 1 - Apr 1">
-        <ChartSvg width={25} height={25} />
+const CustomersAnalyticCard = () => {
+  useEffect(() => {
+    // api call
+  }, []);
+
+  return (
+    <Card
+      color="#61dafb"
+      bg="rgba(97,218,251,.3)"
+      label="Customers"
+      value={340}
+      percentile={20}
+      date="Feb 1 - Apr 1"
+    >
+      <ChartSvg width={25} height={25} />
     </Card>
-}
+  );
+};
 
-export default memo(CustomersAnalyticCard)
+export default memo(CustomersAnalyticCard);

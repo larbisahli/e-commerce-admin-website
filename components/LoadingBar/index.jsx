@@ -1,6 +1,7 @@
-import React, { useState, useEffect, useRef } from 'react';
-import { LoadingBarContainer } from './styles';
 import { useRouter } from 'next/router';
+import React, { useEffect, useRef, useState } from 'react';
+
+import { LoadingBarContainer } from './styles';
 
 const LoadingBar = () => {
   const Router = useRouter();
@@ -21,7 +22,7 @@ const LoadingBar = () => {
     return () => {
       setLoading(false);
     };
-  }, []);
+  }, [Router.events]);
 
   return <LoadingBarContainer Show={Loading}></LoadingBarContainer>;
 };

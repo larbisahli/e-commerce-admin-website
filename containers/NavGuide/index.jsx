@@ -1,4 +1,5 @@
 import React, { Fragment, useEffect, useState } from 'react';
+
 import { Guide, MiniGuide, Navbar } from '@/containers/index';
 import { useMediaQuery } from '@/hooks/useMediaQuery';
 

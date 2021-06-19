@@ -66,11 +66,11 @@ export const ElementsCollection = css`
     -webkit-tap-highlight-color: transparent;
   }
 
-  input{
+  input {
     outline: none !important;
   }
 
-  textarea{
+  textarea {
     outline: none !important;
   }
 

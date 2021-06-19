@@ -1,16 +1,19 @@
+import dynamic from 'next/dynamic';
+import PropTypes from 'prop-types';
 import React, { memo, useEffect, useState } from 'react';
-import { Container } from './styles/MiniGuideStyle';
+
 import {
+  AddSvg,
+  BellSvg,
+  BookmarkSvg,
   DashboardSvg,
   DollarSvg,
-  InvoiceSvg,
-  BookmarkSvg,
-  BellSvg
+  InvoiceSvg
 } from '@/components/svg/index';
-import ItemLink from './ItemLink';
-import PropTypes from 'prop-types';
 import { useMediaQuery } from '@/hooks/useMediaQuery';
-import dynamic from 'next/dynamic';
+
+import ItemLink from './ItemLink';
+import { Container } from './styles/MiniGuideStyle';
 
 const SimpleBarReact = dynamic(() => import('simplebar-react'), {
   // eslint-disable-next-line react/display-name
@@ -52,6 +55,10 @@ const MiniGuide = ({ GuideState }) => {
         <ItemLink mode={1} href="/categories" label="Categories">
           <BookmarkSvg width={24} height={24} />
         </ItemLink>
+        <ItemLink mode={1} href="/product/create" label="New Product">
+          <AddSvg width={24} height={24} />
+        </ItemLink>
+        <div className="line"></div>
         <ItemLink mode={1} href="/notifications" label="Notifications">
           <BellSvg width={20} height={20} />
           <span styles={{ display: 'block' }} className="num-notify mode-2-top">

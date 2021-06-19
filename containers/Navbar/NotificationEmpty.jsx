@@ -1,4 +1,4 @@
-import { NoResultsContainer, NoResultsWrapper, CartHeader } from './styles';
+import { CartHeader, NoResultsContainer, NoResultsWrapper } from './styles';
 
 const NotificationEmpty = () => {
   return (

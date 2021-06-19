@@ -1,16 +1,19 @@
-import React, { memo, Fragment, useEffect, useState } from 'react';
-import { Container, Bg, Wrapper, ContentContainer } from './styles';
-import ItemLink from './ItemLink';
-import {
-  DashboardSvg,
-  DollarSvg,
-  InvoiceSvg,
-  BookmarkSvg,
-  BellSvg
-} from '@/components/svg/index';
 import dynamic from 'next/dynamic';
 import PropTypes from 'prop-types';
+import React, { Fragment, memo, useCallback,useEffect, useState } from 'react';
+
+import {
+  AddSvg,
+  BellSvg,
+  BookmarkSvg,
+  DashboardSvg,
+  DollarSvg,
+  InvoiceSvg
+} from '@/components/svg/index';
 import { useMediaQuery } from '@/hooks/useMediaQuery';
+
+import ItemLink from './ItemLink';
+import { Bg, Container, ContentContainer, Wrapper } from './styles';
 
 const SimpleBarReact = dynamic(() => import('simplebar-react'), {
   // eslint-disable-next-line react/display-name
@@ -24,7 +27,8 @@ const Guide = ({ GuideState, setGuideState }) => {
   const MediaQueryMatchesMin1330 = useMediaQuery('min-width', 1330);
   const MediaQueryMatchesMax1330 = useMediaQuery('max-width', 1330);
 
-  const HandleCloseGuide = (event) => {
+  const HandleCloseGuide = useCallback(
+    (event) => {
     const GuideContainer = document.getElementById('guide-container');
     if (GuideContainer?.isSameNode(event.target)) {
       GuideContainer?.removeEventListener('click', HandleCloseGuide);
@@ -35,7 +39,9 @@ const Guide = ({ GuideState, setGuideState }) => {
         };
       });
     }
-  };
+  },
+    [setGuideState],
+  )
 
   useEffect(() => {
     const GuideContainer = document.getElementById('guide-container');
@@ -84,13 +90,16 @@ const Guide = ({ GuideState, setGuideState }) => {
               <ItemLink mode={2} href="/categories" label="Categories">
                 <BookmarkSvg width={20} height={20} />
               </ItemLink>
+              <ItemLink mode={2} href="/product/create" label="New Product">
+                <AddSvg width={20} height={20} />
+              </ItemLink>
+              <div className="line"></div>
               <ItemLink mode={2} href="/notifications" label="Notifications">
                 <BellSvg width={20} height={20} />
                 <span styles={{ display: 'block' }} className="num-notify">
                   2
                 </span>
               </ItemLink>
-              <div className="line"></div>
               <ItemLink mode={2} href="/orders" label="Orders">
                 <DollarSvg width={20} height={20} />
                 <span styles={{ display: 'block' }} className="num-notify">

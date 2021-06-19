@@ -1,12 +1,16 @@
-import React from 'react'
-import { ArrowAnalyticsSvg } from '@/components/svg'
 import PropTypes from 'prop-types';
+import React from 'react';
+
+import { ArrowAnalyticsSvg } from '@/components/svg';
 
 const Card = ({ children, color, bg, label, value, percentile, date }) => {
   return (
     <div className="card-container rounded-lg m-3 px-4 p-1">
       <div className="flex justify-start ms:justify-center items-center">
-        <div className="w-16 h-16 rounded flex justify-center items-center m-7" style={{ color, backgroundColor: bg }}>
+        <div
+          className="w-16 h-16 rounded flex justify-center items-center m-7"
+          style={{ color, backgroundColor: bg }}
+        >
           {children}
         </div>
         <div className="flex justify-center flex-col py-2 px-3">
@@ -25,17 +29,20 @@ const Card = ({ children, color, bg, label, value, percentile, date }) => {
         </div>
       </div>
     </div>
-  )
-}
-
-Card.propTypes = {
-    children: PropTypes.element,
-    color: PropTypes.string,
-    bg: PropTypes.string,
-    label: PropTypes.string,
-    value: PropTypes.number,
-    date: PropTypes.string,
-    percentile: PropTypes.number,
+  );
 };
 
-export default Card
+Card.propTypes = {
+  children: PropTypes.element,
+  color: PropTypes.string,
+  bg: PropTypes.string,
+  label: PropTypes.string,
+  value: PropTypes.oneOfType([
+    PropTypes.string,
+    PropTypes.number,
+  ]),
+  date: PropTypes.string,
+  percentile: PropTypes.number
+};
+
+export default Card;
