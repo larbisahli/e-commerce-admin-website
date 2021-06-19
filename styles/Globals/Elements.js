@@ -62,8 +62,16 @@ export const ElementsCollection = css`
     padding: 0;
     border: 0;
     cursor: pointer;
-    outline: none;
+    outline: none !important;
     -webkit-tap-highlight-color: transparent;
+  }
+
+  input {
+    outline: none !important;
+  }
+
+  textarea {
+    outline: none !important;
   }
 
   div {

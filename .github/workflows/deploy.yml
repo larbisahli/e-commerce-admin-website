@@ -8,7 +8,7 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
     steps:
-      - name: Deploy dropgala
+      - name: Deploy dropgala admin
         uses: appleboy/ssh-action@master
         with:
           host: ${{ secrets.SSH_HOST }} # Ip address of the server you wish to ssh into
@@ -18,8 +18,8 @@ jobs:
           script: |
             eval $(ssh-agent -s)
             ssh-add /home/isaac/.ssh/id_rsa_github
-            cd dropgala.com
+            cd admin.dropgala.com
             git pull origin main
-            echo ${{ secrets.USER_PASS }} | sudo -S docker-compose down
-            echo ${{ secrets.USER_PASS }} | sudo -S docker-compose up -d --build
-            echo 'Deployment successful to digital ocean'
+            echo ${{ secrets.USER_PASSWORD }} | sudo -S docker-compose rm -sv admin_nextjs
+            echo ${{ secrets.USER_PASSWORD }} | sudo -S docker-compose up -d --no-deps --build admin_nextjs
+            echo 'Successfully Deploy to DigitalOcean'

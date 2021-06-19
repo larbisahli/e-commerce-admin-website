@@ -1,28 +1,35 @@
-import React, { useState, useRef, memo } from 'react';
-import { BellSvg } from '@/components/svg';
 import Image from 'next/image';
-import { RippleEffect } from '@/components/index';
-import { Menuburger } from '@/components/svg/index';
-import { LoadingBar, EventDrop } from '@/components/index';
 import PropTypes from 'prop-types';
+import React, { memo, useContext, useRef, useState } from 'react';
+
+import { RippleEffect } from '@/components/index';
+import { EventDrop, LoadingBar } from '@/components/index';
+import { BellSvg } from '@/components/svg';
+import { Menuburger } from '@/components/svg/index';
+import { UserStoreContext } from '@/context/UserStore';
+
 import NotificationEmpty from './NotificationEmpty';
 import {
-  Nav,
   LeftContainer,
-  RightContainer,
   MenuContainer,
-  ProfileContainer,
-  NotificationContainer,
-  NotificationWrapper,
-  ProfileWrapper,
+  Nav,
   NotificationCartContainer,
   NotificationCartWrap,
-  ProfileCartContainer
+  NotificationContainer,
+  NotificationWrapper,
+  ProfileCartContainer,
+  ProfileContainer,
+  ProfileWrapper,
+  RightContainer
 } from './styles';
 
 const Navbar = ({ setGuideState }) => {
   const ProfileDropNodeRef = useRef(null);
   const NotificationDropNodeRef = useRef(null);
+
+  const [UserStore] = useContext(UserStoreContext);
+
+  console.log('UserStore ========:>> ', UserStore);
 
   const [ShowNotificationDrop, setShowNotificationDrop] = useState(false);
   const [ShowProfileDrop, setShowProfileDrop] = useState(false);
@@ -112,13 +119,14 @@ const Navbar = ({ setGuideState }) => {
             <ProfileWrapper>
               <div className="profile-img-wrap">
                 <Image
-                  src="/images/profile.jpg"
+                  src="/static/images/profile.jpg"
                   width={40}
                   height={40}
+                  alt=""
                   quality={95}
                 />
               </div>
-              <span>{`Jane Doe`}</span>
+              <span>{UserStore?.first_name ?? ''}</span>
             </ProfileWrapper>
           </RippleEffect>
           {/* Start Profile DropDown */}

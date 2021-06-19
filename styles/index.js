@@ -52,6 +52,9 @@ export const PageContainer = styled.div`
   overflow: hidden;
   margin-left: 240px;
   padding-top: 50px;
+  display: none;
+  position: relative;
+  transition: margin-left 80ms cubic-bezier(0.4, 0, 0.6, 1) 0ms;
 
   @media screen and (max-width: 1330px) {
     margin-left: 90px !important;
@@ -62,12 +65,3 @@ export const PageContainer = styled.div`
     font-size: 0.9rem;
   }
 `;
-
-export const CardContainer = styled.div`
-    background-color: #fff;
-    background-clip: border-box;
-    border: .0625rem solid rgba(46,54,80,.125);
-    border-radius: .5rem;
-    box-shadow: 0 2px 18px rgba(0,0,0,.02)!important;
-    transition: all .2s ease;
-`

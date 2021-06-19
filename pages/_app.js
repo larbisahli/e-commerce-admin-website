@@ -1,35 +1,86 @@
-import React, { Fragment, useEffect } from 'react';
-import GlobalStyle from '@/styles/Globals';
-import Head from 'next/head';
-import PropTypes from 'prop-types';
 import '../styles/tailwind.css';
-import { NavGuide } from '@/containers/index';
-import { PageContainer } from '@/styles/index';
 import 'simplebar/dist/simplebar.min.css';
-import { NextSeo } from 'next-seo';
+import 'react-toastify/dist/ReactToastify.css';
+
+import Head from 'next/head';
 import { useRouter } from 'next/router';
+import { NextSeo } from 'next-seo';
+import PropTypes from 'prop-types';
+import React, { Fragment, useEffect } from 'react';
+import { Slide, toast, ToastContainer } from 'react-toastify';
+import { SWRConfig } from 'swr';
+
+import { NavGuide } from '@/containers/index';
+import { UserStoreProvider } from '@/context/UserStore';
+import { fetcher } from '@/graphql/index';
+import GlobalStyle from '@/styles/Globals';
+import { PageContainer } from '@/styles/index';
 function App({ Component, pageProps }) {
   const { asPath } = useRouter();
 
-  console.log(`====>`, { asPath });
+  const Notify = (Message, success) => {
+    const Options = {
+      position: 'bottom-right',
+      autoClose: 5000,
+      hideProgressBar: true,
+      closeOnClick: true,
+      pauseOnHover: true,
+      draggable: true,
+      progress: undefined
+    };
+    if (success) {
+      toast.success(Message, Options);
+    } else {
+      toast.error(Message, Options);
+    }
+  };
+
   useEffect(() => {
     document.documentElement.lang = 'en';
   }, []);
 
+  const onError = (error) => {
+    // if (error.status !== 403 && error.status !== 404) {
+    //   // We can send the error to Sentry,
+    //   // or show a notification UI.
+    // }
+    const ErrorMessage = error?.response?.message
+    // const ErrorStatus = error?.response?.status
+    Notify(ErrorMessage, false);
+  };
+
+  const onErrorRetry = (error, key, config, revalidate, { retryCount }) => {
+    // Never retry on 404.
+    if (error.status === 404) return;
+
+    // Never retry for a specific key.
+    if (key === '/api/user') return;
+
+    // Only retry up to 5 times.
+    if (retryCount >= 5) return;
+
+    // Retry after 10 seconds.
+    setTimeout(() => revalidate({ retryCount }), 10000);
+  };
+
   return (
     <Fragment>
+      <ToastContainer
+        position="bottom-right"
+        autoClose={5000}
+        className="text-sm"
+        hideProgressBar
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        transition={Slide}
+      />
       <GlobalStyle />
       <NextSeo nofollow={true} noindex={true} />
       <Head>
-        <link
-          rel="preconnect"
-          href="https://fonts.gstatic.com"
-          crossOrigin="anonymous"
-        />
-        <link
-          href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap"
-          rel="stylesheet"
-        />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <link
           rel="apple-touch-icon"
@@ -53,10 +104,14 @@ function App({ Component, pageProps }) {
         <meta name="msapplication-TileColor" content="#ffffff" />
         <meta name="theme-color" content="#ffffff" />
       </Head>
-      {asPath !== '/' && <NavGuide />}
-      <PageContainer id="page-container">
-        <Component {...pageProps} />
-      </PageContainer>
+      <SWRConfig value={{ onError, onErrorRetry, fetcher }}>
+        <UserStoreProvider>
+          {asPath !== '/' && <NavGuide />}
+          <PageContainer id="page-container">
+            <Component {...pageProps} />
+          </PageContainer>
+        </UserStoreProvider>
+      </SWRConfig>
     </Fragment>
   );
 }

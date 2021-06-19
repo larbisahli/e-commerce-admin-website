@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 import { DisFlex_AIC_JCC } from '../index';
-import { WavesMovement } from '@/styles/keyframes';
+import { WavesMovement, LogInSpinner } from '@/styles/keyframes';
 
 export const Container = styled.div`
   position: fixed;
@@ -170,6 +170,8 @@ export const FormWrapper = styled.div`
     margin-left: 20px;
     margin-bottom: 5px;
   }
+
+  /* Loader */
 `;
 
 export const Form = styled(DisFlex_AIC_JCC)`
@@ -213,13 +215,13 @@ export const Form = styled(DisFlex_AIC_JCC)`
   }
 
   button {
+    position: relative;
     display: inline-block;
     width: 100%;
     margin-top: 5px;
     height: 30px;
     font-weight: 700;
     outline: none;
-    color: #44c7f5;
     font-size: 1em;
     letter-spacing: 1px;
     cursor: pointer;
@@ -229,9 +231,42 @@ export const Form = styled(DisFlex_AIC_JCC)`
     box-shadow: inset 0 0 0 0 #44c7f5;
     transition: 0.3s;
 
+    span {
+      color: #44c7f5;
+    }
+
+    .spinner {
+      display: block;
+      width: 15px;
+      height: 15px;
+      position: absolute;
+      border: 2px solid #44c7f5;
+      border-top-color: rgba(255, 255, 255, 0.3);
+      border-radius: 100%;
+      top: 25%;
+      left: 61%;
+      animation: ${LogInSpinner} 0.6s infinite linear;
+      transition: top 0.3s 0.3s ease, opacity 0.3s 0.3s ease,
+        border-radius 0.3s ease;
+      box-shadow: 0px 1px 0px rgba(0, 0, 0, 0.2);
+    }
+
+    @media (max-width: 575.98px) {
+      .spinner {
+        left: 56%;
+      }
+    }
+
     &:hover {
-      color: #ffffff;
       box-shadow: inset 250px 0 0 0 #44c7f5;
+
+      span {
+        color: #ffffff;
+      }
+      .spinner {
+        border: 2px solid #ffff;
+        border-top-color: #44c7f5;
+      }
     }
   }
 

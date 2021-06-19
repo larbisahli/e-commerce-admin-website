@@ -1,6 +1,7 @@
-import React, { memo } from 'react';
-import { MenuburgerContainer, BurgerXSpan } from './styles';
 import PropTypes from 'prop-types';
+import React, { memo } from 'react';
+
+import { BurgerXSpan, MenuburgerContainer } from './styles';
 
 function Menuburger({ menuIsOpen }) {
   return (

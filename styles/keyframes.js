@@ -181,3 +181,8 @@ export const WavesMovement = keyframes`
     transform: translate3d(85px,0,0);
   }
 `;
+
+export const LogInSpinner = keyframes`
+  0% { transform: rotateZ(0deg); }
+  100% { transform: rotateZ(359deg); }
+`;
