@@ -104,6 +104,7 @@ const Home = () => {
                 Username or email address<span style={{ color: 'red' }}>*</span>
               </span>
               <input
+                required
                 className="input"
                 name="email"
                 type="email"
@@ -115,6 +116,7 @@ const Home = () => {
                 Password<span style={{ color: 'red' }}>*</span>
               </span>
               <input
+                required
                 className="input"
                 name="password"
                 type="password"

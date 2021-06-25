@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 import React, { useContext, useEffect } from 'react';
 import useSWR from 'swr';
 
-import { EditSvg, ProductSvg, SubCategorySvg } from '@/components/svg';
+import { EditSvg, ProductSvg } from '@/components/svg';
 import { UserStoreContext } from '@/context/UserStore';
 import { GetCategoriesQuery } from '@/graphql/queries/category'
 import { getAppCookies, verifyToken } from '@/middleware/utils';
@@ -75,23 +75,6 @@ const CategoryCard = ({ label, categoryId }) => {
         style={{ height: '60px' }}
         className="flex justify-between items-center border-gray-200 border-solid border-t"
       >
-        {/* ------ */}
-        <Link
-          href={{
-            pathname: '/categories/sub-categories',
-            query: { cid: categoryId }
-          }}
-        >
-          <a
-            className="flex justify-center items-center w-full h-full flex-col py-1 
-        border-gray-200 border-solid border-r px-1 hover:bg-blue-50 rounded-bl-md"
-          >
-            <div className="py-1">
-              <SubCategorySvg width={25} height={25} />
-            </div>
-            <span className="font-light text-xs">Sub-categories</span>
-          </a>
-        </Link>
         {/* ------ */}
         <Link
           href={{

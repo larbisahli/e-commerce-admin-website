@@ -266,34 +266,6 @@ const EditProduct = ({ token, userInfo }) => {
                     <span className="text-red-500">*</span>
                   </p>
                 </div>
-                {/* ******************* sub-category ******************* */}
-                <div className="mb-7">
-                  <label
-                    htmlFor="country"
-                    className="block text-sm font-medium text-gray-700"
-                  >
-                    Sub-category
-                  </label>
-                  <select
-                    id="country"
-                    name="country"
-                    defaultValue={'uid'}
-                    className="mt-1 block py-2 px-3 border border-solid border-gray-300 bg-white 
-                                    rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 
-                                    focus:border-indigo-500 sm:text-sm w-2/4"
-                  >
-                    <option value="uid">None</option>
-                    <option value="uid">United States</option>
-                    <option value="uid-1">Canada</option>
-                    <option value="uid-2">Mexico</option>
-                  </select>
-                  <p className="flex items-center mt-2 text-xs text-gray-500">
-                    <span>
-                      Select a sub-category where this product belongs too. (not
-                      require)
-                    </span>
-                  </p>
-                </div>
                 {/* ******************* is_active ******************* */}
                 <div className="flex items-start">
                   <div className="flex items-center h-5">
@@ -607,16 +579,16 @@ const EditProduct = ({ token, userInfo }) => {
                       onChange={onChange}
                       maxNumber={20}
                       dataURLKey="data_url"
-                      // resolutionType='ratio'
-                      // resolutionWidth={800}
-                      // resolutionHeight={800}
-                      // onError={(errors, files) => {
-                      //     console.log({ errors, files })
-                      //     if (errors.resolution) {
-                      //         setImageError(true)
-                      //         setTimeout(() => setImageError(false), 8000)
-                      //     }
-                      // }}
+                    // resolutionType='ratio'
+                    // resolutionWidth={800}
+                    // resolutionHeight={800}
+                    // onError={(errors, files) => {
+                    //     console.log({ errors, files })
+                    //     if (errors.resolution) {
+                    //         setImageError(true)
+                    //         setTimeout(() => setImageError(false), 8000)
+                    //     }
+                    // }}
                     >
                       {({
                         imageList,

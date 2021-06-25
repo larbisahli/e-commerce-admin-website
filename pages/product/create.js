@@ -1,22 +1,89 @@
 /* eslint-disable jsx-a11y/interactive-supports-focus */
 /* eslint-disable jsx-a11y/click-events-have-key-events */
+import classNames from 'classnames';
 import { useRouter } from 'next/router';
 import PropTypes from 'prop-types';
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useContext, useEffect, useReducer, useState } from 'react';
 import ImageUploading from 'react-images-uploading';
+import { Slide, toast, ToastContainer } from 'react-toastify';
+import useSWR from 'swr';
 
+import { LoadingSvg } from '@/components/svg';
 import { UserStoreContext } from '@/context/UserStore';
+import { Request } from '@/graphql/index'
+import { CreateProductMutation } from '@/graphql/mutations/product'
+import { GetCategoriesQuery } from '@/graphql/queries/category'
 import { getAppCookies, verifyToken } from '@/middleware/utils';
 
 import Add from '../../assets/svg/add.svg';
 import ArrowLeft from '../../assets/svg/arrow-left.svg';
 
+
+const initialState = {
+  category_uid: '',
+  account_uid: '',
+  quiz_description: '',
+  title: '',
+  price: 0,
+  discount: 0,
+  shipping_price: 0,
+  warehouse_location: '',
+  product_description: '',
+  short_description: '',
+  quantity: 0,
+  product_weight: '',
+  available_sizes: '',
+  available_colors: '',
+  size: '',
+  color: '',
+  is_new: '',
+  _stateReadyToSubmit: false,
+};
+
+function reducer(state, action) {
+  switch (action.type) {
+    case 'insert':
+      return {
+        ...state,
+        [action.field]: action.value
+      };
+    case 'reset':
+      return {
+        ...initialState
+      }
+    default:
+      return state;
+  }
+}
+
+
 const NewProduct = ({ token, userInfo }) => {
   const router = useRouter();
-
-  console.log(`======>`, { token });
+  const { cid } = router.query
 
   const [, setUserStore] = useContext(UserStoreContext);
+  const { data } = useSWR([token, GetCategoriesQuery]);
+
+  const [{
+    category_uid,
+    account_uid,
+    title,
+    price,
+    discount,
+    shipping_price,
+    warehouse_location,
+    product_description,
+    short_description,
+    quantity,
+    product_weight,
+    available_sizes,
+    available_colors,
+    size,
+    color,
+    is_new,
+  }, dispatchQuiz] = useReducer(reducer, initialState);
+
+  console.log(`data`, { data, cid })
 
   const [images, setImages] = useState([]);
   const [ThumbnailImage, setThumbnailImage] = useState([]);
@@ -24,16 +91,52 @@ const NewProduct = ({ token, userInfo }) => {
   const [ImagesUrlInput, setImagesUrlInput] = useState('');
   const [ThumbnailUrlInput, setThumbnailUrlInput] = useState('');
   const [ImageUrlError, setImageUrlError] = useState(false);
+  const [Loading, setLoading] = useState(false);
+
+  const Notify = (Message, success) => {
+    const Options = {
+      position: 'bottom-right',
+      autoClose: 5000,
+      hideProgressBar: true,
+      closeOnClick: true,
+      pauseOnHover: true,
+      draggable: true,
+      progress: undefined
+    };
+    if (success) {
+      toast.success(Message, Options);
+    } else {
+      toast.error(Message, Options);
+    }
+  };
+
+  useEffect(() => {
+    if (cid) {
+      dispatchQuiz({
+        type: 'insert',
+        value: cid,
+        field: 'category_uid'
+      });
+    }
+  }, [cid])
 
   useEffect(() => {
     const { account_uid, email, first_name, last_name, privileges } = userInfo;
+
     setUserStore((prev) => {
       return { ...prev, account_uid, email, first_name, last_name, privileges };
+    });
+
+    // ------
+    dispatchQuiz({
+      type: 'insert',
+      value: account_uid,
+      field: 'account_uid'
     });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [setUserStore, userInfo]);
 
-  const onChange = (imageList, addUpdateIndex) => {
+  const onImageChange = (imageList, addUpdateIndex) => {
     // data for submit
     console.log(imageList, addUpdateIndex);
     setImages(imageList);
@@ -45,8 +148,107 @@ const NewProduct = ({ token, userInfo }) => {
     setThumbnailImage(imageList);
   };
 
+  const HandleInputChange = (e) => {
+    const target = e.target;
+    const value = target.type === 'checkbox' ? target.checked : target.value;
+    const name = target.name;
+
+    dispatchQuiz({
+      type: 'insert',
+      value: target.type === 'number' ? Number(value) : value,
+      field: name
+    });
+  };
+
+  const SubmitForm = async (e) => {
+    e.preventDefault();
+
+    console.log(`=========>`, {
+      category_uid,
+      account_uid,
+      title,
+      price,
+      discount,
+      shipping_price,
+      warehouse_location,
+      product_description,
+      short_description,
+      quantity,
+      product_weight,
+      available_sizes,
+      available_colors,
+      size,
+      color,
+      is_new,
+    })
+
+    try {
+      if (title && price && product_description && !Loading) {
+        setLoading(true);
+
+        await Request({
+          token,
+          mutation: CreateProductMutation,
+          variables: {
+            category_uid,
+            account_uid,
+            title,
+            price,
+            discount,
+            shipping_price,
+            warehouse_location,
+            product_description,
+            short_description,
+            quantity,
+            product_weight,
+            available_sizes,
+            available_colors,
+            size,
+            color,
+            is_new,
+          }
+        }).then(({ CreateProduct }) => {
+
+          const CategoryId = CreateProduct?.product_uid;
+          Notify(`🚀 Product successfully created`, CreateProduct);
+
+          if (CreateProduct) {
+            dispatchQuiz({
+              type: 'reset',
+            });
+          }
+
+        }).catch(({ response }) => {
+          const ErrorMessage = response?.message ?? response?.errors[0]?.message
+          Notify(ErrorMessage, !response)
+          // LOGS
+        })
+      } else {
+        Notify('Fields should not be empty!', false);
+      }
+    } catch (err) {
+      console.log(`Error =>`, err);
+      Notify('Ops something went wrong.', false);
+      // LOGS
+    }
+    setLoading(false);
+  }
+
   return (
     <div className="form-container">
+      <ToastContainer
+        position="bottom-right"
+        autoClose={5000}
+        className="text-sm"
+        hideProgressBar
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        transition={Slide}
+      />
       <div className="form-wrapper">
         <section className="flex justify-between items-center md:ml-0 ml-2 mb-3">
           <button
@@ -60,7 +262,13 @@ const NewProduct = ({ token, userInfo }) => {
             <span className="px-1 text-base text-white">Back</span>
           </button>
         </section>
-        <form className="m-auto">
+        <form className="m-auto" onSubmit={SubmitForm}>
+          {Loading && (
+            <div className="absolute bg-black bg-opacity-10 rounded-lg inset-0 flex 
+            justify-center items-center">
+              <LoadingSvg width={80} height={80} />
+            </div>
+          )}
           <div className="shadow overflow-hidden md:rounded-lg card-container rounded-none">
             <div className="flex justify-center items-center px-4 py-3 text-gray-800 bg-gray-50 text-right sm:px-6">
               <span className="uppercase text-sm">Create a new Product</span>
@@ -70,33 +278,39 @@ const NewProduct = ({ token, userInfo }) => {
                 {/* ******************* title ******************* */}
                 <div className="mb-4">
                   <label
-                    htmlFor="first_name"
+                    htmlFor="title"
                     className="block text-sm font-medium text-gray-700"
                   >
-                    Title
+                    Title<span style={{ color: 'red' }} title="required">*</span>
                   </label>
                   <textarea
-                    id="about"
-                    name="about"
+                    required
+                    id="title"
+                    name="title"
+                    value={title}
+                    onChange={HandleInputChange}
                     rows={3}
                     className="shadow-sm border-2 focus:border-indigo-500 mt-1 
                                         block w-full border-solid border-gray-300 rounded-md p-1"
                     placeholder="My product"
-                    defaultValue={''}
                   />
                 </div>
                 {/* ******************* price ******************* */}
                 <div className="mb-4">
                   <label
-                    htmlFor="first_name"
+                    htmlFor="price"
                     className="block text-sm font-medium text-gray-700"
                   >
                     Price <span className="text-sm text-gray-500">(USD)</span>
                   </label>
                   <input
+                    required
                     type="number"
-                    name="first_name"
-                    id="first_name"
+                    name="price"
+                    id="price"
+                    min={0}
+                    value={price}
+                    onChange={HandleInputChange}
                     className="mt-1 focus:border-indigo-500 block w-full 
                                     shadow-sm border-2 border-solid border-gray-300 rounded-md p-1"
                   />
@@ -107,33 +321,39 @@ const NewProduct = ({ token, userInfo }) => {
                     htmlFor="first_name"
                     className="block text-sm font-medium text-gray-700"
                   >
-                    Discount{' '}
-                    <span className="text-sm text-gray-500">(USD)</span>
+                    Discount
+                    <span className="text-sm text-gray-500">(%)</span>
                   </label>
                   <input
                     type="number"
-                    name="first_name"
-                    id="first_name"
+                    name="discount"
+                    max={100}
+                    min={0}
+                    id="discount"
+                    value={discount}
+                    onChange={HandleInputChange}
                     className="mt-1 focus:border-indigo-500 block w-full 
                                     shadow-sm border-2 border-solid border-gray-300 rounded-md p-1"
                   />
                   <p className="mt-2 text-xs text-gray-500">
-                    Product discount will be the final charging price.
+                    Product discount percentage number.
                   </p>
                 </div>
                 {/* ******************* shipping_price ******************* */}
                 <div className="mb-4">
                   <label
-                    htmlFor="first_name"
+                    htmlFor="shipping_price"
                     className="block text-sm font-medium text-gray-700"
                   >
-                    Shipping Price{' '}
+                    Shipping Price
                     <span className="text-sm text-gray-500">(USD)</span>
                   </label>
                   <input
                     type="number"
-                    name="first_name"
-                    id="first_name"
+                    name="shipping_price"
+                    id="shipping_price"
+                    value={shipping_price}
+                    onChange={HandleInputChange}
                     className="mt-1 focus:border-indigo-500 block w-full 
                                     shadow-sm border-2 border-solid border-gray-300 rounded-md p-1"
                   />
@@ -141,33 +361,36 @@ const NewProduct = ({ token, userInfo }) => {
                 {/* ******************* warehouse_location ******************* */}
                 <div className="mb-4">
                   <label
-                    htmlFor="first_name"
+                    htmlFor="warehouse_location"
                     className="block text-sm font-medium text-gray-700"
                   >
                     Warehouse Location
                   </label>
                   <textarea
-                    id="about"
-                    name="about"
+                    id="warehouse_location"
+                    name="warehouse_location"
                     rows={3}
+                    value={warehouse_location}
+                    onChange={HandleInputChange}
                     className="shadow-sm border-2 focus:border-indigo-500 mt-1 
                                         block w-full border-solid border-gray-300 rounded-md p-1"
                     placeholder="My street"
-                    defaultValue={''}
                   />
                 </div>
                 {/* ******************* stock_count ******************* */}
                 <div className="mb-4">
                   <label
-                    htmlFor="first_name"
+                    htmlFor="quantity"
                     className="block text-sm font-medium text-gray-700"
                   >
-                    Stock Number
+                    Quantity
                   </label>
                   <input
                     type="number"
-                    name="first_name"
-                    id="first_name"
+                    name="quantity"
+                    id="quantity"
+                    value={quantity}
+                    onChange={HandleInputChange}
                     className="mt-1 focus:border-indigo-500 block w-full 
                                     shadow-sm border-2 border-solid border-gray-300 rounded-md p-1"
                   />
@@ -175,16 +398,18 @@ const NewProduct = ({ token, userInfo }) => {
                 {/* ******************* product_weight ******************* */}
                 <div className="mb-4">
                   <label
-                    htmlFor="first_name"
+                    htmlFor="product_weight"
                     className="block text-sm font-medium text-gray-700"
                   >
-                    Product Weight{' '}
+                    Product Weight
                     <span className="text-sm text-gray-500">(KG)</span>
                   </label>
                   <input
                     type="number"
-                    name="first_name"
-                    id="first_name"
+                    name="product_weight"
+                    id="product_weight"
+                    value={product_weight}
+                    onChange={HandleInputChange}
                     className="mt-1 focus:border-indigo-500 block w-full 
                                     shadow-sm border-2 border-solid border-gray-300 rounded-md p-1"
                   />
@@ -192,20 +417,22 @@ const NewProduct = ({ token, userInfo }) => {
                 {/* ******************* product_description ******************* */}
                 <div className="mb-4">
                   <label
-                    htmlFor="about"
+                    htmlFor="product_description"
                     className="block text-sm font-medium text-gray-700"
                   >
-                    Description
+                    Description<span style={{ color: 'red' }} title="required">*</span>
                   </label>
                   <div className="mt-1">
                     <textarea
-                      id="about"
-                      name="about"
+                      required
+                      id="product_description"
+                      name="product_description"
                       rows={5}
+                      value={product_description}
+                      onChange={HandleInputChange}
                       className="shadow-sm border-2 focus:border-indigo-500 mt-1 
                                         block w-full border-solid border-gray-300 rounded-md p-1"
                       placeholder="This product is awesome"
-                      defaultValue={''}
                     />
                   </div>
                   <p className="mt-2 text-xs text-gray-500">
@@ -215,20 +442,22 @@ const NewProduct = ({ token, userInfo }) => {
                 {/* ******************* short_description ******************* */}
                 <div className="mb-4">
                   <label
-                    htmlFor="about"
+                    htmlFor="short_description"
                     className="block text-sm font-medium text-gray-700"
                   >
-                    Short Description
+                    Short Description<span style={{ color: 'red' }} title="required">*</span>
                   </label>
                   <div className="mt-1">
                     <textarea
-                      id="about"
-                      name="about"
+                      required
+                      id="short_description"
+                      name="short_description"
                       rows={3}
+                      value={short_description}
+                      onChange={HandleInputChange}
                       className="shadow-sm border-2 focus:border-indigo-500 mt-1 
                                         block w-full border-solid border-gray-300 rounded-md p-1"
                       placeholder="This product is awesome"
-                      defaultValue={''}
                     />
                   </div>
                   <p className="flex flex-col mt-2 text-xs text-gray-500">
@@ -239,26 +468,31 @@ const NewProduct = ({ token, userInfo }) => {
                   </p>
                 </div>
                 {/* ******************* category ******************* */}
-                <div className="mt-3 mb-5">
+                <div className="mt-3 mb-5 border-t-2 border-solid border-gray-200 pt-2">
                   <label
-                    htmlFor="country"
+                    htmlFor="category_uid"
                     className="block text-sm font-medium text-gray-700"
                   >
                     Category
                   </label>
+                  {/* eslint-disable-next-line jsx-a11y/no-onchange */}
                   <select
-                    id="country"
-                    name="country"
-                    defaultValue={'uid-11'}
+                    id="category_uid"
+                    name="category_uid"
+                    value={category_uid}
+                    onChange={HandleInputChange}
                     className="mt-1 block py-2 px-3 border border-solid border-gray-300 bg-white 
                                     rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 
                                     focus:border-indigo-500 sm:text-sm w-2/4"
                   >
-                    <option value="uid">United States</option>
-                    <option value="uid-11">Canada</option>
-                    <option value="uid-2">Mexico</option>
+                    {
+                      data?.Categories?.map(({ category_uid, category_name }) => {
+                        return <option key={category_uid} value={category_uid}>{category_name}</option>
+                      })
+                    }
+                    {/* <option value='368cb456-6c4b-4aac-8aab-33da7701e483'>OWO</option> */}
                   </select>
-                  <p className="flex items-center mt-2 text-xs text-gray-500">
+                  <p className="flex items-center mt-1 text-xs text-gray-500">
                     <span>
                       Select a category where this product belongs too.
                       (require)
@@ -266,74 +500,120 @@ const NewProduct = ({ token, userInfo }) => {
                     <span className="text-red-500">*</span>
                   </p>
                 </div>
-                {/* ******************* sub-category ******************* */}
-                <div className="mb-7">
+                {/* ******************* available_sizes ******************* */}
+                <div className="mb-4">
                   <label
-                    htmlFor="country"
+                    htmlFor="available_sizes"
                     className="block text-sm font-medium text-gray-700"
                   >
-                    Sub-category
+                    Available Sizes
                   </label>
-                  <select
-                    id="country"
-                    name="country"
-                    defaultValue={'uid'}
-                    className="mt-1 block py-2 px-3 border border-solid border-gray-300 bg-white 
-                                    rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 
-                                    focus:border-indigo-500 sm:text-sm w-2/4"
-                  >
-                    <option value="uid">None</option>
-                    <option value="uid">United States</option>
-                    <option value="uid-1">Canada</option>
-                    <option value="uid-2">Mexico</option>
-                  </select>
-                  <p className="flex items-center mt-2 text-xs text-gray-500">
+                  <textarea
+                    id="available_sizes"
+                    name="available_sizes"
+                    rows={2}
+                    value={available_sizes}
+                    onChange={HandleInputChange}
+                    placeholder='e.g: S, M, L, XL, XXL, XXXL, ...etc'
+                    className="shadow-sm border-2 focus:border-indigo-500 mt-1 
+                                        block w-full border-solid border-gray-300 rounded-md p-1"
+                  />
+                  <p className="flex items-center mt-1 text-xs text-gray-500">
                     <span>
-                      Select a sub-category where this product belongs too. (not
-                      require)
+                      Add multiple sizes available for this product, separate sizes by comma(,) (not required).
                     </span>
                   </p>
                 </div>
-                {/* ******************* is_active ******************* */}
-                <div className="flex items-start">
-                  <div className="flex items-center h-5">
-                    <input
-                      id="publish"
-                      name="is_active"
-                      type="checkbox"
-                      className="h-4 w-4"
-                    />
-                  </div>
-                  <div className="ml-3 text-sm">
-                    <label
-                      htmlFor="publish"
-                      className="font-medium text-gray-700"
-                    >
-                      Publish
-                    </label>
-                    <p className="text-gray-500 text-xs">
-                      Publish the product.
-                    </p>
-                  </div>
+                {/* ******************* size ******************* */}
+                <div className="mb-4">
+                  <label
+                    htmlFor="size"
+                    className="block text-sm font-medium text-gray-700"
+                  >
+                    Size
+                  </label>
+                  <input
+                    type="text"
+                    name="size"
+                    id="size"
+                    value={size}
+                    onChange={HandleInputChange}
+                    className="mt-1 focus:border-indigo-500 block w-full 
+                                    shadow-sm border-2 border-solid border-gray-300 rounded-md p-1"
+                  />
+                  <p className="flex flex-col mt-2 text-xs text-gray-500">
+                    <span>
+                      Product size (not required).
+                    </span>
+                  </p>
+                </div>
+                {/* ******************* available_colors ******************* */}
+                <div className="mb-4">
+                  <label
+                    htmlFor="available_colors"
+                    className="block text-sm font-medium text-gray-700"
+                  >
+                    Available Colors
+                  </label>
+                  <textarea
+                    id="available_colors"
+                    name="available_colors"
+                    rows={2}
+                    value={available_colors}
+                    onChange={HandleInputChange}
+                    className="shadow-sm border-2 focus:border-indigo-500 mt-1 
+                                        block w-full border-solid border-gray-300 rounded-md p-1"
+                    placeholder='e.g: black, red, orange, green, ...etc'
+                  />
+                  <p className="flex items-center mt-1 text-xs text-gray-500">
+                    <span>
+                      Add multiple colors available for this product, separate colors by comma(,) (not required).
+                    </span>
+                  </p>
+                </div>
+                {/* ******************* color ******************* */}
+                <div className="mb-4">
+                  <label
+                    htmlFor="size"
+                    className="block text-sm font-medium text-gray-700"
+                  >
+                    Color
+                  </label>
+                  <input
+                    type="text"
+                    name="color"
+                    id="color"
+                    value={color}
+                    onChange={HandleInputChange}
+                    className="mt-1 focus:border-indigo-500 block w-full 
+                                    shadow-sm border-2 border-solid border-gray-300 rounded-md p-1"
+                  />
+                  <p className="flex flex-col mt-2 text-xs text-gray-500">
+                    <span>
+                      Product color (not required).
+                    </span>
+                  </p>
                 </div>
                 {/* ******************* is_new ******************* */}
                 <div className="flex items-start">
                   <div className="flex items-center h-5">
                     <input
-                      id="unused"
+                      id="is_new"
                       name="is_new"
+                      value={is_new}
+                      onChange={HandleInputChange}
                       type="checkbox"
                       className="h-4 w-4"
                     />
                   </div>
                   <div className="ml-3 text-sm">
                     <label
-                      htmlFor="unused"
+                      htmlFor="is_new"
                       className="font-medium text-gray-700"
                     >
                       Unused
                     </label>
-                    <p className="text-gray-500 text-xs">
+                    <p className="text-gray-500 mt-0 text-xs">
                       New product or used product.
                     </p>
                   </div>
@@ -370,7 +650,8 @@ const NewProduct = ({ token, userInfo }) => {
                   <div className="mt-1 flex justify-center px-6 pt-5 pb-6 border-2 border-gray-300 border-dashed rounded-md">
                     <div className="space-y-1 text-center w-full">
                       {/* --thumbnail upload-- */}
-                      <div className="mt-1 flex justify-center px-6 pt-5 pb-6 border-gray-300 rounded-md">
+                      <div
+                        className="mt-1 flex justify-center px-6 pt-5 pb-6 rounded-md">
                         <ImageUploading
                           multiple
                           value={ThumbnailImage}
@@ -384,9 +665,13 @@ const NewProduct = ({ token, userInfo }) => {
                             onImageUpdate,
                             onImageRemove,
                             isDragging,
-                            dragProps
+                            dragProps,
                           }) => (
-                            <div {...dragProps} className="w-full h-full">
+                            <div {...dragProps}
+                              className={classNames('w-full', 'h-full', 'rounded-md', {
+                                'bg-green-100': isDragging
+                              })}
+                            >
                               <div className="flex justify-center items-center flex-col mb-3">
                                 <svg
                                   className="mx-auto h-12 w-12 text-gray-400"
@@ -405,14 +690,11 @@ const NewProduct = ({ token, userInfo }) => {
                                 <div
                                   role="button"
                                   className="flex cursor-pointer justify-center items-center"
-                                  style={
-                                    isDragging ? { color: 'red' } : undefined
-                                  }
                                   onClick={onImageUpload}
                                 >
                                   <div className="flex text-sm text-gray-600 justify-center items-center">
                                     <div
-                                      className="bg-white rounded-md hover:underline font-medium text-indigo-600 
+                                      className="rounded-md hover:underline font-medium text-indigo-600 
                                                 hover:text-indigo-500 focus-within:outline-none focus-within:ring-2 focus-within:ring-offset-2 
                                                 focus-within:ring-indigo-500"
                                     >
@@ -604,19 +886,19 @@ const NewProduct = ({ token, userInfo }) => {
                     <ImageUploading
                       multiple
                       value={images}
-                      onChange={onChange}
+                      onChange={onImageChange}
                       maxNumber={20}
                       dataURLKey="data_url"
-                      // resolutionType='ratio'
-                      // resolutionWidth={800}
-                      // resolutionHeight={800}
-                      // onError={(errors, files) => {
-                      //     console.log({ errors, files })
-                      //     if (errors.resolution) {
-                      //         setImageError(true)
-                      //         setTimeout(() => setImageError(false), 8000)
-                      //     }
-                      // }}
+                    // resolutionType='ratio'
+                    // resolutionWidth={800}
+                    // resolutionHeight={800}
+                    // onError={(errors, files) => {
+                    //     console.log({ errors, files })
+                    //     if (errors.resolution) {
+                    //         setImageError(true)
+                    //         setTimeout(() => setImageError(false), 8000)
+                    //     }
+                    // }}
                     >
                       {({
                         imageList,
@@ -627,7 +909,9 @@ const NewProduct = ({ token, userInfo }) => {
                         isDragging,
                         dragProps
                       }) => (
-                        <div {...dragProps} className="w-full h-full">
+                        <div {...dragProps} className={classNames('w-full', 'h-full', 'rounded-md', {
+                          'bg-green-100': isDragging
+                        })}>
                           <div className="flex justify-center items-center flex-col mb-3">
                             <svg
                               className="mx-auto h-12 w-12 text-gray-400"
@@ -646,12 +930,11 @@ const NewProduct = ({ token, userInfo }) => {
                             <div
                               role="button"
                               className="flex cursor-pointer justify-center items-center"
-                              style={isDragging ? { color: 'red' } : undefined}
                               onClick={onImageUpload}
                             >
                               <div className="flex text-sm text-gray-600 justify-center items-center">
                                 <div
-                                  className="bg-white rounded-md hover:underline font-medium text-indigo-600 
+                                  className="rounded-md hover:underline font-medium text-indigo-600 
                                                 hover:text-indigo-500 focus-within:outline-none focus-within:ring-2 focus-within:ring-offset-2 
                                                 focus-within:ring-indigo-500"
                                 >
@@ -731,14 +1014,14 @@ export async function getServerSideProps(context) {
   const { token } = getAppCookies(req);
   const userInfo = token ? verifyToken(token) : null;
 
-  // if (!userInfo) {
-  //   return {
-  //     redirect: {
-  //       permanent: false,
-  //       destination: '/'
-  //     }
-  //   };
-  // }
+  if (!userInfo) {
+    return {
+      redirect: {
+        permanent: false,
+        destination: '/'
+      }
+    };
+  }
 
   return {
     props: {
