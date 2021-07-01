@@ -6,7 +6,7 @@ import useSWR from 'swr';
 
 import { EditSvg, ProductSvg } from '@/components/svg';
 import { UserStoreContext } from '@/context/UserStore';
-import { GetCategoriesQuery } from '@/graphql/queries/category'
+import { GetCategoriesQuery } from '@/graphql/queries/category';
 import { getAppCookies, verifyToken } from '@/middleware/utils';
 
 import Add from '../../assets/svg/add.svg';
@@ -23,7 +23,9 @@ const Categories = ({ token, userInfo }) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [setUserStore, userInfo]);
 
-  data?.Categories?.sort((a, b) => (a.display_order > b.display_order) ? 1 : -1)
+  data?.Categories?.sort((a, b) =>
+    a.display_order > b.display_order ? 1 : -1
+  );
 
   return (
     <div className="m-auto categories-cart-container mb-20">
@@ -43,11 +45,15 @@ const Categories = ({ token, userInfo }) => {
         </Link>
       </section>
       <section className="flex flex-wrap">
-        {
-          data?.Categories?.map(({ category_uid, category_name }) => {
-            return <CategoryCard key={category_uid} label={category_name} categoryId={category_uid} />
-          })
-        }
+        {data?.Categories?.map(({ category_uid, category_name }) => {
+          return (
+            <CategoryCard
+              key={category_uid}
+              label={category_name}
+              categoryId={category_uid}
+            />
+          );
+        })}
       </section>
     </div>
   );
@@ -82,8 +88,10 @@ const CategoryCard = ({ label, categoryId }) => {
             query: { cid: categoryId }
           }}
         >
-          <a className="flex justify-center items-center w-full 
-          h-full flex-col py-1 px-1 hover:bg-blue-50">
+          <a
+            className="flex justify-center items-center w-full 
+          h-full flex-col py-1 px-1 hover:bg-blue-50"
+          >
             <div className="py-1">
               <ProductSvg width={25} height={25} />
             </div>

@@ -1,5 +1,6 @@
 import styled, { css } from 'styled-components';
-import { DisFlex_AIC, DisFlex_AIC_JCC, DisFlex } from '@/styles/index';
+
+import { DisFlex, DisFlex_AIC, DisFlex_AIC_JCC } from '@/styles/index';
 
 export const Bg = styled.div`
   display: none;
@@ -175,12 +176,12 @@ export const LinkWrapper = styled(DisFlex_AIC_JCC)`
   text-decoration: none;
   position: relative;
   border-left: 3px solid transparent;
+  margin-top: 4px;
 
   ${(props) => {
     if (props.Mode === 1) {
       return css`
         flex-flow: column nowrap;
-        margin-top: 4px;
         width: 90px;
         height: 70px;
         padding: 16px 0 14px;

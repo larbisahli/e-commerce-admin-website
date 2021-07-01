@@ -12,7 +12,7 @@ import {
 
 import { getAppCookies, verifyToken } from '../middleware/utils';
 
-const Home = () => {
+const Login = () => {
   const email = useRef(null);
   const password = useRef(null);
   const rememberMe = useRef(null);
@@ -237,4 +237,4 @@ export async function getServerSideProps(context) {
   };
 }
 
-export default Home;
+export default Login;

@@ -37,10 +37,7 @@ Card.propTypes = {
   color: PropTypes.string,
   bg: PropTypes.string,
   label: PropTypes.string,
-  value: PropTypes.oneOfType([
-    PropTypes.string,
-    PropTypes.number,
-  ]),
+  value: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
   date: PropTypes.string,
   percentile: PropTypes.number
 };

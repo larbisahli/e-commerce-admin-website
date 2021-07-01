@@ -579,16 +579,16 @@ const EditProduct = ({ token, userInfo }) => {
                       onChange={onChange}
                       maxNumber={20}
                       dataURLKey="data_url"
-                    // resolutionType='ratio'
-                    // resolutionWidth={800}
-                    // resolutionHeight={800}
-                    // onError={(errors, files) => {
-                    //     console.log({ errors, files })
-                    //     if (errors.resolution) {
-                    //         setImageError(true)
-                    //         setTimeout(() => setImageError(false), 8000)
-                    //     }
-                    // }}
+                      // resolutionType='ratio'
+                      // resolutionWidth={800}
+                      // resolutionHeight={800}
+                      // onError={(errors, files) => {
+                      //     console.log({ errors, files })
+                      //     if (errors.resolution) {
+                      //         setImageError(true)
+                      //         setTimeout(() => setImageError(false), 8000)
+                      //     }
+                      // }}
                     >
                       {({
                         imageList,

@@ -10,14 +10,13 @@ import useSWR from 'swr';
 
 import { LoadingSvg } from '@/components/svg';
 import { UserStoreContext } from '@/context/UserStore';
-import { Request } from '@/graphql/index'
-import { CreateProductMutation } from '@/graphql/mutations/product'
-import { GetCategoriesQuery } from '@/graphql/queries/category'
+import { Request } from '@/graphql/index';
+import { CreateProductMutation } from '@/graphql/mutations/product';
+import { GetCategoriesQuery } from '@/graphql/queries/category';
 import { getAppCookies, verifyToken } from '@/middleware/utils';
 
 import Add from '../../assets/svg/add.svg';
 import ArrowLeft from '../../assets/svg/arrow-left.svg';
-
 
 const initialState = {
   category_uid: '',
@@ -37,7 +36,7 @@ const initialState = {
   size: '',
   color: '',
   is_new: '',
-  _stateReadyToSubmit: false,
+  _stateReadyToSubmit: false
 };
 
 function reducer(state, action) {
@@ -50,40 +49,42 @@ function reducer(state, action) {
     case 'reset':
       return {
         ...initialState
-      }
+      };
     default:
       return state;
   }
 }
 
-
 const NewProduct = ({ token, userInfo }) => {
   const router = useRouter();
-  const { cid } = router.query
+  const { cid } = router.query;
 
   const [, setUserStore] = useContext(UserStoreContext);
   const { data } = useSWR([token, GetCategoriesQuery]);
 
-  const [{
-    category_uid,
-    account_uid,
-    title,
-    price,
-    discount,
-    shipping_price,
-    warehouse_location,
-    product_description,
-    short_description,
-    quantity,
-    product_weight,
-    available_sizes,
-    available_colors,
-    size,
-    color,
-    is_new,
-  }, dispatchQuiz] = useReducer(reducer, initialState);
+  const [
+    {
+      category_uid,
+      account_uid,
+      title,
+      price,
+      discount,
+      shipping_price,
+      warehouse_location,
+      product_description,
+      short_description,
+      quantity,
+      product_weight,
+      available_sizes,
+      available_colors,
+      size,
+      color,
+      is_new
+    },
+    dispatchQuiz
+  ] = useReducer(reducer, initialState);
 
-  console.log(`data`, { data, cid })
+  console.log(`data`, { data, cid });
 
   const [images, setImages] = useState([]);
   const [ThumbnailImage, setThumbnailImage] = useState([]);
@@ -118,7 +119,7 @@ const NewProduct = ({ token, userInfo }) => {
         field: 'category_uid'
       });
     }
-  }, [cid])
+  }, [cid]);
 
   useEffect(() => {
     const { account_uid, email, first_name, last_name, privileges } = userInfo;
@@ -179,8 +180,8 @@ const NewProduct = ({ token, userInfo }) => {
       available_colors,
       size,
       color,
-      is_new,
-    })
+      is_new
+    });
 
     try {
       if (title && price && product_description && !Loading) {
@@ -205,24 +206,26 @@ const NewProduct = ({ token, userInfo }) => {
             available_colors,
             size,
             color,
-            is_new,
+            is_new
           }
-        }).then(({ CreateProduct }) => {
-
-          const CategoryId = CreateProduct?.product_uid;
-          Notify(`🚀 Product successfully created`, CreateProduct);
-
-          if (CreateProduct) {
-            dispatchQuiz({
-              type: 'reset',
-            });
-          }
-
-        }).catch(({ response }) => {
-          const ErrorMessage = response?.message ?? response?.errors[0]?.message
-          Notify(ErrorMessage, !response)
-          // LOGS
         })
+          .then(({ CreateProduct }) => {
+            const CategoryId = CreateProduct?.product_uid;
+
+            Notify(`🚀 Product successfully created`, CreateProduct);
+
+            if (CreateProduct) {
+              dispatchQuiz({
+                type: 'reset'
+              });
+            }
+          })
+          .catch(({ response }) => {
+            const ErrorMessage =
+              response?.message ?? response?.errors[0]?.message;
+            Notify(ErrorMessage, !response);
+            // LOGS
+          });
       } else {
         Notify('Fields should not be empty!', false);
       }
@@ -232,7 +235,7 @@ const NewProduct = ({ token, userInfo }) => {
       // LOGS
     }
     setLoading(false);
-  }
+  };
 
   return (
     <div className="form-container">
@@ -264,8 +267,10 @@ const NewProduct = ({ token, userInfo }) => {
         </section>
         <form className="m-auto" onSubmit={SubmitForm}>
           {Loading && (
-            <div className="absolute bg-black bg-opacity-10 rounded-lg inset-0 flex 
-            justify-center items-center">
+            <div
+              className="absolute bg-black bg-opacity-10 rounded-lg inset-0 flex 
+            justify-center items-center"
+            >
               <LoadingSvg width={80} height={80} />
             </div>
           )}
@@ -281,7 +286,10 @@ const NewProduct = ({ token, userInfo }) => {
                     htmlFor="title"
                     className="block text-sm font-medium text-gray-700"
                   >
-                    Title<span style={{ color: 'red' }} title="required">*</span>
+                    Title
+                    <span style={{ color: 'red' }} title="required">
+                      *
+                    </span>
                   </label>
                   <textarea
                     required
@@ -420,7 +428,10 @@ const NewProduct = ({ token, userInfo }) => {
                     htmlFor="product_description"
                     className="block text-sm font-medium text-gray-700"
                   >
-                    Description<span style={{ color: 'red' }} title="required">*</span>
+                    Description
+                    <span style={{ color: 'red' }} title="required">
+                      *
+                    </span>
                   </label>
                   <div className="mt-1">
                     <textarea
@@ -445,7 +456,10 @@ const NewProduct = ({ token, userInfo }) => {
                     htmlFor="short_description"
                     className="block text-sm font-medium text-gray-700"
                   >
-                    Short Description<span style={{ color: 'red' }} title="required">*</span>
+                    Short Description
+                    <span style={{ color: 'red' }} title="required">
+                      *
+                    </span>
                   </label>
                   <div className="mt-1">
                     <textarea
@@ -485,11 +499,15 @@ const NewProduct = ({ token, userInfo }) => {
                                     rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 
                                     focus:border-indigo-500 sm:text-sm w-2/4"
                   >
-                    {
-                      data?.Categories?.map(({ category_uid, category_name }) => {
-                        return <option key={category_uid} value={category_uid}>{category_name}</option>
-                      })
-                    }
+                    {data?.Categories?.map(
+                      ({ category_uid, category_name }) => {
+                        return (
+                          <option key={category_uid} value={category_uid}>
+                            {category_name}
+                          </option>
+                        );
+                      }
+                    )}
                     {/* <option value='368cb456-6c4b-4aac-8aab-33da7701e483'>OWO</option> */}
                   </select>
                   <p className="flex items-center mt-1 text-xs text-gray-500">
@@ -514,13 +532,14 @@ const NewProduct = ({ token, userInfo }) => {
                     rows={2}
                     value={available_sizes}
                     onChange={HandleInputChange}
-                    placeholder='e.g: S, M, L, XL, XXL, XXXL, ...etc'
+                    placeholder="e.g: S, M, L, XL, XXL, XXXL, ...etc"
                     className="shadow-sm border-2 focus:border-indigo-500 mt-1 
                                         block w-full border-solid border-gray-300 rounded-md p-1"
                   />
                   <p className="flex items-center mt-1 text-xs text-gray-500">
                     <span>
-                      Add multiple sizes available for this product, separate sizes by comma(,) (not required).
+                      Add multiple sizes available for this product, separate
+                      sizes by comma(,) (not required).
                     </span>
                   </p>
                 </div>
@@ -542,9 +561,7 @@ const NewProduct = ({ token, userInfo }) => {
                                     shadow-sm border-2 border-solid border-gray-300 rounded-md p-1"
                   />
                   <p className="flex flex-col mt-2 text-xs text-gray-500">
-                    <span>
-                      Product size (not required).
-                    </span>
+                    <span>Product size (not required).</span>
                   </p>
                 </div>
                 {/* ******************* available_colors ******************* */}
@@ -563,11 +580,12 @@ const NewProduct = ({ token, userInfo }) => {
                     onChange={HandleInputChange}
                     className="shadow-sm border-2 focus:border-indigo-500 mt-1 
                                         block w-full border-solid border-gray-300 rounded-md p-1"
-                    placeholder='e.g: black, red, orange, green, ...etc'
+                    placeholder="e.g: black, red, orange, green, ...etc"
                   />
                   <p className="flex items-center mt-1 text-xs text-gray-500">
                     <span>
-                      Add multiple colors available for this product, separate colors by comma(,) (not required).
+                      Add multiple colors available for this product, separate
+                      colors by comma(,) (not required).
                     </span>
                   </p>
                 </div>
@@ -589,9 +607,7 @@ const NewProduct = ({ token, userInfo }) => {
                                     shadow-sm border-2 border-solid border-gray-300 rounded-md p-1"
                   />
                   <p className="flex flex-col mt-2 text-xs text-gray-500">
-                    <span>
-                      Product color (not required).
-                    </span>
+                    <span>Product color (not required).</span>
                   </p>
                 </div>
                 {/* ******************* is_new ******************* */}
@@ -650,8 +666,7 @@ const NewProduct = ({ token, userInfo }) => {
                   <div className="mt-1 flex justify-center px-6 pt-5 pb-6 border-2 border-gray-300 border-dashed rounded-md">
                     <div className="space-y-1 text-center w-full">
                       {/* --thumbnail upload-- */}
-                      <div
-                        className="mt-1 flex justify-center px-6 pt-5 pb-6 rounded-md">
+                      <div className="mt-1 flex justify-center px-6 pt-5 pb-6 rounded-md">
                         <ImageUploading
                           multiple
                           value={ThumbnailImage}
@@ -665,12 +680,18 @@ const NewProduct = ({ token, userInfo }) => {
                             onImageUpdate,
                             onImageRemove,
                             isDragging,
-                            dragProps,
+                            dragProps
                           }) => (
-                            <div {...dragProps}
-                              className={classNames('w-full', 'h-full', 'rounded-md', {
-                                'bg-green-100': isDragging
-                              })}
+                            <div
+                              {...dragProps}
+                              className={classNames(
+                                'w-full',
+                                'h-full',
+                                'rounded-md',
+                                {
+                                  'bg-green-100': isDragging
+                                }
+                              )}
                             >
                               <div className="flex justify-center items-center flex-col mb-3">
                                 <svg
@@ -889,16 +910,16 @@ const NewProduct = ({ token, userInfo }) => {
                       onChange={onImageChange}
                       maxNumber={20}
                       dataURLKey="data_url"
-                    // resolutionType='ratio'
-                    // resolutionWidth={800}
-                    // resolutionHeight={800}
-                    // onError={(errors, files) => {
-                    //     console.log({ errors, files })
-                    //     if (errors.resolution) {
-                    //         setImageError(true)
-                    //         setTimeout(() => setImageError(false), 8000)
-                    //     }
-                    // }}
+                      // resolutionType='ratio'
+                      // resolutionWidth={800}
+                      // resolutionHeight={800}
+                      // onError={(errors, files) => {
+                      //     console.log({ errors, files })
+                      //     if (errors.resolution) {
+                      //         setImageError(true)
+                      //         setTimeout(() => setImageError(false), 8000)
+                      //     }
+                      // }}
                     >
                       {({
                         imageList,
@@ -909,9 +930,17 @@ const NewProduct = ({ token, userInfo }) => {
                         isDragging,
                         dragProps
                       }) => (
-                        <div {...dragProps} className={classNames('w-full', 'h-full', 'rounded-md', {
-                          'bg-green-100': isDragging
-                        })}>
+                        <div
+                          {...dragProps}
+                          className={classNames(
+                            'w-full',
+                            'h-full',
+                            'rounded-md',
+                            {
+                              'bg-green-100': isDragging
+                            }
+                          )}
+                        >
                           <div className="flex justify-center items-center flex-col mb-3">
                             <svg
                               className="mx-auto h-12 w-12 text-gray-400"

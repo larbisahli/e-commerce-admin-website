@@ -8,7 +8,8 @@ import {
   BookmarkSvg,
   DashboardSvg,
   DollarSvg,
-  InvoiceSvg
+  InvoiceSvg,
+  StoreSvg
 } from '@/components/svg/index';
 import { useMediaQuery } from '@/hooks/useMediaQuery';
 
@@ -52,8 +53,12 @@ const MiniGuide = ({ GuideState }) => {
         <ItemLink mode={1} href="/dashboard" label="Dashboard">
           <DashboardSvg width={24} height={24} />
         </ItemLink>
+        <div className="line"></div>
         <ItemLink mode={1} href="/categories" label="Categories">
           <BookmarkSvg width={24} height={24} />
+        </ItemLink>
+        <ItemLink mode={1} href="/store" label="Store">
+          <StoreSvg width={24} height={24} />
         </ItemLink>
         <ItemLink mode={1} href="/product/create" label="New Product">
           <AddSvg width={24} height={24} />

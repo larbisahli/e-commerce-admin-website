@@ -44,7 +44,7 @@ function App({ Component, pageProps }) {
     //   // We can send the error to Sentry,
     //   // or show a notification UI.
     // }
-    const ErrorMessage = error?.response?.message
+    const ErrorMessage = error?.response?.message;
     // const ErrorStatus = error?.response?.status
     Notify(ErrorMessage, false);
   };

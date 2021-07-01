@@ -33,11 +33,22 @@ const Dashboard = ({ token, userInfo }) => {
     });
 
   useEffect(() => {
-    notify();
-    const { account_uid, email, first_name, last_name, privileges } = userInfo;
-    setUserStore((prev) => {
-      return { ...prev, account_uid, email, first_name, last_name, privileges };
-    });
+    if (userInfo) {
+      notify();
+      const { account_uid, email, first_name, last_name, privileges } =
+        userInfo;
+      setUserStore((prev) => {
+        return {
+          ...prev,
+          account_uid,
+          email,
+          first_name,
+          last_name,
+          privileges
+        };
+      });
+    }
+
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [setUserStore, userInfo]);
 
@@ -90,14 +101,14 @@ export async function getServerSideProps(context) {
   const { token } = getAppCookies(req);
   const userInfo = token ? verifyToken(token) : null;
 
-  if (!userInfo) {
-    return {
-      redirect: {
-        permanent: false,
-        destination: '/'
-      }
-    };
-  }
+  // if (!userInfo) {
+  //   return {
+  //     redirect: {
+  //       permanent: false,
+  //       destination: '/'
+  //     }
+  //   };
+  // }
 
   return {
     props: {
