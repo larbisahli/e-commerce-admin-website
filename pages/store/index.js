@@ -10,8 +10,12 @@ import { StoreHead } from '@/containers/index';
 import { UserStoreContext } from '@/context/UserStore';
 import { getAppCookies, verifyToken } from '@/middleware/utils';
 
+import Add from '../../assets/svg/add.svg';
+
+
 const Store = ({ token, userInfo }) => {
   const router = useRouter();
+  const { cid } = router.query;
   const [, setUserStore] = useContext(UserStoreContext);
 
   console.log(`======>`, { token });
@@ -45,8 +49,27 @@ const Store = ({ token, userInfo }) => {
   const [offset, setOffset] = useState(0)
   const [limit, setLimit] = useState(10)
 
+
   return (
     <div className="m-auto product-cart-container mb-20">
+      <section className="flex justify-end items-center mx-3 mb-3">
+        <Link href={{
+          pathname: '/product/create',
+          query: { cid }
+        }}>
+          <a>
+            <div
+              className="flex justify-center items-center py-2 px-3 
+        bg-blue-600 hover:bg-blue-700 text-white rounded-sm hover:shadow-inner shadow-lg"
+            >
+              <div className="pr-1">
+                <Add width={18} height={18} />
+              </div>
+              <span>Add New Product</span>
+            </div>
+          </a>
+        </Link>
+      </section>
       <div className="bg-white py-3 flex items-center flex-col justify-between border-t border-gray-200 rounded ">
         {/* ------- Search Header ------- */}
         <div className="pr-3 pl-3 border-b pt-3 border-solid border-gray-200 w-full flex-col-reverse sm:flex-row mb-3 flex items-center justify-between">
@@ -54,7 +77,7 @@ const Store = ({ token, userInfo }) => {
         </div>
         {/* ------- Product Showcase ------- */}
         <div className="flex flex-wrap">
-          <ProductCard label="Sub-category-1" />
+          <ProductCard label="Sub-category-1" url='https://dropgala-test.fra1.digitaloceanspaces.com/2021/7/product_image_from_ali_express_1625214253_McTefiJPA_placeholder.jpg' />
           <ProductCard label="Sub-Category-2" />
           <ProductCard label="Sub-Category-3" />
           <ProductCard label="Sub-Category-4" />
@@ -68,7 +91,7 @@ const Store = ({ token, userInfo }) => {
             border-gray-200 w-full flex-col-reverse 
               sm:flex-row flex items-center justify-between">
           <div className="">
-            <p className="flex justify-center items-center text-sm text-gray-700">
+            <div className="flex justify-center items-center text-sm text-gray-700">
               <div>Showing</div>
               <span className="font-medium pl-1 pr-1">{1}</span>
               <div>to</div>
@@ -76,7 +99,7 @@ const Store = ({ token, userInfo }) => {
               <div>of</div>
               <span className="font-medium pl-1 pr-1">{97}</span>
               <div>results</div>
-            </p>
+            </div>
           </div>
           <div className="">
             <nav className="" id="react-paginate" aria-label="Pagination">
@@ -100,7 +123,34 @@ const Store = ({ token, userInfo }) => {
   );
 };
 
-const ProductCard = () => {
+const ProductCard = ({ label, url }) => {
+
+  const [Base64Placeholder, setBase64Placeholder] = useState('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mM8eftXPQAIMgMfS5tX7gAAAABJRU5ErkJggg==')
+
+  useEffect(() => {
+
+    async function toBase64() {
+      const data = await fetch(url);
+      const blob = await data.blob();
+      // eslint-disable-next-line no-undef
+      return await new Promise((resolve) => {
+        const reader = new window.FileReader();
+        reader.readAsDataURL(blob);
+        reader.onloadend = () => {
+          const base64data = reader.result;
+          return resolve(base64data);
+        }
+      }).then((res) => {
+        console.log(`res`, res)
+        setBase64Placeholder(res)
+        return res
+      })
+    }
+
+    if (url) toBase64();
+
+  }, [url])
+
   return (
     <div
       style={{ border: 'none' }}
@@ -112,9 +162,13 @@ const ProductCard = () => {
             quality={95}
             width={250}
             height={250}
+            blurDataURL={Base64Placeholder}
+            placeholder="blur"
             alt=""
             className="bg-blue-100 rounded-t"
-            src="/static/images/test-image.jpg"
+            // src="/static/images/test-image.jpg"
+            unoptimized={true}
+            src='https://dropgala-test.fra1.digitaloceanspaces.com/2021/7/product_image_from_ali_express_1625219873_Dpse5Mot9.png'
           />
           {/* ------------ */}
           <div

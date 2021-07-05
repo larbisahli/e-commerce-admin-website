@@ -117,12 +117,16 @@
     }
 }
 
+/* ------ */
+
 .cut-when-2lines{
     overflow: hidden;
     display: -webkit-box;
     -webkit-box-orient: vertical;
     -webkit-line-clamp: 2;
 }
+
+/* ---- pagination --- */
 
 #react-paginate ul {
     display: inline-block;
@@ -162,8 +166,6 @@
     border: 1px solid rgba(79,70,229,1) !important;
 }
 
-
-
 #react-paginate li:first-child {
     border-top-left-radius: .375rem;
     border-bottom-left-radius: .375rem;
@@ -177,3 +179,21 @@
     border-bottom-right-radius: .375rem;
     padding: 0;
   }
+
+/* ------ */
+
+.custom-color-edit > g > path{
+    fill: #1e87f0 !important;
+}
+
+/* ----- */
+
+.react-tabs__tab--selected {
+    border-color: rgb(218, 218, 218) !important;
+}
+
+.react-tabs__tab-list {
+    border-bottom: 1px solid rgb(218, 218, 218) !important;
+    margin: 0 !important;
+
+}

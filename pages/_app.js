@@ -1,6 +1,7 @@
 import '../styles/tailwind.css';
 import 'simplebar/dist/simplebar.min.css';
 import 'react-toastify/dist/ReactToastify.css';
+import 'react-tabs/style/react-tabs.css';
 
 import Head from 'next/head';
 import { useRouter } from 'next/router';
@@ -15,6 +16,7 @@ import { UserStoreProvider } from '@/context/UserStore';
 import { fetcher } from '@/graphql/index';
 import GlobalStyle from '@/styles/Globals';
 import { PageContainer } from '@/styles/index';
+
 function App({ Component, pageProps }) {
   const { asPath } = useRouter();
 

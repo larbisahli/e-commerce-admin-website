@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import { useRouter } from 'next/router'
 import PropTypes from 'prop-types';
 import React, { useContext, useEffect } from 'react';
 import { Slide, toast, ToastContainer } from 'react-toastify';
@@ -17,6 +18,8 @@ import Add from '../assets/svg/add.svg';
 // const IsProduction = process.env.NODE_ENV === 'production';
 
 const Dashboard = ({ token, userInfo }) => {
+  const router = useRouter()
+
   const [, setUserStore] = useContext(UserStoreContext);
 
   console.log(`======>`, { token });
@@ -47,6 +50,8 @@ const Dashboard = ({ token, userInfo }) => {
           privileges
         };
       });
+    } else {
+      router.push('/')
     }
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -101,14 +106,14 @@ export async function getServerSideProps(context) {
   const { token } = getAppCookies(req);
   const userInfo = token ? verifyToken(token) : null;
 
-  // if (!userInfo) {
-  //   return {
-  //     redirect: {
-  //       permanent: false,
-  //       destination: '/'
-  //     }
-  //   };
-  // }
+  if (!userInfo) {
+    return {
+      redirect: {
+        permanent: false,
+        destination: '/'
+      }
+    };
+  }
 
   return {
     props: {

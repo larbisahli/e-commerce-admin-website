@@ -221,7 +221,7 @@ export async function getServerSideProps(context) {
   const { token } = getAppCookies(req);
   const userInfo = token ? verifyToken(token) : null;
 
-  console.log(`/index userInfo`, userInfo);
+  console.log(`<LOGIN>`, userInfo);
 
   if (userInfo) {
     return {
