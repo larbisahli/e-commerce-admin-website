@@ -5,6 +5,7 @@ export { default as BookmarkSvg } from './BookmarkSvg';
 export { default as ChartSvg } from './ChartSvg';
 export { default as CheckSvg } from './CheckSvg';
 export { default as DashboardSvg } from './DashboardSvg';
+export { default as DeleteSvg } from './DeleteSvg'
 export { default as DollarSvg } from './DollarSvg';
 export { default as EditSvg } from './EditSvg';
 export { default as EyeSvg } from './EyeSvg';
@@ -20,4 +21,5 @@ export { default as Search } from './Search';
 export { default as SelectorSvg } from './SelectorSvg';
 export { default as StoreSvg } from './StoreSvg';
 export { default as SubCategorySvg } from './SubCategorySvg';
+export { default as WarningSvg } from './WarningSvg'
 export { default as X } from './X';

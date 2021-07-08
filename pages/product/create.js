@@ -106,7 +106,7 @@ const NewProduct = ({ token, userInfo }) => {
         field: 'account_uid'
       });
     } else {
-      router.push('/');
+      // router.push('/');
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [setUserStore, userInfo]);
@@ -193,14 +193,14 @@ export async function getServerSideProps(context) {
   const { token } = getAppCookies(req);
   const userInfo = token ? verifyToken(token) : null;
 
-  if (!userInfo) {
-    return {
-      redirect: {
-        permanent: false,
-        destination: '/'
-      }
-    };
-  }
+  // if (!userInfo) {
+  //   return {
+  //     redirect: {
+  //       permanent: false,
+  //       destination: '/'
+  //     }
+  //   };
+  // }
 
   return {
     props: {

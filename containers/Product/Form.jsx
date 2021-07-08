@@ -138,7 +138,7 @@ const Form = ({ ProductState, dispatchProduct, token, Notify }) => {
         }}
         className="shadow overflow-hidden md:rounded-lg card-container rounded-none"
       >
-        <div className="flex justify-center items-center px-4 py-3 text-gray-800 bg-gray-50 text-right sm:px-6">
+        <div className="flex justify-center items-center px-4 py-3 text-gray-800 bg-gray-100 text-right sm:px-6">
           <span className="uppercase text-sm">Create a new Product</span>
         </div>
         <div className="px-4 py-5 bg-white sm:p-6">

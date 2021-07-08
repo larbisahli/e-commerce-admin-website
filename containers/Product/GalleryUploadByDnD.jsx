@@ -8,6 +8,8 @@ import ImageUploading from 'react-images-uploading';
 
 import { LoadingContainer } from '@/components/index';
 
+import Gallery from './Gallery'
+
 const HostUrl =
   process.env.NODE_ENV === 'production' ? '' : 'http://localhost:5001';
 
@@ -173,7 +175,7 @@ const GalleryUploadByDnD = ({
         }}
         className="shadow overflow-hidden md:rounded-lg card-container rounded-none"
       >
-        <div className="flex justify-center items-center px-4 py-3 text-gray-800 bg-gray-50 text-right sm:px-6">
+        <div className="flex justify-center items-center px-4 py-3 text-gray-800 bg-gray-100 text-right sm:px-6">
           <span className="uppercase text-sm">Add Product Images</span>
         </div>
         <div className="px-4 py-5 bg-white sm:p-6">
@@ -457,6 +459,9 @@ const GalleryUploadByDnD = ({
               </div>
             </div>
           </div>
+        </div>
+        <div>
+          <Gallery/>
         </div>
       </div>
     </form>
