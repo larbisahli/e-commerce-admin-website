@@ -7,11 +7,10 @@ export const CreateProductMutation = gql`
     $title: String!
     $price: Int!
     $discount: Int
-    $shipping_price: Int!
     $warehouse_location: String!
     $product_description: String!
     $short_description: String!
-    $quantity: Int!
+    $inventory: Int!
     $product_weight: Int
     $available_sizes: String
     $available_colors: String
@@ -25,11 +24,10 @@ export const CreateProductMutation = gql`
       title: $title
       price: $price
       discount: $discount
-      shipping_price: $shipping_price
       warehouse_location: $warehouse_location
       product_description: $product_description
       short_description: $short_description
-      quantity: $quantity
+      inventory: $quantity
       product_weight: $product_weight
       available_sizes: $available_sizes
       available_colors: $available_colors
@@ -48,11 +46,10 @@ export const UpdateProductMutation = gql`
     $title: String!
     $price: Int!
     $discount: Int
-    $shipping_price: Int!
     $warehouse_location: String!
     $product_description: String!
     $short_description: String!
-    $quantity: Int!
+    $inventory: Int!
     $product_weight: Int
     $available_sizes: String
     $available_colors: String
@@ -65,11 +62,10 @@ export const UpdateProductMutation = gql`
       title: $title
       price: $price
       discount: $discount
-      shipping_price: $shipping_price
       warehouse_location: $warehouse_location
       product_description: $product_description
       short_description: $short_description
-      quantity: $quantity
+      inventory: $quantity
       product_weight: $product_weight
       available_sizes: $available_sizes
       available_colors: $available_colors

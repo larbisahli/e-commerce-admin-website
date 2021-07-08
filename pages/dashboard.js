@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import { useRouter } from 'next/router'
+import { useRouter } from 'next/router';
 import PropTypes from 'prop-types';
 import React, { useContext, useEffect } from 'react';
 import { Slide, toast, ToastContainer } from 'react-toastify';
@@ -18,7 +18,7 @@ import Add from '../assets/svg/add.svg';
 // const IsProduction = process.env.NODE_ENV === 'production';
 
 const Dashboard = ({ token, userInfo }) => {
-  const router = useRouter()
+  const router = useRouter();
 
   const [, setUserStore] = useContext(UserStoreContext);
 
@@ -51,7 +51,7 @@ const Dashboard = ({ token, userInfo }) => {
         };
       });
     } else {
-      router.push('/')
+      router.push('/');
     }
 
     // eslint-disable-next-line react-hooks/exhaustive-deps

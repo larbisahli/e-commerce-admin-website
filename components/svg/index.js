@@ -12,8 +12,8 @@ export { default as FilterSvg } from './FilterSvg';
 export { default as InvoiceSvg } from './InvoiceSvg';
 export { default as LoadingSvg } from './LoadingSvg';
 export { default as Menuburger } from './Menuburger';
-export { default as PaginationLArrowSvg } from './PaginationLArrowSvg'
-export { default as PaginationRArrowSvg } from './PaginationRArrowSvg'
+export { default as PaginationLArrowSvg } from './PaginationLArrowSvg';
+export { default as PaginationRArrowSvg } from './PaginationRArrowSvg';
 export { default as ProductSvg } from './ProductSvg';
 export { default as RevenueSvg } from './RevenueSvg';
 export { default as Search } from './Search';

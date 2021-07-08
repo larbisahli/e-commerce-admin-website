@@ -1,6 +1,6 @@
 import Image from 'next/image';
 import Link from 'next/link';
-import { useRouter } from 'next/router'
+import { useRouter } from 'next/router';
 import PropTypes from 'prop-types';
 import React, { useContext, useEffect } from 'react';
 import useSWR from 'swr';
@@ -13,20 +13,28 @@ import { getAppCookies, verifyToken } from '@/middleware/utils';
 import Add from '../../assets/svg/add.svg';
 
 const Categories = ({ token, userInfo }) => {
-  const router = useRouter()
+  const router = useRouter();
   const [, setUserStore] = useContext(UserStoreContext);
   const { data } = useSWR([token, GetCategoriesQuery]);
 
-  console.log(`userInfo`, userInfo)
+  console.log(`userInfo`, userInfo);
 
   useEffect(() => {
     if (userInfo) {
-      const { account_uid, email, first_name, last_name, privileges } = userInfo;
+      const { account_uid, email, first_name, last_name, privileges } =
+        userInfo;
       setUserStore((prev) => {
-        return { ...prev, account_uid, email, first_name, last_name, privileges };
+        return {
+          ...prev,
+          account_uid,
+          email,
+          first_name,
+          last_name,
+          privileges
+        };
       });
     } else {
-      router.push('/')
+      router.push('/');
     }
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -119,7 +127,11 @@ const CategoryCard = ({ label, categoryId }) => {
         border-gray-200 border-solid border-l px-1 hover:bg-blue-50 rounded-br-md"
           >
             <div className="py-1">
-              <EditSvg width={25} height={25} className="custom-color-edit"></EditSvg>
+              <EditSvg
+                width={25}
+                height={25}
+                className="custom-color-edit"
+              ></EditSvg>
             </div>
             <span className="font-light text-xs">Edit</span>
           </a>

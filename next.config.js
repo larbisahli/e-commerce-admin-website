@@ -19,6 +19,7 @@ module.exports = {
     GTAG_MEASUREMENT_ID: '',
     FB_APPID: '',
     NEXT_PUBLIC_LOGROCKET_ID: '',
-    SENTRY_DSN: 'https://37ded038a57b4b9fb298ff89015192ef@o912422.ingest.sentry.io/5849453'
+    SENTRY_DSN:
+      'https://37ded038a57b4b9fb298ff89015192ef@o912422.ingest.sentry.io/5849453'
   }
 };

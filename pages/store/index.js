@@ -5,13 +5,17 @@ import PropTypes from 'prop-types';
 import React, { useContext, useEffect, useState } from 'react';
 import ReactPaginate from 'react-paginate';
 
-import { EditSvg, EyeSvg, PaginationLArrowSvg, PaginationRArrowSvg } from '@/components/svg';
+import {
+  EditSvg,
+  EyeSvg,
+  PaginationLArrowSvg,
+  PaginationRArrowSvg
+} from '@/components/svg';
 import { StoreHead } from '@/containers/index';
 import { UserStoreContext } from '@/context/UserStore';
 import { getAppCookies, verifyToken } from '@/middleware/utils';
 
 import Add from '../../assets/svg/add.svg';
-
 
 const Store = ({ token, userInfo }) => {
   const router = useRouter();
@@ -41,22 +45,27 @@ const Store = ({ token, userInfo }) => {
 
   const handlePageClick = (data) => {
     let selected = data.selected;
-    const page = selected + 1
-    console.log(`data ==>`, { selected, page, offset: Math.ceil(selected * limit) })
-    setOffset(() => Math.ceil(selected * limit))
-  }
+    const page = selected + 1;
+    console.log(`data ==>`, {
+      selected,
+      page,
+      offset: Math.ceil(selected * limit)
+    });
+    setOffset(() => Math.ceil(selected * limit));
+  };
 
-  const [offset, setOffset] = useState(0)
-  const [limit, setLimit] = useState(10)
-
+  const [offset, setOffset] = useState(0);
+  const [limit, setLimit] = useState(10);
 
   return (
     <div className="m-auto product-cart-container mb-20">
       <section className="flex justify-end items-center mx-3 mb-3">
-        <Link href={{
-          pathname: '/product/create',
-          query: { cid }
-        }}>
+        <Link
+          href={{
+            pathname: '/product/create',
+            query: { cid }
+          }}
+        >
           <a>
             <div
               className="flex justify-center items-center py-2 px-3 
@@ -77,7 +86,10 @@ const Store = ({ token, userInfo }) => {
         </div>
         {/* ------- Product Showcase ------- */}
         <div className="flex flex-wrap">
-          <ProductCard label="Sub-category-1" url='https://dropgala-test.fra1.digitaloceanspaces.com/2021/7/product_image_from_ali_express_1625214253_McTefiJPA_placeholder.jpg' />
+          <ProductCard
+            label="Sub-category-1"
+            url="https://dropgala-test.fra1.digitaloceanspaces.com/2021/7/product_image_from_ali_express_1625214253_McTefiJPA_placeholder.jpg"
+          />
           <ProductCard label="Sub-Category-2" />
           <ProductCard label="Sub-Category-3" />
           <ProductCard label="Sub-Category-4" />
@@ -87,9 +99,11 @@ const Store = ({ token, userInfo }) => {
           <ProductCard label="Sub-Category-8" />
         </div>
         {/* ------- Pagination Area ------- */}
-        <div className="pr-3 pl-3 border-t pt-3 border-solid 
+        <div
+          className="pr-3 pl-3 border-t pt-3 border-solid 
             border-gray-200 w-full flex-col-reverse 
-              sm:flex-row flex items-center justify-between">
+              sm:flex-row flex items-center justify-between"
+        >
           <div className="">
             <div className="flex justify-center items-center text-sm text-gray-700">
               <div>Showing</div>
@@ -107,13 +121,13 @@ const Store = ({ token, userInfo }) => {
                 previousLabel={<PaginationLArrowSvg width={20} height={20} />}
                 nextLabel={<PaginationRArrowSvg width={20} height={20} />}
                 breakLabel={'...'}
-                breakClassName=''
+                breakClassName=""
                 pageCount={5}
                 marginPagesDisplayed={2}
                 pageRangeDisplayed={5}
                 onPageChange={handlePageClick}
-                containerClassName=''
-                activeClassName='pagination-active'
+                containerClassName=""
+                activeClassName="pagination-active"
               />
             </nav>
           </div>
@@ -124,11 +138,11 @@ const Store = ({ token, userInfo }) => {
 };
 
 const ProductCard = ({ label, url }) => {
-
-  const [Base64Placeholder, setBase64Placeholder] = useState('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mM8eftXPQAIMgMfS5tX7gAAAABJRU5ErkJggg==')
+  const [Base64Placeholder, setBase64Placeholder] = useState(
+    'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mM8eftXPQAIMgMfS5tX7gAAAABJRU5ErkJggg=='
+  );
 
   useEffect(() => {
-
     async function toBase64() {
       const data = await fetch(url);
       const blob = await data.blob();
@@ -139,17 +153,16 @@ const ProductCard = ({ label, url }) => {
         reader.onloadend = () => {
           const base64data = reader.result;
           return resolve(base64data);
-        }
+        };
       }).then((res) => {
-        console.log(`res`, res)
-        setBase64Placeholder(res)
-        return res
-      })
+        console.log(`res`, res);
+        setBase64Placeholder(res);
+        return res;
+      });
     }
 
     if (url) toBase64();
-
-  }, [url])
+  }, [url]);
 
   return (
     <div
@@ -168,7 +181,7 @@ const ProductCard = ({ label, url }) => {
             className="bg-blue-100 rounded-t"
             // src="/static/images/test-image.jpg"
             unoptimized={true}
-            src='https://dropgala-test.fra1.digitaloceanspaces.com/2021/7/product_image_from_ali_express_1625219873_Dpse5Mot9.png'
+            src="https://dropgala-test.fra1.digitaloceanspaces.com/2021/7/product_image_from_ali_express_1625219873_Dpse5Mot9.png"
           />
           {/* ------------ */}
           <div
@@ -217,8 +230,14 @@ const ProductCard = ({ label, url }) => {
               </a>
             </Link>
           </div>
-          <div style={{ background: 'linear-gradient(to top, rgba(0,0,0,0.8) 0%,rgba(0,0,0,0.4) 70%,rgba(0,0,0,0) 100%)', color: '#fff' }}
-            className="absolute right-0 left-0 bottom-0 text-sm p-2 pb-1">
+          <div
+            style={{
+              background:
+                'linear-gradient(to top, rgba(0,0,0,0.8) 0%,rgba(0,0,0,0.4) 70%,rgba(0,0,0,0) 100%)',
+              color: '#fff'
+            }}
+            className="absolute right-0 left-0 bottom-0 text-sm p-2 pb-1"
+          >
             <span
               className="cut-when-2lines"
               title="Authentic Saint Laurent Gold Velvet Pants Authentic Saint Laurent"
@@ -228,7 +247,7 @@ const ProductCard = ({ label, url }) => {
           </div>
         </div>
       </div>
-    </div >
+    </div>
   );
 };
 
