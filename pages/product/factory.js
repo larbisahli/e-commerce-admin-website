@@ -27,17 +27,17 @@ const initialState = {
   title: '',
   price: 0,
   discount: 0,
-  shipping_price: 0,
-  warehouse_location: '',
+  warehouse_location: 'singapore',
   product_description: '',
   short_description: '',
   inventory: 0,
-  product_weight: '',
+  product_weight: 0,
   available_sizes: '',
   available_colors: '',
   size: '',
   color: '',
   is_new: true,
+  note: '',
 };
 
 function reducer(state, action) {
@@ -48,7 +48,11 @@ function reducer(state, action) {
         [action.field]: action.value
       };
     case 'populate':
-      return { ...action.product }
+      return {
+        ...action.product,
+        available_sizes: action.product?.available_sizes?.join(',') ?? '',
+        available_colors: action.product?.available_colors?.join(',') ?? '',
+      }
     case 'reset':
       return { ...initialState };
     default:
@@ -168,6 +172,7 @@ const NewProduct = ({ token, userInfo }) => {
                   ThumbnailImage={ThumbnailImage}
                   setThumbnailImage={setThumbnailImage}
                   Notify={Notify}
+                  title={ProductState.title}
                 />
               </TabPanel>
               <TabPanel>
@@ -178,6 +183,7 @@ const NewProduct = ({ token, userInfo }) => {
                   ImagesUrl={ImagesUrl}
                   setImagesUrl={setImagesUrl}
                   Notify={Notify}
+                  title={ProductState.title}
                 />
               </TabPanel>
             </Tabs>

@@ -1,11 +1,13 @@
+/* eslint-disable react/display-name */
 import { useRouter } from 'next/router';
-import React, { memo, useEffect, useState } from 'react';
+import React, { memo, useEffect, useMemo,useState } from 'react';
 import useSWR from 'swr';
 
 import { LoadingContainer } from '@/components/index';
 import { Request } from '@/graphql/index';
 import { CreateProductMutation, UpdateProductMutation } from '@/graphql/mutations/product';
 import { GetCategoriesQuery } from '@/graphql/queries/category';
+import { GetProductQuery } from '@/graphql/queries/product';
 
 const Form = ({ ProductState, dispatchProduct, token, Notify }) => {
   
@@ -13,7 +15,15 @@ const Form = ({ ProductState, dispatchProduct, token, Notify }) => {
   const { cid, pid } = router.query;
 
   const { data } = useSWR([token, GetCategoriesQuery]);
-  
+
+  const ProductVariable = useMemo(() => {
+    return { product_uid: pid };
+  }, [pid]);
+
+  const { data: StoredProduct } = useSWR([token, GetProductQuery, ProductVariable]);
+
+  console.log('ProductState :>> ', {ProductState,StoredProduct});
+
   const [Loading, setLoading] = useState(false);
 
   const {
@@ -32,7 +42,8 @@ const Form = ({ ProductState, dispatchProduct, token, Notify }) => {
     available_colors,
     size,
     color,
-    is_new
+    is_new,
+    note
   } = ProductState;
 
   console.log(`<data>`, { data, cid, pid });
@@ -49,13 +60,14 @@ const Form = ({ ProductState, dispatchProduct, token, Notify }) => {
   }, [cid, data, dispatchProduct]);
 
   useEffect(() => {
-    if(pid){
-    //   dispatchProduct({
-    //   type: 'populate',
-    //   product: {},
-    // });
+    const Product = StoredProduct?.Product
+    if(Product){
+      dispatchProduct({
+      type: 'populate',
+      product: Product,
+    });
     }
-  }, [pid])
+  }, [StoredProduct, dispatchProduct])
 
   const HandleInputChange = (e) => {
     const target = e.target;
@@ -80,8 +92,8 @@ const Form = ({ ProductState, dispatchProduct, token, Notify }) => {
           token,
           mutation: pid ? UpdateProductMutation: CreateProductMutation,
           variables: {
+            [pid ? 'product_uid': 'account_uid']: pid ? pid: account_uid,
             category_uid,
-            account_uid,
             title,
             price,
             discount,
@@ -91,20 +103,30 @@ const Form = ({ ProductState, dispatchProduct, token, Notify }) => {
             short_description,
             inventory,
             product_weight,
-            available_sizes,
-            available_colors,
+            available_sizes: available_sizes?.split(','),
+            available_colors: available_colors?.split(','),
             size,
             color,
-            is_new
+            is_new,
+            note
           }
         })
-          .then(({ CreateProduct }) => {
-            const product_uid = CreateProduct?.product_uid;
+          .then(({UpdateProduct,CreateProduct}) => {
+
+            const product_uid = CreateProduct?.product_uid ?? UpdateProduct?.product_uid;
+
+            console.log('product_uid :>> ', {data,product_uid});
             
             const message = pid? `🚀 Product successfully updated`:`🚀 Product successfully created`
             Notify(message, product_uid);
 
-            if (product_uid) {
+            if (product_uid && !UpdateProduct) {
+
+              router.push({
+                pathname: '/product/factory',
+                query: { pid: product_uid },
+              })
+
               dispatchProduct({
                 type: 'reset'
               });
@@ -127,6 +149,12 @@ const Form = ({ ProductState, dispatchProduct, token, Notify }) => {
     setLoading(false);
   };
 
+  const Supported_Countries = [
+    {
+      country: 'singapore',
+    }
+  ]
+
   return (
     <form className="m-auto" onSubmit={SubmitProductDetails}>
       {Loading && <LoadingContainer />}
@@ -138,8 +166,10 @@ const Form = ({ ProductState, dispatchProduct, token, Notify }) => {
         }}
         className="shadow overflow-hidden md:rounded-lg card-container rounded-none"
       >
-        <div className="flex justify-center items-center px-4 py-3 text-gray-800 bg-gray-100 text-right sm:px-6">
+        <div className="relative flex justify-center items-center px-4 py-3 text-gray-800 bg-gray-100 text-right sm:px-6">
           <span className="uppercase text-sm">Create a new Product</span>
+          <span className="absolute right-0 bg-green-300 p-1 rounded-full mr-3 text-xs
+          border border-solid text-green-800 border-green-500 font-medium">{pid ? 'Update Mode': 'Create Mode'}</span>
         </div>
         <div className="px-4 py-5 bg-white sm:p-6">
           <div className="block">
@@ -224,17 +254,25 @@ const Form = ({ ProductState, dispatchProduct, token, Notify }) => {
                   *
                 </span>
               </label>
-              <textarea
-                required
+              {/* eslint-disable-next-line jsx-a11y/no-onchange */}
+              <select
                 id="warehouse_location"
                 name="warehouse_location"
-                rows={3}
                 value={warehouse_location}
                 onChange={HandleInputChange}
-                className="shadow-sm border-2 focus:border-indigo-500 mt-1 
-                                      block w-full border-solid border-gray-300 rounded-md p-1"
-                placeholder="My street"
-              />
+                className="mt-1 block py-2 px-3 border border-solid border-gray-300 bg-white 
+                                  rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 
+                                  focus:border-indigo-500 sm:text-sm w-2/4"
+              >
+                {Supported_Countries?.map(({ country},index) => {
+                  console.log({country, index})
+                  return (
+                    <option key={index} value={index}>
+                    {country}
+                    </option>
+                  );
+                })}
+                </select>
             </div>
             {/* ******************* inventory ******************* */}
             <div className="mb-4">
@@ -272,6 +310,7 @@ const Form = ({ ProductState, dispatchProduct, token, Notify }) => {
                 type="number"
                 name="product_weight"
                 id="product_weight"
+                min={0}
                 value={product_weight}
                 onChange={HandleInputChange}
                 className="mt-1 focus:border-indigo-500 block w-full 
@@ -338,7 +377,7 @@ const Form = ({ ProductState, dispatchProduct, token, Notify }) => {
                 <span>
                   Short description about the product (important for SEO).
                 </span>
-                <span className="text-green-600">{` (${short_description.length}/160 max)`}</span>
+                <span className="text-green-600">{` (${short_description?.length??0}/160 max)`}</span>
               </p>
             </div>
             {/* ******************* category ******************* */}
@@ -369,7 +408,6 @@ const Form = ({ ProductState, dispatchProduct, token, Notify }) => {
                     </option>
                   );
                 })}
-                {/* <option value='368cb456-6c4b-4aac-8aab-33da7701e483'>OWO</option> */}
               </select>
               <p className="flex items-center mt-1 text-xs text-gray-500">
                 <span>Select a category where this product belongs too.</span>
@@ -396,7 +434,7 @@ const Form = ({ ProductState, dispatchProduct, token, Notify }) => {
               <p className="flex items-center mt-1 text-xs text-gray-500">
                 <span>
                   Add multiple sizes available for this product, separate sizes
-                  by comma(,) (not required).
+                  by comma(,). (not required)
                 </span>
               </p>
             </div>
@@ -412,13 +450,13 @@ const Form = ({ ProductState, dispatchProduct, token, Notify }) => {
                 type="text"
                 name="size"
                 id="size"
-                value={size}
+                value={size ?? ''}
                 onChange={HandleInputChange}
                 className="mt-1 focus:border-indigo-500 block w-full 
                                   shadow-sm border-2 border-solid border-gray-300 rounded-md p-1"
               />
               <p className="flex flex-col mt-2 text-xs text-gray-500">
-                <span>Product size (not required).</span>
+                <span>Product size. (not required)</span>
               </p>
             </div>
             {/* ******************* available_colors ******************* */}
@@ -442,7 +480,7 @@ const Form = ({ ProductState, dispatchProduct, token, Notify }) => {
               <p className="flex items-center mt-1 text-xs text-gray-500">
                 <span>
                   Add multiple colors available for this product, separate
-                  colors by comma(,) (not required).
+                  colors by comma(,). (not required)
                 </span>
               </p>
             </div>
@@ -458,13 +496,13 @@ const Form = ({ ProductState, dispatchProduct, token, Notify }) => {
                 type="text"
                 name="color"
                 id="color"
-                value={color}
+                value={color ?? ''}
                 onChange={HandleInputChange}
                 className="mt-1 focus:border-indigo-500 block w-full 
                                   shadow-sm border-2 border-solid border-gray-300 rounded-md p-1"
               />
               <p className="flex flex-col mt-2 text-xs text-gray-500">
-                <span>Product color (not required).</span>
+                <span>Product color. (not required)</span>
               </p>
             </div>
             {/* ******************* is_new ******************* */}
@@ -488,6 +526,33 @@ const Form = ({ ProductState, dispatchProduct, token, Notify }) => {
                   New product or used product.
                 </p>
               </div>
+            </div>
+            {/* ******************* short_description ******************* */}
+            <div className="mb-4 mt-4">
+              <label
+                htmlFor="note"
+                className="block text-sm font-medium text-gray-700"
+              >
+                My Hidden Note
+              </label>
+              <div className="mt-1">
+                <textarea
+                  id="note"
+                  name="note"
+                  rows={3}
+                  maxLength={160}
+                  value={note ?? ''}
+                  onChange={HandleInputChange}
+                  className="shadow-sm border-2 focus:border-indigo-500 mt-1 
+                                      block w-full border-solid border-gray-300 rounded-md p-1"
+                  placeholder="My note about this product"
+                />
+              </div>
+              <p className="flex mt-2 flex-col text-xs text-gray-500">
+                <span>
+                  Write a note that is only visible to you. (not required)
+                </span>
+              </p>
             </div>
           </div>
         </div>

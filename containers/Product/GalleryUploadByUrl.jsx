@@ -3,12 +3,16 @@
 /* eslint-disable jsx-a11y/click-events-have-key-events */
 import classNames from 'classnames';
 import { useRouter } from 'next/router';
-import React, { memo, useRef, useState } from 'react';
+import React, { memo, useEffect,useRef, useState } from 'react';
 
 import { LoadingContainer } from '@/components/index';
+import {replace} from '@/utils/index'
 
 import Add from '../../assets/svg/add.svg';
 import Gallery from './Gallery'
+
+
+let QDcurrent = 0;
 
 const HostUrl =
   process.env.NODE_ENV === 'production' ? '' : 'http://localhost:5001';
@@ -20,6 +24,7 @@ const GalleryUploadByUrl = ({
   ImagesUrl,
   setImagesUrl,
   Notify,
+  title
 }) => {
 
   const router = useRouter();
@@ -47,10 +52,11 @@ const GalleryUploadByUrl = ({
     }
   };
 
-  const Form_Data = (image, title) => {
+  const Form_Data = (image, title, index) => {
     const formData = new FormData();
     formData.append('image', image);
     formData.append('title', title);
+    if(index)formData.append('index', title);
     return formData;
   };
 
@@ -133,7 +139,7 @@ const GalleryUploadByUrl = ({
             headers: {
               Authorization: 'Bearer ' + token
             },
-            body: Form_Data(ImagesUrl[i],title)
+            body: Form_Data(ImagesUrl[i],title,i)
           })
         );
       }
@@ -179,8 +185,30 @@ const GalleryUploadByUrl = ({
     }
   };
 
+  // --------- Sort ----------
+
+  useEffect(() => {
+      const draggable = document.querySelectorAll(`.drag-img-dnd`);
+      draggable.forEach((draggable) => {
+        draggable.addEventListener("dragstart", () => {
+          draggable.classList.add('img-dragging');
+          QDcurrent = draggable.id;
+        });
+        draggable.addEventListener("dragend", () => {
+          draggable.classList.remove('img-dragging');
+          QDcurrent = 0;
+        });
+      });
+    }, []);
+
+    const onDragOver = (event) => {
+      const CurrentTarget = event.currentTarget;
+      const results = replace(ImagesUrl, CurrentTarget.id, QDcurrent)
+      setImagesUrl(()=>results)
+    };
+
   return (
-    <form className="m-auto">
+    <section className="m-auto">
       {Loading && <LoadingContainer WithProgressBar Progress={Progress} />}
       <div
         style={{
@@ -205,6 +233,7 @@ const GalleryUploadByUrl = ({
                 <input
                   type="text"
                   ref={ThumbnailUrlRef}
+                  onKeyDown={AddThumbnail}
                   placeholder="www.example.com/img.png"
                   className="mt-1 focus:border-indigo-500 block w-full 
                       shadow-sm border-2 border-solid border-gray-300 rounded-md p-1"
@@ -296,6 +325,7 @@ const GalleryUploadByUrl = ({
                   <input
                     type="text"
                     ref={ImageUrlRef}
+                    onKeyDown={AddImagesUrl}
                     placeholder="www.example.com/img.png"
                     className="mt-1 focus:border-indigo-500 block w-full 
                       shadow-sm border-2 border-solid border-gray-300 rounded-md p-1"
@@ -336,21 +366,29 @@ const GalleryUploadByUrl = ({
                             (make sur Thumbnail are high-resolution)
                           </p>
                         </div>
-                        <div className="flex justify-center flex-wrap items-center">
-                          {ImagesUrl?.map((url, index) => (
+                        <div className="rounded border-solid border-gray-300 border">
+                        <div className="flex justify-center items-center px-4 py-3 text-gray-800 bg-gray-100 text-right sm:px-6">
+                          <span className="text-sm">Gallery Images (Move to sort)</span>
+                        </div>
+                        <div className="flex flex-wrap">
+                        {ImagesUrl?.map((url, index) => (
                             <div
+                              id={index}
+                              draggable={true}
+                              onDragEnter={onDragOver}
                               key={index}
-                              className="card-container rounded m-2"
+                              className="card-container rounded m-2 drag-img-dnd"
                             >
-                              <div style={{ width: '100px' }}>
+                              <div style={{ width: '100px', height:'100px'}} className="group relative cursor-move">
                                 {/* eslint-disable-next-line @next/next/no-img-element */}
                                 <img
                                   className="rounded-t"
                                   src={url}
                                   alt=""
-                                  width="100"
-                                  height="100"
+                                  style={{ width: '100px', height:'100px'}}
                                 />
+                                <span className="absolute cursor-move border border-solid border-green-500 inset-0 opacity-0 group-hover:opacity-100"></span>
+                                <span style={{width:'18px', height: '18px'}} className="absolute text-center text-white bg-black top-0 right-0">{index + 1}</span>
                               </div>
                               <div className="flex justify-center rounded-b border-gray-300 border-solid items-center">
                                 <div
@@ -367,6 +405,7 @@ const GalleryUploadByUrl = ({
                               </div>
                             </div>
                           ))}
+                        </div>
                         </div>
                       </div>
                     </div>
@@ -390,7 +429,7 @@ const GalleryUploadByUrl = ({
           <Gallery/>
         </div>
       </div>
-    </form>
+    </section>
   );
 };
 

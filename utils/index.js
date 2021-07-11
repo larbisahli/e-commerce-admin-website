@@ -25,3 +25,19 @@ Number.prototype.secondsToHm = function () {
   let mDisplay = m > 0 ? m + ' min' : '';
   return hDisplay + mDisplay;
 };
+
+export const replace = (array, index, replacerIndex) => {
+
+  let results = []
+  if (array.length === 1) return array;
+
+  try {
+    results = [...array]
+    results[index] = array[replacerIndex]
+    results[replacerIndex] = array[index]
+    return results
+  } catch (error) {
+    console.log(`error`, error)
+    return array
+  }
+};

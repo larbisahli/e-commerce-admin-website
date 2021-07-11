@@ -4,7 +4,7 @@ import { LoadingSvg } from '@/components/svg';
 
 const LoadingContainer = ({ WithProgressBar, Progress }) => {
   return (
-    <div className="absolute w-full bg-black bg-opacity-10 rounded-lg inset-0 flex justify-center items-center">
+    <div className="fixed z-50 w-full bg-black bg-opacity-10 rounded-lg inset-0 flex justify-center items-center">
       <div className="flex min-w-1/4 justify-center flex-col items-center">
         <LoadingSvg width={80} height={80} />
         {WithProgressBar && (

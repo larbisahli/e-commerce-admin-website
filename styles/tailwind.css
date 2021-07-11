@@ -197,3 +197,7 @@
     margin: 0 !important;
 
 }
+
+.img-dragging{
+    opacity: 0.5;
+}

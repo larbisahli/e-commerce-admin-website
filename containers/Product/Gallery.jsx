@@ -14,9 +14,11 @@ const Gallery = ()=>{
     
 
     return  <div className="">
-           <div className="flex justify-center items-center px-4 py-3 
+           <div className="relative flex justify-center items-center px-4 py-3 
            text-gray-800 bg-gray-100 text-right sm:px-6">
             <span className="text-md">Product Thumbnail</span>
+            <span className="absolute right-0 bg-green-300 p-1 rounded-full mr-3 text-xs
+          border border-solid text-green-800 border-green-500 font-medium">{pid ? 'Update Mode': 'Create Mode'}</span>
             </div>
             {/* Thumbnail */}
           <div className="flex justify-center items-center">

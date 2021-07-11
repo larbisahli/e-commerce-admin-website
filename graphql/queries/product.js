@@ -21,25 +21,25 @@ export const GetProductsQuery = gql`
 `;
 
 export const GetProductQuery = gql`
-  query getCategory($product_uid: ID!) {
-    Category(product_uid: $product_uid) {
+  query getProduct($product_uid: ID!) {
+    Product(product_uid: $product_uid) {
       product_uid
       category_uid
       account_uid
       title
       price
       discount
-      shipping_price
       warehouse_location
       product_description
       short_description
-      quantity
+      inventory
       product_weight
       available_sizes
       available_colors
       size
       color
       is_new
+      note
     }
   }
 `;

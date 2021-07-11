@@ -3,12 +3,15 @@
 /* eslint-disable no-undef */
 import classNames from 'classnames';
 import { useRouter } from 'next/router';
-import React, { memo, useState } from 'react';
+import React, { memo, useEffect,useState } from 'react';
 import ImageUploading from 'react-images-uploading';
 
 import { LoadingContainer } from '@/components/index';
+import {replace} from '@/utils/index'
 
 import Gallery from './Gallery'
+
+let QDcurrent = 0;
 
 const HostUrl =
   process.env.NODE_ENV === 'production' ? '' : 'http://localhost:5001';
@@ -20,6 +23,7 @@ const GalleryUploadByDnD = ({
   ThumbnailImage,
   setThumbnailImage,
   Notify,
+  title
 }) => {
 
   const router = useRouter();
@@ -36,10 +40,12 @@ const GalleryUploadByDnD = ({
     setThumbnailImage(imageList);
   };
 
-  const Form_Data = (image, title) => {
+  const Form_Data = (image, title,index) => {
     const formData = new FormData();
     formData.append('image', image?.data_url);
     formData.append('title', title);
+    formData.append('product_uid', pid);
+    formData.append('index', index);
     return formData;
   };
 
@@ -66,14 +72,14 @@ const GalleryUploadByDnD = ({
             headers: {
               Authorization: 'Bearer ' + token
             },
-            body: Form_Data(ThumbnailImage[0], title)
+            body: Form_Data(ThumbnailImage[0], title, 0)
           })
 
         const {success, error} = await response.json() 
 
         if(error){
           console.error(error);
-          Notify(error.message, false);
+          Notify(error.message ?? 'Ops, something happened', false);
           setLoading(() => false);
         }
 
@@ -118,7 +124,7 @@ const GalleryUploadByDnD = ({
             headers: {
               Authorization: 'Bearer ' + token
             },
-            body: Form_Data(images[i], title)
+            body: Form_Data(images[i], title, i+1)
           })
         );
       }
@@ -163,6 +169,28 @@ const GalleryUploadByDnD = ({
         });
     }
   };
+
+  // --------- Sort ----------
+
+  useEffect(() => {
+      const draggable = document.querySelectorAll(`.drag-img-dnd`);
+      draggable.forEach((draggable) => {
+        draggable.addEventListener("dragstart", () => {
+          draggable.classList.add('img-dragging');
+          QDcurrent = +draggable.id;
+        });
+        draggable.addEventListener("dragend", () => {
+          draggable.classList.remove('img-dragging');
+          QDcurrent = 0;
+        });
+      });
+    }, []);
+
+    const onDragOver = (event) => {
+      const CurrentTarget = event.currentTarget;
+      const results = replace(images, +CurrentTarget.id, QDcurrent)
+      setImages(()=>results)
+    };
 
   return (
     <form className="m-auto">
@@ -328,17 +356,6 @@ const GalleryUploadByDnD = ({
                   maxNumber={20}
                   dataURLKey="data_url"
                   acceptType={['jpg', 'png', 'jpeg', 'webp']}
-                  // imgExtension={['.jpg', '.png', '.jpeg', '.webp']}
-                  // resolutionType='ratio'
-                  // resolutionWidth={800}
-                  // resolutionHeight={800}
-                  // onError={(errors, files) => {
-                  //     console.log({ errors, files })
-                  //     if (errors.resolution) {
-                  //         setImageError(true)
-                  //         setTimeout(() => setImageError(false), 8000)
-                  //     }
-                  // }}
                 >
                   {({
                     imageList,
@@ -399,21 +416,30 @@ const GalleryUploadByDnD = ({
                           Remove all images
                         </div>
                       </div>
-                      <div className="flex justify-center flex-wrap items-center">
+                      <div className="rounded border-solid border-gray-300 border">
+                      <div className="flex justify-center items-center px-4 py-3 text-gray-800 bg-gray-100 text-right sm:px-6">
+                          <span className="text-sm">Gallery Images (Move to sort)</span>
+                        </div>
+                        <div className="flex flex-wrap">
                         {imageList.map((image, index) => (
                           <div
+                            id={index}
+                            draggable={true}
+                            onDragEnter={onDragOver}
                             key={index}
-                            className="card-container rounded m-2"
+                            className="card-container rounded m-2 drag-img-dnd"
                           >
-                            <div style={{ width: '100px' }}>
+                            <div style={{ width: '100px', height:'100px' }} className="group relative cursor-move">
                               {/* eslint-disable-next-line @next/next/no-img-element */}
                               <img
                                 className="rounded-t"
                                 src={image['data_url']}
                                 alt=""
-                                width="100"
-                                height="100"
+                                width="100px"
+                                height="100px"
                               />
+                              <span className="absolute cursor-move border border-solid border-green-500 inset-0 opacity-0 group-hover:opacity-100"></span>
+                              <span style={{width:'18px', height: '18px'}} className="absolute rounded text-center text-white bg-black top-0 right-0">{index + 1}</span>
                             </div>
                             <div className="flex justify-center rounded-b border-gray-300 border-solid items-center">
                               <div
@@ -433,6 +459,7 @@ const GalleryUploadByDnD = ({
                             </div>
                           </div>
                         ))}
+                        </div>
                       </div>
                       {errors?.maxFileSize && (
                         <ErrorMessage label="Selected file size exceeds 1.4MB" />

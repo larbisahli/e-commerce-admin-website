@@ -7,6 +7,7 @@ export { default as CheckSvg } from './CheckSvg';
 export { default as DashboardSvg } from './DashboardSvg';
 export { default as DeleteSvg } from './DeleteSvg'
 export { default as DollarSvg } from './DollarSvg';
+export { default as DragSvg } from './DragSvg'
 export { default as EditSvg } from './EditSvg';
 export { default as EyeSvg } from './EyeSvg';
 export { default as FilterSvg } from './FilterSvg';
