@@ -80,9 +80,6 @@ const NewProduct = ({ token, userInfo }) => {
     ProductVariable
   ] : null);
 
-  console.log('======== :>> ', { data, StoredProduct });
-
-
   const [, setUserStore] = useContext(UserStoreContext);
   const [ProductState, dispatchProduct] = useReducer(reducer, initialState);
 
@@ -91,6 +88,8 @@ const NewProduct = ({ token, userInfo }) => {
 
   const [images, setImages] = useState([]);
   const [ThumbnailImage, setThumbnailImage] = useState([]);
+
+  console.log('======== :>> ', { data, StoredProduct, ProductState });
 
   const Notify = (Message, success) => {
     const Options = {
@@ -176,8 +175,32 @@ const NewProduct = ({ token, userInfo }) => {
     [token, ProductVariable],
   )
 
+  //  Input Change
+  const HasChange = useMemo(() => {
+    if (StoredProduct) {
+      if (StoredProduct?.Product?.category_uid !== ProductState?.category_uid) return true;
+      if (StoredProduct?.Product?.quiz_description !== ProductState?.quiz_description) return true;
+      if (StoredProduct?.Product?.title !== ProductState?.title) return true;
+      if (StoredProduct?.Product?.price !== ProductState?.price) return true;
+      if (StoredProduct?.Product?.discount !== ProductState?.discount) return true;
+      if (StoredProduct?.Product?.warehouse_location !== ProductState?.warehouse_location) return true;
+      if (StoredProduct?.Product?.product_description !== ProductState?.product_description) return true;
+      if (StoredProduct?.Product?.short_description !== ProductState?.short_description) return true;
+      if (StoredProduct?.Product?.inventory !== ProductState?.inventory) return true;
+      if (StoredProduct?.Product?.product_weight !== ProductState?.product_weight) return true;
+      if (StoredProduct?.Product?.available_sizes?.join(',') !== ProductState?.available_sizes) return true;
+      if (StoredProduct?.Product?.available_colors?.join(',') !== ProductState?.available_colors) return true;
+      if (StoredProduct?.Product?.size !== ProductState?.size) return true;
+      if (StoredProduct?.Product?.color !== ProductState?.color) return true;
+      if (StoredProduct?.Product?.is_new !== ProductState?.is_new) return true;
+      if (StoredProduct?.Product?.note !== ProductState?.note) return true;
+    }
+    return false;
+  }, [StoredProduct, ProductState]);
+
   const thumbnail = StoredProduct?.Product?.thumbnail
   const gallery = StoredProduct?.Product?.gallery
+
   return (
     <div className="form-container">
       <ToastContainer
@@ -218,6 +241,8 @@ const NewProduct = ({ token, userInfo }) => {
               token={token}
               Notify={Notify}
               Categories={data?.Categories}
+              HasChange={HasChange}
+              MutateProduct={MutateProduct}
             />
           </TabPanel>
           <TabPanel>

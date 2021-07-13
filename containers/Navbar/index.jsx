@@ -1,4 +1,5 @@
 import Image from 'next/image';
+import { useRouter } from 'next/router';
 import PropTypes from 'prop-types';
 import React, { memo, useContext, useRef, useState } from 'react';
 
@@ -24,12 +25,12 @@ import {
 } from './styles';
 
 const Navbar = ({ setGuideState }) => {
+  const { asPath } = useRouter();
+
   const ProfileDropNodeRef = useRef(null);
   const NotificationDropNodeRef = useRef(null);
 
   const [UserStore] = useContext(UserStoreContext);
-
-  console.log('UserStore ========:>> ', UserStore);
 
   const [ShowNotificationDrop, setShowNotificationDrop] = useState(false);
   const [ShowProfileDrop, setShowProfileDrop] = useState(false);
@@ -81,7 +82,7 @@ const Navbar = ({ setGuideState }) => {
         </MenuContainer>
         <div className="page-title-container">
           <div className="ptc-slash"></div>
-          {`dashboard`}
+          { asPath.split('/')[1]}
         </div>
       </LeftContainer>
       <RightContainer>

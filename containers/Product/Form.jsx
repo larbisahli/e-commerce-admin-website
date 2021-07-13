@@ -11,7 +11,7 @@ import {
   UpdateProductMutation
 } from '@/graphql/mutations/product';
 
-const Form = ({ ProductState, dispatchProduct, token, Notify, Categories }) => {
+const Form = ({ ProductState, dispatchProduct, token, Notify, Categories, HasChange,MutateProduct }) => {
   const router = useRouter();
   const { pid } = router.query;
   
@@ -97,6 +97,8 @@ const Form = ({ ProductState, dispatchProduct, token, Notify, Categories }) => {
               dispatchProduct({
                 type: 'reset'
               });
+            }else{
+              MutateProduct()
             }
           })
           .catch(({ response }) => {
@@ -549,9 +551,37 @@ const Form = ({ ProductState, dispatchProduct, token, Notify, Categories }) => {
         <div className="px-4 py-3 bg-gray-50 text-right sm:px-6">
           <button
             type="submit"
-            className="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+            className={classNames(
+                  'inline-flex',
+                  'justify-center',
+                  'py-2',
+                  'px-4',
+                  'border',
+                  'border-transparent',
+                  'shadow-sm',
+                  'text-sm',
+                  'font-medium',
+                  'rounded-md',
+                  'text-white',
+                  'focus:outline-none',
+                  
+                  {
+                    'bg-green-600': pid && HasChange,
+                    'hover:bg-green-700': pid && HasChange,
+                    'focus:ring-2': pid && HasChange,
+                    'focus:ring-offset-2': pid && HasChange,
+                    'focus:ring-green-500': pid && HasChange,
+                    'cursor-pointer': pid && HasChange,
+                    'cursor-not-allowed': pid && !HasChange,
+                    'bg-gray-400': pid && !HasChange,
+                    'focus:ring-indigo-500': !pid,
+                    'hover:bg-indigo-700': !pid,
+                    'bg-indigo-600': !pid,
+                  }
+                )}
+                disabled={pid && !HasChange}
           >
-            Submit
+            {pid?'Save':'Submit'}
           </button>
         </div>
       </div>

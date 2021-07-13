@@ -101,7 +101,7 @@ function App({ Component, pageProps }) {
           sizes="16x16"
           href="/static/favicons/favicon-16x16.png"
         />
-        <link rel="manifest" href="/manifest.webmanifest" />
+        {/* <link rel="manifest" href="/manifest.webmanifest" /> */}
         <link rel="mask-icon" href="/safari-pinned-tab.svg" color="#ffffff" />
         <meta name="msapplication-TileColor" content="#ffffff" />
         <meta name="theme-color" content="#ffffff" />

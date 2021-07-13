@@ -22,8 +22,6 @@ const Dashboard = ({ token, userInfo }) => {
 
   const [, setUserStore] = useContext(UserStoreContext);
 
-  console.log(`======>`, { token });
-
   const notify = () =>
     toast.dark(`Welcome back ${userInfo?.first_name ?? ''}`, {
       position: 'bottom-right',
@@ -72,7 +70,7 @@ const Dashboard = ({ token, userInfo }) => {
         transition={Slide}
       />
       <section className="flex justify-end items-center mx-3">
-        <Link href="/product/create">
+        <Link href="/product/factory">
           <a>
             <div
               className="flex justify-center items-center py-2 px-3 bg-blue-600 hover:bg-blue-700 
