@@ -256,14 +256,14 @@ export async function getServerSideProps(context) {
   const { token } = getAppCookies(req);
   const userInfo = token ? verifyToken(token) : null;
 
-  // if (!userInfo) {
-  //   return {
-  //     redirect: {
-  //       permanent: false,
-  //       destination: '/'
-  //     }
-  //   };
-  // }
+  if (!userInfo) {
+    return {
+      redirect: {
+        permanent: false,
+        destination: '/'
+      }
+    };
+  }
 
   return {
     props: {

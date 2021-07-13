@@ -5,7 +5,7 @@ const HostUrl = IsProduction ? '' : 'http://127.0.0.1:5001';
 const endpoint = `${HostUrl}/admin-api/graphql`;
 
 export function fetcher(token, query, variables) {
-  console.log(`object`, { token, query, variables });
+  // console.log(`object`, { token, query, variables });
 
   const graphQLClient = new GraphQLClient(endpoint, {
     withCredentials: true,

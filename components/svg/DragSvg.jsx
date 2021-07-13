@@ -1,13 +1,13 @@
-import React from "react";
+import React from 'react';
 
-const DragSvg = ({props}) => {
+const DragSvg = ({ props }) => {
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"
       aria-hidden="true"
       style={{
-        msTransform: "rotate(360deg)",
-        WebkitTransform: "rotate(360deg)",
+        msTransform: 'rotate(360deg)',
+        WebkitTransform: 'rotate(360deg)'
       }}
       viewBox="0 0 24 24"
       transform="rotate(360)"

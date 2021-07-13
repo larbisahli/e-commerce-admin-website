@@ -1,29 +1,20 @@
 /* eslint-disable react/display-name */
+// eslint-disable-next-line simple-import-sort/imports
 import { useRouter } from 'next/router';
-import React, { memo, useEffect, useMemo,useState } from 'react';
-import useSWR from 'swr';
+import React, { memo, useState } from 'react';
+import classNames from 'classnames';
 
 import { LoadingContainer } from '@/components/index';
 import { Request } from '@/graphql/index';
-import { CreateProductMutation, UpdateProductMutation } from '@/graphql/mutations/product';
-import { GetCategoriesQuery } from '@/graphql/queries/category';
-import { GetProductQuery } from '@/graphql/queries/product';
+import {
+  CreateProductMutation,
+  UpdateProductMutation
+} from '@/graphql/mutations/product';
 
-const Form = ({ ProductState, dispatchProduct, token, Notify }) => {
-  
+const Form = ({ ProductState, dispatchProduct, token, Notify, Categories }) => {
   const router = useRouter();
-  const { cid, pid } = router.query;
-
-  const { data } = useSWR([token, GetCategoriesQuery]);
-
-  const ProductVariable = useMemo(() => {
-    return { product_uid: pid };
-  }, [pid]);
-
-  const { data: StoredProduct } = useSWR([token, GetProductQuery, ProductVariable]);
-
-  console.log('ProductState :>> ', {ProductState,StoredProduct});
-
+  const { pid } = router.query;
+  
   const [Loading, setLoading] = useState(false);
 
   const {
@@ -46,29 +37,6 @@ const Form = ({ ProductState, dispatchProduct, token, Notify }) => {
     note
   } = ProductState;
 
-  console.log(`<data>`, { data, cid, pid });
-
-  useEffect(() => {
-    const Default_cid = data?.Categories[0]?.category_uid;
-    if (cid || Default_cid) {
-      dispatchProduct({
-        type: 'insert',
-        value: cid ?? Default_cid,
-        field: 'category_uid'
-      });
-    }
-  }, [cid, data, dispatchProduct]);
-
-  useEffect(() => {
-    const Product = StoredProduct?.Product
-    if(Product){
-      dispatchProduct({
-      type: 'populate',
-      product: Product,
-    });
-    }
-  }, [StoredProduct, dispatchProduct])
-
   const HandleInputChange = (e) => {
     const target = e.target;
     const value = target.type === 'checkbox' ? target.checked : target.value;
@@ -90,9 +58,9 @@ const Form = ({ ProductState, dispatchProduct, token, Notify }) => {
 
         await Request({
           token,
-          mutation: pid ? UpdateProductMutation: CreateProductMutation,
+          mutation: pid ? UpdateProductMutation : CreateProductMutation,
           variables: {
-            [pid ? 'product_uid': 'account_uid']: pid ? pid: account_uid,
+            [pid ? 'product_uid' : 'account_uid']: pid ? pid : account_uid,
             category_uid,
             title,
             price,
@@ -111,21 +79,20 @@ const Form = ({ ProductState, dispatchProduct, token, Notify }) => {
             note
           }
         })
-          .then(({UpdateProduct,CreateProduct}) => {
+          .then(({ UpdateProduct, CreateProduct }) => {
+            const product_uid =
+              CreateProduct?.product_uid ?? UpdateProduct?.product_uid;
 
-            const product_uid = CreateProduct?.product_uid ?? UpdateProduct?.product_uid;
-
-            console.log('product_uid :>> ', {data,product_uid});
-            
-            const message = pid? `🚀 Product successfully updated`:`🚀 Product successfully created`
+            const message = pid
+              ? `🚀 Product successfully updated`
+              : `🚀 Product successfully created`;
             Notify(message, product_uid);
 
             if (product_uid && !UpdateProduct) {
-
               router.push({
                 pathname: '/product/factory',
-                query: { pid: product_uid },
-              })
+                query: { pid: product_uid }
+              });
 
               dispatchProduct({
                 type: 'reset'
@@ -151,9 +118,9 @@ const Form = ({ ProductState, dispatchProduct, token, Notify }) => {
 
   const Supported_Countries = [
     {
-      country: 'singapore',
+      country: 'singapore'
     }
-  ]
+  ];
 
   return (
     <form className="m-auto" onSubmit={SubmitProductDetails}>
@@ -168,8 +135,29 @@ const Form = ({ ProductState, dispatchProduct, token, Notify }) => {
       >
         <div className="relative flex justify-center items-center px-4 py-3 text-gray-800 bg-gray-100 text-right sm:px-6">
           <span className="uppercase text-sm">Create a new Product</span>
-          <span className="absolute right-0 bg-green-300 p-1 rounded-full mr-3 text-xs
-          border border-solid text-green-800 border-green-500 font-medium">{pid ? 'Update Mode': 'Create Mode'}</span>
+          <span
+            className={classNames(
+              'absolute',
+              'font-medium',
+              'right-0',
+              'p-1',
+              'rounded-full',
+              'mr-3',
+              'text-xs',
+              'border',
+              'border-solid',
+              {
+                'text-green-800': !pid,
+                'bg-green-300': !pid,
+                'border-green-500': !pid,
+                'text-yellow-800': pid,
+                'bg-yellow-300': pid,
+                'border-yellow-500': pid
+              }
+            )}
+          >
+            {pid ? 'Update Mode' : 'Create Mode'}
+          </span>
         </div>
         <div className="px-4 py-5 bg-white sm:p-6">
           <div className="block">
@@ -264,15 +252,14 @@ const Form = ({ ProductState, dispatchProduct, token, Notify }) => {
                                   rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 
                                   focus:border-indigo-500 sm:text-sm w-2/4"
               >
-                {Supported_Countries?.map(({ country},index) => {
-                  console.log({country, index})
+                {Supported_Countries?.map(({ country }, index) => {
                   return (
                     <option key={index} value={index}>
-                    {country}
+                      {country}
                     </option>
                   );
                 })}
-                </select>
+              </select>
             </div>
             {/* ******************* inventory ******************* */}
             <div className="mb-4">
@@ -377,7 +364,9 @@ const Form = ({ ProductState, dispatchProduct, token, Notify }) => {
                 <span>
                   Short description about the product (important for SEO).
                 </span>
-                <span className="text-green-600">{` (${short_description?.length??0}/160 max)`}</span>
+                <span className="text-green-600">{` (${
+                  short_description?.length ?? 0
+                }/160 max)`}</span>
               </p>
             </div>
             {/* ******************* category ******************* */}
@@ -401,7 +390,7 @@ const Form = ({ ProductState, dispatchProduct, token, Notify }) => {
                                   rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 
                                   focus:border-indigo-500 sm:text-sm w-2/4"
               >
-                {data?.Categories?.map(({ category_uid, category_name }) => {
+                {Categories?.map(({ category_uid, category_name }) => {
                   return (
                     <option key={category_uid} value={category_uid}>
                       {category_name}

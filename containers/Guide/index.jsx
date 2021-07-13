@@ -5,7 +5,7 @@ import React, { Fragment, memo, useCallback, useEffect, useState } from 'react';
 import {
   AddSvg,
   BellSvg,
-  BookmarkSvg,
+  CategorySvg,
   DashboardSvg,
   DollarSvg,
   InvoiceSvg,
@@ -90,12 +90,12 @@ const Guide = ({ GuideState, setGuideState }) => {
               </ItemLink>
               <div className="line"></div>
               <ItemLink mode={2} href="/categories" label="Categories">
-                <BookmarkSvg width={20} height={20} />
+                <CategorySvg width={20} height={20} />
               </ItemLink>
               <ItemLink mode={2} href="/store" label="Store">
                 <StoreSvg width={20} height={20} />
               </ItemLink>
-              <ItemLink mode={2} href="/product/create" label="New Product">
+              <ItemLink mode={2} href="/product/factory" label="New Product">
                 <AddSvg width={20} height={20} />
               </ItemLink>
               <div className="line"></div>

@@ -1,16 +1,20 @@
 import dynamic from 'next/dynamic';
 import { useRouter } from 'next/router';
 import PropTypes from 'prop-types';
-import React, { useContext, useEffect, useReducer, useState } from 'react';
+import React, { useCallback, useContext, useEffect, useMemo, useReducer, useState } from 'react';
 import { Tab, TabList, TabPanel } from 'react-tabs';
 import { Slide, toast, ToastContainer } from 'react-toastify';
+import useSWR, { mutate } from 'swr';
 
 import {
   Form,
   GalleryUploadByDnD,
   GalleryUploadByUrl
 } from '@/containers/index';
+import Gallery from '@/containers/Product/Gallery';
 import { UserStoreContext } from '@/context/UserStore';
+import { GetCategoriesQuery } from '@/graphql/queries/category';
+import { GetProductQuery } from '@/graphql/queries/product';
 import { getAppCookies, verifyToken } from '@/middleware/utils';
 
 import ArrowLeft from '../../assets/svg/arrow-left.svg';
@@ -37,7 +41,7 @@ const initialState = {
   size: '',
   color: '',
   is_new: true,
-  note: '',
+  note: ''
 };
 
 function reducer(state, action) {
@@ -51,8 +55,8 @@ function reducer(state, action) {
       return {
         ...action.product,
         available_sizes: action.product?.available_sizes?.join(',') ?? '',
-        available_colors: action.product?.available_colors?.join(',') ?? '',
-      }
+        available_colors: action.product?.available_colors?.join(',') ?? ''
+      };
     case 'reset':
       return { ...initialState };
     default:
@@ -62,6 +66,22 @@ function reducer(state, action) {
 
 const NewProduct = ({ token, userInfo }) => {
   const router = useRouter();
+  const { cid, pid } = router.query;
+
+  const ProductVariable = useMemo(() => {
+    return { product_uid: pid };
+  }, [pid]);
+
+  const { data } = useSWR([token, GetCategoriesQuery]);
+
+  const { data: StoredProduct } = useSWR(pid ? [
+    token,
+    GetProductQuery,
+    ProductVariable
+  ] : null);
+
+  console.log('======== :>> ', { data, StoredProduct });
+
 
   const [, setUserStore] = useContext(UserStoreContext);
   const [ProductState, dispatchProduct] = useReducer(reducer, initialState);
@@ -89,6 +109,7 @@ const NewProduct = ({ token, userInfo }) => {
     }
   };
 
+  // ------- User Info -------
   useEffect(() => {
     if (userInfo) {
       const { account_uid, email, first_name, last_name, privileges } =
@@ -103,18 +124,60 @@ const NewProduct = ({ token, userInfo }) => {
           privileges
         };
       });
-      // ------
       dispatchProduct({
         type: 'insert',
         value: account_uid,
         field: 'account_uid'
       });
     } else {
-      // router.push('/');
+      router.push('/');
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [setUserStore, userInfo]);
 
+  // ------- Category -------
+  useEffect(() => {
+    const Default_cid = data?.Categories[0]?.category_uid;
+    if (cid || Default_cid) {
+      dispatchProduct({
+        type: 'insert',
+        value: cid ?? Default_cid,
+        field: 'category_uid'
+      });
+    }
+  }, [cid, data, dispatchProduct]);
+
+  // ------- Product -------
+  useEffect(() => {
+    const Product = StoredProduct?.Product;
+
+    if (Product) {
+      dispatchProduct({
+        type: 'populate',
+        product: Product
+      });
+    } else if (pid && Product === null) {
+      Notify('Product Not Available', false);
+      router.push({
+        pathname: '/product/factory'
+      });
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [StoredProduct, dispatchProduct, pid]);
+
+
+  const MutateProduct = useCallback(() => {
+    mutate([
+      token,
+      GetProductQuery,
+      ProductVariable
+    ])
+  },
+    [token, ProductVariable],
+  )
+
+  const thumbnail = StoredProduct?.Product?.thumbnail
+  const gallery = StoredProduct?.Product?.gallery
   return (
     <div className="form-container">
       <ToastContainer
@@ -154,6 +217,7 @@ const NewProduct = ({ token, userInfo }) => {
               dispatchProduct={dispatchProduct}
               token={token}
               Notify={Notify}
+              Categories={data?.Categories}
             />
           </TabPanel>
           <TabPanel>
@@ -162,6 +226,7 @@ const NewProduct = ({ token, userInfo }) => {
                 <TabList>
                   <Tab>Drag & Drop</Tab>
                   <Tab>Upload By URL</Tab>
+                  {(thumbnail || gallery) && <Tab>Product Gallery</Tab>}
                 </TabList>
               </div>
               <TabPanel>
@@ -186,6 +251,13 @@ const NewProduct = ({ token, userInfo }) => {
                   title={ProductState.title}
                 />
               </TabPanel>
+              <TabPanel>
+                <Gallery
+                  token={token}
+                  thumbnail={thumbnail}
+                  gallery={gallery}
+                  MutateProduct={MutateProduct} />
+              </TabPanel>
             </Tabs>
           </TabPanel>
         </Tabs>
@@ -199,14 +271,14 @@ export async function getServerSideProps(context) {
   const { token } = getAppCookies(req);
   const userInfo = token ? verifyToken(token) : null;
 
-  // if (!userInfo) {
-  //   return {
-  //     redirect: {
-  //       permanent: false,
-  //       destination: '/'
-  //     }
-  //   };
-  // }
+  if (!userInfo) {
+    return {
+      redirect: {
+        permanent: false,
+        destination: '/'
+      }
+    };
+  }
 
   return {
     props: {

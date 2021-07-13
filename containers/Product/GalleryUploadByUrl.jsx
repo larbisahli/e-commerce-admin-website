@@ -3,14 +3,12 @@
 /* eslint-disable jsx-a11y/click-events-have-key-events */
 import classNames from 'classnames';
 import { useRouter } from 'next/router';
-import React, { memo, useEffect,useRef, useState } from 'react';
+import React, { memo, useEffect, useRef, useState } from 'react';
 
 import { LoadingContainer } from '@/components/index';
-import {replace} from '@/utils/index'
+import { replace } from '@/utils/index';
 
 import Add from '../../assets/svg/add.svg';
-import Gallery from './Gallery'
-
 
 let QDcurrent = 0;
 
@@ -26,7 +24,6 @@ const GalleryUploadByUrl = ({
   Notify,
   title
 }) => {
-
   const router = useRouter();
   const { pid } = router.query;
 
@@ -56,59 +53,59 @@ const GalleryUploadByUrl = ({
     const formData = new FormData();
     formData.append('image', image);
     formData.append('title', title);
-    if(index)formData.append('index', title);
+    if (index) formData.append('index', title);
     return formData;
   };
 
   // -------------- Thumbnail ---------------
-  const SubmitThumbnail = async(e) => {
+  const SubmitThumbnail = async (e) => {
     e.preventDefault();
 
-    if(!ThumbnailUrl){
+    if (!ThumbnailUrl) {
       Notify(`No URL specified.`, false);
-      return
+      return;
     }
 
-    if(!pid){
-      Notify(`You must submit your product details in order to upload an image.`, false);
-      return
+    if (!pid) {
+      Notify(
+        `You must submit your product details in order to upload an image.`,
+        false
+      );
+      return;
     }
-
 
     if (!Loading && ThumbnailUrl && pid) {
       setLoading(() => true);
       setProgress(0);
 
-      try{
-
+      try {
         const response = await fetch(`${HostUrl}/api/upload`, {
-        method: 'POST',
-        withCredentials: true,
-        credentials: 'include',
-        headers: {
-          Authorization: 'Bearer ' + token
-        },
-        body: Form_Data(ThumbnailUrl, title)
-      })
+          method: 'POST',
+          withCredentials: true,
+          credentials: 'include',
+          headers: {
+            Authorization: 'Bearer ' + token
+          },
+          body: Form_Data(ThumbnailUrl, title)
+        });
 
-      const {success, error} = await response.json() 
+        const { success, error } = await response.json();
 
-      if(error){
-        console.error(error);
-        Notify(error.message, false);
-        setLoading(() => false);
-      }
+        if (error) {
+          console.error(error);
+          Notify(error.message, false);
+          setLoading(() => false);
+        }
 
-      if(success){
+        if (success) {
           Notify(`🚀 Thumbnail successfully uploaded`, true);
           setLoading(() => false);
           setProgress(100);
           setThumbnailUrl(null);
         }
-      }catch(error){
-        console.log('error :>> ',{message:error.message,error});
+      } catch (error) {
+        console.log('error :>> ', { message: error.message, error });
       }
-        
     }
   };
 
@@ -116,13 +113,15 @@ const GalleryUploadByUrl = ({
   const SubmitImages = async (e) => {
     e.preventDefault();
 
-    if(!ImagesUrl[0]){
+    if (!ImagesUrl[0]) {
       Notify(`No URL specified.`, false);
     }
-    if(!pid){
-      Notify(`You must submit your product details in order to upload an image.`, false);
+    if (!pid) {
+      Notify(
+        `You must submit your product details in order to upload an image.`,
+        false
+      );
     }
-
 
     let FetchArray = [];
 
@@ -139,7 +138,7 @@ const GalleryUploadByUrl = ({
             headers: {
               Authorization: 'Bearer ' + token
             },
-            body: Form_Data(ImagesUrl[i],title,i)
+            body: Form_Data(ImagesUrl[i], title, i)
           })
         );
       }
@@ -157,24 +156,24 @@ const GalleryUploadByUrl = ({
         .then((data) => {
           console.log(`data`, { data });
 
-          let count = null
+          let count = null;
 
-          const ErrorImages = []
+          const ErrorImages = [];
 
           data.forEach(({ success, error }, index) => {
-              if (success) count++
-              
-              if(error) {
-                ErrorImages.push(ImagesUrl[index])
-                Notify(`Can't upload ${ImagesUrl[index]?.file?.name}`, false);
-              }
-          })
+            if (success) count++;
 
-          if(count){
+            if (error) {
+              ErrorImages.push(ImagesUrl[index]);
+              Notify(`Can't upload ${ImagesUrl[index]?.file?.name}`, false);
+            }
+          });
+
+          if (count) {
             Notify(`🚀 ${count} Gallery Images successfully uploaded`, true);
           }
           setLoading(() => false);
-          console.log('ErrorImages :>> ', {ErrorImages});
+          console.log('ErrorImages :>> ', { ErrorImages });
           setImagesUrl([...ErrorImages]);
         })
         .catch((err) => {
@@ -188,24 +187,24 @@ const GalleryUploadByUrl = ({
   // --------- Sort ----------
 
   useEffect(() => {
-      const draggable = document.querySelectorAll(`.drag-img-dnd`);
-      draggable.forEach((draggable) => {
-        draggable.addEventListener("dragstart", () => {
-          draggable.classList.add('img-dragging');
-          QDcurrent = draggable.id;
-        });
-        draggable.addEventListener("dragend", () => {
-          draggable.classList.remove('img-dragging');
-          QDcurrent = 0;
-        });
+    const draggable = document.querySelectorAll(`.drag-img-url`);
+    draggable.forEach((draggable) => {
+      draggable.addEventListener('dragstart', () => {
+        draggable.classList.add('img-dragging');
+        QDcurrent = draggable.id;
       });
-    }, []);
+      draggable.addEventListener('dragend', () => {
+        draggable.classList.remove('img-dragging');
+        QDcurrent = 0;
+      });
+    });
+  }, []);
 
-    const onDragOver = (event) => {
-      const CurrentTarget = event.currentTarget;
-      const results = replace(ImagesUrl, CurrentTarget.id, QDcurrent)
-      setImagesUrl(()=>results)
-    };
+  const onDragOver = (event) => {
+    const CurrentTarget = event.currentTarget;
+    const results = replace(ImagesUrl, CurrentTarget.id, QDcurrent);
+    setImagesUrl(() => results);
+  };
 
   return (
     <section className="m-auto">
@@ -367,45 +366,55 @@ const GalleryUploadByUrl = ({
                           </p>
                         </div>
                         <div className="rounded border-solid border-gray-300 border">
-                        <div className="flex justify-center items-center px-4 py-3 text-gray-800 bg-gray-100 text-right sm:px-6">
-                          <span className="text-sm">Gallery Images (Move to sort)</span>
-                        </div>
-                        <div className="flex flex-wrap">
-                        {ImagesUrl?.map((url, index) => (
-                            <div
-                              id={index}
-                              draggable={true}
-                              onDragEnter={onDragOver}
-                              key={index}
-                              className="card-container rounded m-2 drag-img-dnd"
-                            >
-                              <div style={{ width: '100px', height:'100px'}} className="group relative cursor-move">
-                                {/* eslint-disable-next-line @next/next/no-img-element */}
-                                <img
-                                  className="rounded-t"
-                                  src={url}
-                                  alt=""
-                                  style={{ width: '100px', height:'100px'}}
-                                />
-                                <span className="absolute cursor-move border border-solid border-green-500 inset-0 opacity-0 group-hover:opacity-100"></span>
-                                <span style={{width:'18px', height: '18px'}} className="absolute text-center text-white bg-black top-0 right-0">{index + 1}</span>
-                              </div>
-                              <div className="flex justify-center rounded-b border-gray-300 border-solid items-center">
+                          <div className="flex justify-center items-center px-4 py-3 text-gray-800 bg-gray-100 text-right sm:px-6">
+                            <span className="text-sm">
+                              Gallery Images (Move to sort)
+                            </span>
+                          </div>
+                          <div className="flex flex-wrap">
+                            {ImagesUrl?.map((url, index) => (
+                              <div
+                                id={index}
+                                draggable={true}
+                                onDragEnter={onDragOver}
+                                key={index}
+                                className="card-container rounded m-2 drag-img-url"
+                              >
                                 <div
-                                  role="button"
-                                  className="rounded-br cursor-pointer text-xs bg-red-400 w-full p-1 text-center hover:bg-red-500 text-white"
-                                  onClick={() => {
-                                    setImagesUrl((prev) =>
-                                      prev.filter((_url) => _url !== url)
-                                    );
-                                  }}
+                                  style={{ width: '100px', height: '100px' }}
+                                  className="group relative cursor-move"
                                 >
-                                  Remove
+                                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                                  <img
+                                    className="rounded-t"
+                                    src={url}
+                                    alt=""
+                                    style={{ width: '100px', height: '100px' }}
+                                  />
+                                  <span className="absolute cursor-move border border-solid border-green-500 inset-0 opacity-0 group-hover:opacity-100"></span>
+                                  <span
+                                    style={{ width: '18px', height: '18px' }}
+                                    className="absolute text-center text-white bg-black top-0 right-0"
+                                  >
+                                    {index + 1}
+                                  </span>
+                                </div>
+                                <div className="flex justify-center rounded-b border-gray-300 border-solid items-center">
+                                  <div
+                                    role="button"
+                                    className="rounded-br cursor-pointer text-xs bg-red-400 w-full p-1 text-center hover:bg-red-500 text-white"
+                                    onClick={() => {
+                                      setImagesUrl((prev) =>
+                                        prev.filter((_url) => _url !== url)
+                                      );
+                                    }}
+                                  >
+                                    Remove
+                                  </div>
                                 </div>
                               </div>
-                            </div>
-                          ))}
-                        </div>
+                            ))}
+                          </div>
                         </div>
                       </div>
                     </div>
@@ -424,9 +433,6 @@ const GalleryUploadByUrl = ({
               </div>
             </div>
           </div>
-        </div>
-        <div>
-          <Gallery/>
         </div>
       </div>
     </section>

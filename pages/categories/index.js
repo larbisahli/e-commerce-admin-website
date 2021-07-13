@@ -17,8 +17,6 @@ const Categories = ({ token, userInfo }) => {
   const [, setUserStore] = useContext(UserStoreContext);
   const { data } = useSWR([token, GetCategoriesQuery]);
 
-  console.log(`userInfo`, userInfo);
-
   useEffect(() => {
     if (userInfo) {
       const { account_uid, email, first_name, last_name, privileges } =
@@ -118,7 +116,7 @@ const CategoryCard = ({ label, categoryId }) => {
         {/* ------ */}
         <Link
           href={{
-            pathname: '/category/edit',
+            pathname: '/categories/edit',
             query: { cid: categoryId }
           }}
         >

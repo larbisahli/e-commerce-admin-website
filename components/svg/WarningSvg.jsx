@@ -1,4 +1,4 @@
-import * as React from "react"
+import * as React from 'react';
 
 function WarningSvg(props) {
   return (
@@ -6,8 +6,8 @@ function WarningSvg(props) {
       xmlns="http://www.w3.org/2000/svg"
       aria-hidden="true"
       style={{
-        msTransform: "rotate(360deg)",
-        WebkitTransform: "rotate(360deg)",
+        msTransform: 'rotate(360deg)',
+        WebkitTransform: 'rotate(360deg)'
       }}
       viewBox="0 0 12 12"
       transform="rotate(360)"
@@ -18,7 +18,7 @@ function WarningSvg(props) {
         fill="#ff2828"
       />
     </svg>
-  )
+  );
 }
 
-export default WarningSvg
+export default WarningSvg;

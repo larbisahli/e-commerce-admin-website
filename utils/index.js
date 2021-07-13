@@ -27,17 +27,16 @@ Number.prototype.secondsToHm = function () {
 };
 
 export const replace = (array, index, replacerIndex) => {
-
-  let results = []
+  let results = [];
   if (array.length === 1) return array;
 
   try {
-    results = [...array]
-    results[index] = array[replacerIndex]
-    results[replacerIndex] = array[index]
-    return results
+    results = [...array];
+    results[index] = array[replacerIndex];
+    results[replacerIndex] = array[index];
+    return results;
   } catch (error) {
-    console.log(`error`, error)
-    return array
+    console.log(`error`, error);
+    return array;
   }
 };

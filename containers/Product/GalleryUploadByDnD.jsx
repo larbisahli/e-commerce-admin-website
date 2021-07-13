@@ -3,13 +3,11 @@
 /* eslint-disable no-undef */
 import classNames from 'classnames';
 import { useRouter } from 'next/router';
-import React, { memo, useEffect,useState } from 'react';
+import React, { memo, useEffect, useState } from 'react';
 import ImageUploading from 'react-images-uploading';
 
 import { LoadingContainer } from '@/components/index';
-import {replace} from '@/utils/index'
-
-import Gallery from './Gallery'
+import { replace } from '@/utils/index';
 
 let QDcurrent = 0;
 
@@ -25,7 +23,6 @@ const GalleryUploadByDnD = ({
   Notify,
   title
 }) => {
-
   const router = useRouter();
   const { pid } = router.query;
 
@@ -40,7 +37,7 @@ const GalleryUploadByDnD = ({
     setThumbnailImage(imageList);
   };
 
-  const Form_Data = (image, title,index) => {
+  const Form_Data = (image, title, index) => {
     const formData = new FormData();
     formData.append('image', image?.data_url);
     formData.append('title', title);
@@ -50,48 +47,50 @@ const GalleryUploadByDnD = ({
   };
 
   // ------------- Thumbnail ---------------
-  const SubmitThumbnail = async(e) => {
+  const SubmitThumbnail = async (e) => {
     e.preventDefault();
 
-    if(!ThumbnailImage[0]){
+    if (!ThumbnailImage[0]) {
       Notify(`No image specified.`, false);
     }
-    if(!pid){
-      Notify(`You must submit your product details in order to upload an image.`, false);
+    if (!pid) {
+      Notify(
+        `You must submit your product details in order to upload an image.`,
+        false
+      );
     }
 
     if (!Loading && ThumbnailImage[0] && pid) {
       setLoading(() => true);
       setProgress(0);
 
-      try{
+      try {
         const response = await fetch(`${HostUrl}/api/upload`, {
-            method: 'POST',
-            withCredentials: true,
-            credentials: 'include',
-            headers: {
-              Authorization: 'Bearer ' + token
-            },
-            body: Form_Data(ThumbnailImage[0], title, 0)
-          })
+          method: 'POST',
+          withCredentials: true,
+          credentials: 'include',
+          headers: {
+            Authorization: 'Bearer ' + token
+          },
+          body: Form_Data(ThumbnailImage[0], title, 0)
+        });
 
-        const {success, error} = await response.json() 
+        const { success, error } = await response.json();
 
-        if(error){
+        if (error) {
           console.error(error);
           Notify(error.message ?? 'Ops, something happened', false);
           setLoading(() => false);
         }
 
-        if(success){
+        if (success) {
           Notify(`🚀 Thumbnail successfully uploaded`, true);
           setLoading(() => false);
           setProgress(100);
           setThumbnailImage([]);
         }
-        
-      }catch(error){
-        console.log('error :>> ',{message:error.message,error});
+      } catch (error) {
+        console.log('error :>> ', { message: error.message, error });
       }
     }
   };
@@ -100,13 +99,16 @@ const GalleryUploadByDnD = ({
   const SubmitImages = async (e) => {
     e.preventDefault();
 
-    if(!images[0]){
+    if (!images[0]) {
       Notify(`No image specified.`, false);
-      return
+      return;
     }
-    if(!pid){
-      Notify(`You must submit your product details in order to upload an image.`, false);
-      return
+    if (!pid) {
+      Notify(
+        `You must submit your product details in order to upload an image.`,
+        false
+      );
+      return;
     }
 
     let FetchArray = [];
@@ -124,7 +126,7 @@ const GalleryUploadByDnD = ({
             headers: {
               Authorization: 'Bearer ' + token
             },
-            body: Form_Data(images[i], title, i+1)
+            body: Form_Data(images[i], title, i + 1)
           })
         );
       }
@@ -142,24 +144,24 @@ const GalleryUploadByDnD = ({
         .then((data) => {
           console.log(`data`, { data });
 
-          let count = null
+          let count = null;
 
-          const ErrorImages = []
+          const ErrorImages = [];
 
           data.forEach(({ success, error }, index) => {
-              if (success) count++
-              
-              if(error) {
-                ErrorImages.push(images[index])
-                Notify(`Can't upload ${images[index]?.file?.name}`, false);
-              }
-          })
+            if (success) count++;
 
-          if(count){
+            if (error) {
+              ErrorImages.push(images[index]);
+              Notify(`Can't upload ${images[index]?.file?.name}`, false);
+            }
+          });
+
+          if (count) {
             Notify(`🚀 ${count} Gallery Images successfully uploaded`, true);
           }
           setLoading(() => false);
-          console.log('ErrorImages :>> ', {ErrorImages});
+          console.log('ErrorImages :>> ', { ErrorImages });
           setImages([...ErrorImages]);
         })
         .catch((err) => {
@@ -173,24 +175,24 @@ const GalleryUploadByDnD = ({
   // --------- Sort ----------
 
   useEffect(() => {
-      const draggable = document.querySelectorAll(`.drag-img-dnd`);
-      draggable.forEach((draggable) => {
-        draggable.addEventListener("dragstart", () => {
-          draggable.classList.add('img-dragging');
-          QDcurrent = +draggable.id;
-        });
-        draggable.addEventListener("dragend", () => {
-          draggable.classList.remove('img-dragging');
-          QDcurrent = 0;
-        });
+    const draggable = document.querySelectorAll(`.drag-img-dnd`);
+    draggable.forEach((draggable) => {
+      draggable.addEventListener('dragstart', () => {
+        draggable.classList.add('img-dragging');
+        QDcurrent = +draggable.id;
       });
-    }, []);
+      draggable.addEventListener('dragend', () => {
+        draggable.classList.remove('img-dragging');
+        QDcurrent = 0;
+      });
+    });
+  }, []);
 
-    const onDragOver = (event) => {
-      const CurrentTarget = event.currentTarget;
-      const results = replace(images, +CurrentTarget.id, QDcurrent)
-      setImages(()=>results)
-    };
+  const onDragOver = (event) => {
+    const CurrentTarget = event.currentTarget;
+    const results = replace(images, +CurrentTarget.id, QDcurrent);
+    setImages(() => results);
+  };
 
   return (
     <form className="m-auto">
@@ -417,48 +419,57 @@ const GalleryUploadByDnD = ({
                         </div>
                       </div>
                       <div className="rounded border-solid border-gray-300 border">
-                      <div className="flex justify-center items-center px-4 py-3 text-gray-800 bg-gray-100 text-right sm:px-6">
-                          <span className="text-sm">Gallery Images (Move to sort)</span>
+                        <div className="flex justify-center items-center px-4 py-3 text-gray-800 bg-gray-100 text-right sm:px-6">
+                          <span className="text-sm">
+                            Gallery Images (Move to sort)
+                          </span>
                         </div>
                         <div className="flex flex-wrap">
-                        {imageList.map((image, index) => (
-                          <div
-                            id={index}
-                            draggable={true}
-                            onDragEnter={onDragOver}
-                            key={index}
-                            className="card-container rounded m-2 drag-img-dnd"
-                          >
-                            <div style={{ width: '100px', height:'100px' }} className="group relative cursor-move">
-                              {/* eslint-disable-next-line @next/next/no-img-element */}
-                              <img
-                                className="rounded-t"
-                                src={image['data_url']}
-                                alt=""
-                                width="100px"
-                                height="100px"
-                              />
-                              <span className="absolute cursor-move border border-solid border-green-500 inset-0 opacity-0 group-hover:opacity-100"></span>
-                              <span style={{width:'18px', height: '18px'}} className="absolute rounded text-center text-white bg-black top-0 right-0">{index + 1}</span>
-                            </div>
-                            <div className="flex justify-center rounded-b border-gray-300 border-solid items-center">
+                          {imageList.map((image, index) => (
+                            <div
+                              id={index}
+                              draggable={true}
+                              onDragEnter={onDragOver}
+                              key={index}
+                              className="card-container rounded m-2 drag-img-dnd"
+                            >
                               <div
-                                role="button"
-                                className="rounded-bl cursor-pointer text-xs bg-green-400 w-full p-1 text-center border-gray-300 border-solid border-r hover:bg-green-500 text-white"
-                                onClick={() => onImageUpdate(index)}
+                                style={{ width: '100px', height: '100px' }}
+                                className="group relative cursor-move"
                               >
-                                Update
+                                {/* eslint-disable-next-line @next/next/no-img-element */}
+                                <img
+                                  className="rounded-t"
+                                  src={image['data_url']}
+                                  alt=""
+                                  style={{ width: '100px', height: '100px' }}
+                                />
+                                <span className="absolute cursor-move border border-solid border-green-500 inset-0 opacity-0 group-hover:opacity-100"></span>
+                                <span
+                                  style={{ width: '18px', height: '18px' }}
+                                  className="absolute rounded text-center text-white bg-black top-0 right-0"
+                                >
+                                  {index + 1}
+                                </span>
                               </div>
-                              <div
-                                role="button"
-                                className="rounded-br cursor-pointer text-xs bg-red-400 w-full p-1 text-center hover:bg-red-500 text-white"
-                                onClick={() => onImageRemove(index)}
-                              >
-                                Remove
+                              <div className="flex justify-center rounded-b border-gray-300 border-solid items-center">
+                                <div
+                                  role="button"
+                                  className="rounded-bl cursor-pointer text-xs bg-green-400 w-full p-1 text-center border-gray-300 border-solid border-r hover:bg-green-500 text-white"
+                                  onClick={() => onImageUpdate(index)}
+                                >
+                                  Update
+                                </div>
+                                <div
+                                  role="button"
+                                  className="rounded-br cursor-pointer text-xs bg-red-400 w-full p-1 text-center hover:bg-red-500 text-white"
+                                  onClick={() => onImageRemove(index)}
+                                >
+                                  Remove
+                                </div>
                               </div>
                             </div>
-                          </div>
-                        ))}
+                          ))}
                         </div>
                       </div>
                       {errors?.maxFileSize && (
@@ -486,9 +497,6 @@ const GalleryUploadByDnD = ({
               </div>
             </div>
           </div>
-        </div>
-        <div>
-          <Gallery/>
         </div>
       </div>
     </form>

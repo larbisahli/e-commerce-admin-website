@@ -40,6 +40,14 @@ export const GetProductQuery = gql`
       color
       is_new
       note
+      thumbnail {
+        image_uid
+        image
+      }
+      gallery {
+        image_uid
+        image
+      }
     }
   }
 `;
