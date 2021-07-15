@@ -14,8 +14,6 @@ export const CreateProductMutation = gql`
     $product_weight: Int!
     $available_sizes: [String]
     $available_colors: [String]
-    $size: String
-    $color: String
     $is_new: Boolean!
     $note: String
   ) {
@@ -32,8 +30,6 @@ export const CreateProductMutation = gql`
       product_weight: $product_weight
       available_sizes: $available_sizes
       available_colors: $available_colors
-      size: $size
-      color: $color
       is_new: $is_new
       note: $note
     ) {
@@ -56,8 +52,6 @@ export const UpdateProductMutation = gql`
     $product_weight: Int!
     $available_sizes: [String]
     $available_colors: [String]
-    $size: String
-    $color: String
     $is_new: Boolean!
     $note: String
   ) {
@@ -74,8 +68,6 @@ export const UpdateProductMutation = gql`
       product_weight: $product_weight
       available_sizes: $available_sizes
       available_colors: $available_colors
-      size: $size
-      color: $color
       is_new: $is_new
       note: $note
     ) {

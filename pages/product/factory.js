@@ -3,7 +3,7 @@ import { useRouter } from 'next/router';
 import PropTypes from 'prop-types';
 import React, { useCallback, useContext, useEffect, useMemo, useReducer, useState } from 'react';
 import { Tab, TabList, TabPanel } from 'react-tabs';
-import { Slide, toast, ToastContainer } from 'react-toastify';
+import { toast } from 'react-toastify';
 import useSWR, { mutate } from 'swr';
 
 import {
@@ -34,12 +34,10 @@ const initialState = {
   warehouse_location: 'singapore',
   product_description: '',
   short_description: '',
-  inventory: 0,
+  inventory: 1,
   product_weight: 0,
-  available_sizes: '',
-  available_colors: '',
-  size: '',
-  color: '',
+  available_sizes: [],
+  available_colors: [],
   is_new: true,
   note: ''
 };
@@ -54,8 +52,26 @@ function reducer(state, action) {
     case 'populate':
       return {
         ...action.product,
-        available_sizes: action.product?.available_sizes?.join(',') ?? '',
-        available_colors: action.product?.available_colors?.join(',') ?? ''
+      };
+    case 'AddSize':
+      return {
+        ...state,
+        available_sizes: [...state.available_sizes, action.value]
+      };
+    case 'AddColor':
+      return {
+        ...state,
+        available_colors: [...state.available_colors, action.value]
+      };
+    case 'RemoveSize':
+      return {
+        ...state,
+        available_sizes: [...state.available_sizes.filter((value) => value !== action.value)]
+      };
+    case 'RemoveColor':
+      return {
+        ...state,
+        available_colors: [...state.available_colors.filter((value) => value !== action.value)]
       };
     case 'reset':
       return { ...initialState };
@@ -188,10 +204,8 @@ const NewProduct = ({ token, userInfo }) => {
       if (StoredProduct?.Product?.short_description !== ProductState?.short_description) return true;
       if (StoredProduct?.Product?.inventory !== ProductState?.inventory) return true;
       if (StoredProduct?.Product?.product_weight !== ProductState?.product_weight) return true;
-      if (StoredProduct?.Product?.available_sizes?.join(',') !== ProductState?.available_sizes) return true;
-      if (StoredProduct?.Product?.available_colors?.join(',') !== ProductState?.available_colors) return true;
-      if (StoredProduct?.Product?.size !== ProductState?.size) return true;
-      if (StoredProduct?.Product?.color !== ProductState?.color) return true;
+      if (StoredProduct?.Product?.available_sizes !== JSON.stringify(ProductState?.available_sizes)) return true
+      if (StoredProduct?.Product?.available_colors !== JSON.stringify(ProductState?.available_colors)) return true
       if (StoredProduct?.Product?.is_new !== ProductState?.is_new) return true;
       if (StoredProduct?.Product?.note !== ProductState?.note) return true;
     }
@@ -203,19 +217,6 @@ const NewProduct = ({ token, userInfo }) => {
 
   return (
     <div className="form-container">
-      <ToastContainer
-        position="bottom-right"
-        autoClose={5000}
-        className="text-sm"
-        hideProgressBar
-        newestOnTop={false}
-        closeOnClick
-        rtl={false}
-        pauseOnFocusLoss
-        draggable
-        pauseOnHover
-        transition={Slide}
-      />
       <div className="form-wrapper">
         <section className="flex justify-between items-center md:ml-0 ml-2 mb-9">
           <button
@@ -263,6 +264,7 @@ const NewProduct = ({ token, userInfo }) => {
                   setThumbnailImage={setThumbnailImage}
                   Notify={Notify}
                   title={ProductState.title}
+                  MutateProduct={MutateProduct}
                 />
               </TabPanel>
               <TabPanel>
@@ -274,6 +276,7 @@ const NewProduct = ({ token, userInfo }) => {
                   setImagesUrl={setImagesUrl}
                   Notify={Notify}
                   title={ProductState.title}
+                  MutateProduct={MutateProduct}
                 />
               </TabPanel>
               <TabPanel>

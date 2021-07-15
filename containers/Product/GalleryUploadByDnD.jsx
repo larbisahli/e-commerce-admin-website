@@ -21,7 +21,8 @@ const GalleryUploadByDnD = ({
   ThumbnailImage,
   setThumbnailImage,
   Notify,
-  title
+  title,
+  MutateProduct
 }) => {
   const router = useRouter();
   const { pid } = router.query;
@@ -77,9 +78,9 @@ const GalleryUploadByDnD = ({
 
         const { success, error } = await response.json();
 
-        if (error) {
+        if (!success || error) {
           console.error(error);
-          Notify(error.message ?? 'Ops, something happened', false);
+          Notify(error?.message ?? 'Ops, something happened', false);
           setLoading(() => false);
         }
 
@@ -88,9 +89,10 @@ const GalleryUploadByDnD = ({
           setLoading(() => false);
           setProgress(100);
           setThumbnailImage([]);
+          MutateProduct()
         }
       } catch (error) {
-        console.log('error :>> ', { message: error.message, error });
+        console.log('error :>> ', { message: error?.message, error });
       }
     }
   };
@@ -163,6 +165,7 @@ const GalleryUploadByDnD = ({
           setLoading(() => false);
           console.log('ErrorImages :>> ', { ErrorImages });
           setImages([...ErrorImages]);
+          MutateProduct()
         })
         .catch((err) => {
           console.log(err);

@@ -1,9 +1,12 @@
+/* eslint-disable jsx-a11y/interactive-supports-focus */
+/* eslint-disable jsx-a11y/click-events-have-key-events */
 /* eslint-disable react/display-name */
 // eslint-disable-next-line simple-import-sort/imports
 import { useRouter } from 'next/router';
-import React, { memo, useState } from 'react';
+import React, { memo, useState,useRef } from 'react';
 import classNames from 'classnames';
-
+import Add from '../../assets/svg/add.svg';
+import {DeleteSvg} from '@/components/svg'
 import { LoadingContainer } from '@/components/index';
 import { Request } from '@/graphql/index';
 import {
@@ -31,11 +34,11 @@ const Form = ({ ProductState, dispatchProduct, token, Notify, Categories, HasCha
     product_weight,
     available_sizes,
     available_colors,
-    size,
-    color,
     is_new,
     note
   } = ProductState;
+
+  console.log('ProductState :>-> ', ProductState);
 
   const HandleInputChange = (e) => {
     const target = e.target;
@@ -71,10 +74,8 @@ const Form = ({ ProductState, dispatchProduct, token, Notify, Categories, HasCha
             short_description,
             inventory,
             product_weight,
-            available_sizes: available_sizes?.split(','),
-            available_colors: available_colors?.split(','),
-            size,
-            color,
+            available_sizes,
+            available_colors,
             is_new,
             note
           }
@@ -406,94 +407,36 @@ const Form = ({ ProductState, dispatchProduct, token, Notify, Categories, HasCha
             </div>
             {/* ******************* available_sizes ******************* */}
             <div className="mb-4">
-              <label
-                htmlFor="available_sizes"
-                className="block text-sm font-medium text-gray-700"
-              >
-                Available Sizes
-              </label>
-              <textarea
-                id="available_sizes"
-                name="available_sizes"
-                rows={2}
-                value={available_sizes}
-                onChange={HandleInputChange}
-                placeholder="e.g: S, M, L, XL, XXL, XXXL, ...etc"
-                className="shadow-sm border-2 focus:border-indigo-500 mt-1 
-                                      block w-full border-solid border-gray-300 rounded-md p-1"
+            <ShowCollection 
+              Collection={available_sizes} 
+              dispatchProduct={dispatchProduct}
+              AddType={'AddSize'} 
+              RemoveType={'RemoveSize'}
+              label={'Available Sizes'}
+              placeholder={'Size, e.g: L'}
               />
               <p className="flex items-center mt-1 text-xs text-gray-500">
                 <span>
-                  Add multiple sizes available for this product, separate sizes
-                  by comma(,). (not required)
+                  Add multiple sizes available for this product. (not required)
                 </span>
               </p>
             </div>
-            {/* ******************* size ******************* */}
-            <div className="mb-4">
-              <label
-                htmlFor="size"
-                className="block text-sm font-medium text-gray-700"
-              >
-                Size
-              </label>
-              <input
-                type="text"
-                name="size"
-                id="size"
-                value={size ?? ''}
-                onChange={HandleInputChange}
-                className="mt-1 focus:border-indigo-500 block w-full 
-                                  shadow-sm border-2 border-solid border-gray-300 rounded-md p-1"
-              />
-              <p className="flex flex-col mt-2 text-xs text-gray-500">
-                <span>Product size. (not required)</span>
-              </p>
-            </div>
+            
             {/* ******************* available_colors ******************* */}
             <div className="mb-4">
-              <label
-                htmlFor="available_colors"
-                className="block text-sm font-medium text-gray-700"
-              >
-                Available Colors
-              </label>
-              <textarea
-                id="available_colors"
-                name="available_colors"
-                rows={2}
-                value={available_colors}
-                onChange={HandleInputChange}
-                className="shadow-sm border-2 focus:border-indigo-500 mt-1 
-                                      block w-full border-solid border-gray-300 rounded-md p-1"
-                placeholder="e.g: black, red, orange, green, ...etc"
+              <ShowCollection 
+              Collection={available_colors} 
+              dispatchProduct={dispatchProduct}
+              AddType={'AddColor'} 
+              RemoveType={'RemoveColor'}
+              IsColor
+              label={'Available Colors'}
+              placeholder={'Color, e.g: black'}
               />
               <p className="flex items-center mt-1 text-xs text-gray-500">
                 <span>
-                  Add multiple colors available for this product, separate
-                  colors by comma(,). (not required)
+                  Add multiple colors available for this product. (not required)
                 </span>
-              </p>
-            </div>
-            {/* ******************* color ******************* */}
-            <div className="mb-4">
-              <label
-                htmlFor="size"
-                className="block text-sm font-medium text-gray-700"
-              >
-                Color
-              </label>
-              <input
-                type="text"
-                name="color"
-                id="color"
-                value={color ?? ''}
-                onChange={HandleInputChange}
-                className="mt-1 focus:border-indigo-500 block w-full 
-                                  shadow-sm border-2 border-solid border-gray-300 rounded-md p-1"
-              />
-              <p className="flex flex-col mt-2 text-xs text-gray-500">
-                <span>Product color. (not required)</span>
               </p>
             </div>
             {/* ******************* is_new ******************* */}
@@ -588,5 +531,92 @@ const Form = ({ ProductState, dispatchProduct, token, Notify, Categories, HasCha
     </form>
   );
 };
+
+const ShowCollection = ({Collection, dispatchProduct, AddType, RemoveType, IsColor,label, placeholder})=>{
+  
+  const InputRef = useRef(null);
+
+  const HandleChange = (e) => {
+    if(e.keyCode == 13){
+      e.preventDefault()
+      const txt = InputRef.current.value;
+      if (txt) {
+        dispatchProduct({
+                  type:AddType,
+                  value: txt
+                });
+        InputRef.current.value = null;
+    }
+    }
+  };
+
+  const RemoveChange = (value)=>{
+    dispatchProduct({
+                type:RemoveType,
+                value
+              });
+  }
+
+  return <div className="">
+              <div className="block text-sm font-medium text-gray-700 mb-1">
+               {label}
+              </div>
+              {/* -- Thumbnail URL -- */}
+              <div>
+                <input
+                  type="text"
+                  ref={InputRef}
+                  onKeyDown={HandleChange}
+                  placeholder={placeholder}
+                  className="mt-1 focus:border-indigo-500 block w-full 
+                      shadow-sm border-2 border-solid border-gray-300 rounded-md p-1"
+                />
+              </div>
+              <div
+                role="button"
+                onClick={HandleChange}
+                className="m-1 mb-4 flex justify-end"
+              >
+                <span className="bg-green-400 hover:bg-green-500 rounded-sm px-2 py-1 text-white cursor-pointer">
+                  <Add width={18} height={18} />
+                </span>
+              </div>
+              {/* -- Thumbnail Showcase -- */}
+              <div className="mt-1 flex justify-center px-4 pt-3 pb-4 border-2 border-gray-300 border-dashed rounded-md">
+                <div className="space-y-1 text-center w-full">
+                  <div className="mt-1 flex justify-center px-4 pt-3 pb-4 rounded-md">
+                    <div
+                      className={classNames('w-full', 'h-full', 'rounded-md')}
+                    >
+                      <div className="flex justify-center flex-wrap items-center">
+                        {Collection?.map((value, index)=>{
+                          return (
+                          <div 
+                          key={index} 
+                            
+                          className="relative card-container rounded m-2">
+                            <div className="m-2">
+                              <span>{value}</span>
+                            </div>
+                            {IsColor && <div style={{background: value, width: '10px',height:'10px'}} className='absolute top-0 right-0 rounded-full border border-solid border-gray-200'></div>}
+                            <div className="flex justify-center rounded-b border-gray-300 border-solid items-center">
+                              <div
+                                role="button"
+                                className="rounded-br cursor-pointer text-xs bg-red-400 w-full p-1 text-center hover:bg-red-500 text-white"
+                                onClick={() => RemoveChange(value)}
+                              >
+                                <DeleteSvg width={15} height={15}/>
+                              </div>
+                            </div>
+                          </div>
+                        )
+                        })}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+}
 
 export default memo(Form);

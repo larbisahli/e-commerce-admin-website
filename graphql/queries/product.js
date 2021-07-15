@@ -36,8 +36,6 @@ export const GetProductQuery = gql`
       product_weight
       available_sizes
       available_colors
-      size
-      color
       is_new
       note
       thumbnail {

@@ -2,7 +2,7 @@ import classNames from 'classnames';
 import Image from 'next/image';
 import { useRouter } from 'next/router';
 import React, { memo, useEffect,useState } from 'react';
-import { Slide, toast, ToastContainer } from 'react-toastify';
+import { toast } from 'react-toastify';
 
 import { DeleteSvg, WarningSvg } from '@/components/svg';
 
@@ -17,19 +17,6 @@ const Gallery = ({token, thumbnail, gallery, MutateProduct}) => {
 
   return thumbnail || gallery ? (
     <div className="bg-white shadow">
-    <ToastContainer
-        position="bottom-right"
-        autoClose={5000}
-        className="text-sm"
-        hideProgressBar
-        newestOnTop={false}
-        closeOnClick
-        rtl={false}
-        pauseOnFocusLoss
-        draggable
-        pauseOnHover
-        transition={Slide}
-      />
       <div
         className="relative flex justify-center items-center px-4 py-3 
            text-gray-800 bg-gray-100 text-right sm:px-6"
@@ -60,12 +47,12 @@ const Gallery = ({token, thumbnail, gallery, MutateProduct}) => {
           </span>
       </div>
       {/* Thumbnail */}
-      <div className="flex justify-center items-center">
-        <ProductCard url={thumbnail[0]?.image} 
+      <div className="flex justify-center items-center p-2">
+        {thumbnail[0]?.image && <ProductCard url={thumbnail[0]?.image} 
         image_uid={thumbnail[0]?.image_uid} 
         token={token}
         MutateProduct={MutateProduct}
-        />
+        />}
       </div>
       <div
         className="flex justify-center items-center px-4 py-3 
