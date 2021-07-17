@@ -2,8 +2,9 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import PropTypes from 'prop-types';
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useContext, useEffect, useMemo, useState } from 'react';
 import ReactPaginate from 'react-paginate';
+import useSWR from 'swr';
 
 import {
   EditSvg,
@@ -13,6 +14,8 @@ import {
 } from '@/components/svg';
 import { StoreHead } from '@/containers/index';
 import { UserStoreContext } from '@/context/UserStore';
+import { Request } from '@/graphql/index';
+import { ProductCountQuery, ProductPaginationMutation } from '@/graphql/queries/product';
 import { getAppCookies, verifyToken } from '@/middleware/utils';
 
 import Add from '../../assets/svg/add.svg';
@@ -22,7 +25,46 @@ const Store = ({ token, userInfo }) => {
   const { cid } = router.query;
   const [, setUserStore] = useContext(UserStoreContext);
 
-  console.log(`======>`, { token });
+  const [Page, setPage] = useState(0);
+  const [limit, setLimit] = useState(10);
+  const [Count, setCount] = useState(0);
+
+  const pageCount = Math.ceil((Count / limit))
+
+  const ProductVariable = useMemo(() => {
+    return {
+      account_uid: userInfo?.account_uid,
+      category_uid: cid,
+      page: Page,
+      limit
+    };
+  }, [cid, Page, limit, userInfo]);
+
+  const { data, error } = useSWR([token, ProductPaginationMutation, ProductVariable]);
+
+  console.log(`======>`, { data, error });
+
+  async function fetchData() {
+    await Request({
+      token,
+      mutation: ProductCountQuery,
+      variables: {}
+    })
+      .then(({ ProductsCount }) => {
+        setCount(() => ProductsCount?.count ?? 0)
+      })
+      .catch(({ response }) => {
+        console.log(`Count response Error:>`, { response })
+      });
+  }
+
+  useEffect(() => {
+    try {
+      fetchData();
+    } catch (error) {
+      console.log('count error :>> ', { error });
+    }
+  }, [])
 
   useEffect(() => {
     if (userInfo) {
@@ -39,7 +81,6 @@ const Store = ({ token, userInfo }) => {
         };
       });
     }
-
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [setUserStore, userInfo]);
 
@@ -49,13 +90,10 @@ const Store = ({ token, userInfo }) => {
     console.log(`data ==>`, {
       selected,
       page,
-      offset: Math.ceil(selected * limit)
     });
-    setOffset(() => Math.ceil(selected * limit));
+    setPage(() => page);
   };
 
-  const [offset, setOffset] = useState(0);
-  const [limit, setLimit] = useState(10);
 
   return (
     <div className="m-auto product-cart-container mb-20">
@@ -86,17 +124,9 @@ const Store = ({ token, userInfo }) => {
         </div>
         {/* ------- Product Showcase ------- */}
         <div className="flex flex-wrap">
-          <ProductCard
-            label="Sub-category-1"
-            url="https://dropgala-test.fra1.digitaloceanspaces.com/2021/7/product_image_from_ali_express_1625214253_McTefiJPA_placeholder.jpg"
-          />
-          <ProductCard label="Sub-Category-2" />
-          <ProductCard label="Sub-Category-3" />
-          <ProductCard label="Sub-Category-4" />
-          <ProductCard label="Sub-Category-5" />
-          <ProductCard label="Sub-Category-6" />
-          <ProductCard label="Sub-Category-7" />
-          <ProductCard label="Sub-Category-8" />
+          {data?.Products?.map((product) => {
+            return <ProductCard key={product.product_uid} product={product} />
+          })}
         </div>
         {/* ------- Pagination Area ------- */}
         <div
@@ -122,7 +152,7 @@ const Store = ({ token, userInfo }) => {
                 nextLabel={<PaginationRArrowSvg width={20} height={20} />}
                 breakLabel={'...'}
                 breakClassName=""
-                pageCount={5}
+                pageCount={pageCount}
                 marginPagesDisplayed={2}
                 pageRangeDisplayed={5}
                 onPageChange={handlePageClick}
@@ -137,14 +167,18 @@ const Store = ({ token, userInfo }) => {
   );
 };
 
-const ProductCard = ({ label, url }) => {
+const ProductCard = ({ product }) => {
   const [Base64Placeholder, setBase64Placeholder] = useState(
     'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mM8eftXPQAIMgMfS5tX7gAAAABJRU5ErkJggg=='
   );
 
+  const { product_uid, account_uid, category_uid, discount, inventory, price, thumbnail, title } = product
+  const url = thumbnail?.image
+
   useEffect(() => {
     async function toBase64() {
-      const data = await fetch(url);
+      const arr = url?.split('.')
+      const data = await fetch(`https://dropgala-test.fra1.digitaloceanspaces.com${arr[0]}_placeholder.${arr[1]}`);
       const blob = await data.blob();
       // eslint-disable-next-line no-undef
       return await new Promise((resolve) => {
@@ -179,16 +213,15 @@ const ProductCard = ({ label, url }) => {
             placeholder="blur"
             alt=""
             className="bg-blue-100 rounded-t"
-            // src="/static/images/test-image.jpg"
             unoptimized={true}
-            src="https://dropgala-test.fra1.digitaloceanspaces.com/2021/7/product_image_from_ali_express_1625219873_Dpse5Mot9.png"
+            src={`https://dropgala-test.fra1.digitaloceanspaces.com${url}`}
           />
           {/* ------------ */}
           <div
             style={{ background: 'rgba(0, 0, 0, 0.8)' }}
             className="absolute right-0 bottom-12 flex justify-center items-center m-1 h-9 w-9 rounded-full"
           >
-            <span className="text-white text-sm font-normal">$10</span>
+            <span className="text-white text-sm font-normal">{`${price}`}</span>
           </div>
           {/* View */}
           <div
@@ -242,7 +275,7 @@ const ProductCard = ({ label, url }) => {
               className="cut-when-2lines"
               title="Authentic Saint Laurent Gold Velvet Pants Authentic Saint Laurent"
             >
-              Authentic Saint Laurent Gold Velvet Pants Authentic Saint Laurent
+              {title}
             </span>
           </div>
         </div>

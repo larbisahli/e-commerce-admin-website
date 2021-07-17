@@ -49,3 +49,37 @@ export const GetProductQuery = gql`
     }
   }
 `;
+
+export const ProductPaginationMutation = gql`
+  query ProductPagination(
+    $account_uid: ID!
+    $category_uid: ID!
+    $page: Int!
+    $limit: Int
+  ) {
+    Products(
+      account_uid: $account_uid
+      category_uid: $category_uid
+      page: $page
+      limit: $limit
+    ) {
+      product_uid
+      category_uid
+      account_uid
+      title
+      price
+      discount
+      inventory
+      thumbnail {
+        image_uid
+        image
+      }
+    }
+  }
+`;
+
+export const ProductCountQuery = gql`
+  {
+    ProductsCount {count}
+  }
+`;

@@ -125,6 +125,9 @@ const Form = ({ ProductState, dispatchProduct, token, Notify, Categories, HasCha
     }
   ];
 
+  // const discounted_price = original_price - (original_price * discount / 100)
+  const discounted_price = price - (price * discount / 100)
+
   return (
     <form className="m-auto" onSubmit={SubmitProductDetails}>
       {Loading && <LoadingContainer />}
@@ -231,7 +234,10 @@ const Form = ({ ProductState, dispatchProduct, token, Notify, Categories, HasCha
                                   shadow-sm border-2 border-solid border-gray-300 rounded-md p-1"
               />
               <p className="mt-2 text-xs text-gray-500">
-                Product discount percentage number.
+                Product discount percentage number.<br/> Final price:
+                <span className="mt-2 text-xs text-green-500">
+                {`$${discounted_price.toFixed(1)}`}
+              </span>
               </p>
             </div>
             {/* ******************* warehouse_location ******************* */}
