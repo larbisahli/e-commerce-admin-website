@@ -1,15 +1,16 @@
 import dynamic from 'next/dynamic';
 import PropTypes from 'prop-types';
-import React, { Fragment, memo, useCallback,useEffect, useState } from 'react';
+import React, { Fragment, memo, useCallback, useEffect, useState } from 'react';
 
 import {
   AddSvg,
   BellSvg,
-  BookmarkSvg,
+  CategorySvg,
   DashboardSvg,
   DollarSvg,
-  InvoiceSvg
-} from '@/components/svg/index';
+  InvoiceSvg,
+  StoreSvg
+} from '@/components/svg';
 import { useMediaQuery } from '@/hooks/useMediaQuery';
 
 import ItemLink from './ItemLink';
@@ -29,19 +30,19 @@ const Guide = ({ GuideState, setGuideState }) => {
 
   const HandleCloseGuide = useCallback(
     (event) => {
-    const GuideContainer = document.getElementById('guide-container');
-    if (GuideContainer?.isSameNode(event.target)) {
-      GuideContainer?.removeEventListener('click', HandleCloseGuide);
-      setGuideState((prev) => {
-        return {
-          show: false,
-          mode: prev.mode
-        };
-      });
-    }
-  },
-    [setGuideState],
-  )
+      const GuideContainer = document.getElementById('guide-container');
+      if (GuideContainer?.isSameNode(event.target)) {
+        GuideContainer?.removeEventListener('click', HandleCloseGuide);
+        setGuideState((prev) => {
+          return {
+            show: false,
+            mode: prev.mode
+          };
+        });
+      }
+    },
+    [setGuideState]
+  );
 
   useEffect(() => {
     const GuideContainer = document.getElementById('guide-container');
@@ -87,10 +88,14 @@ const Guide = ({ GuideState, setGuideState }) => {
               <ItemLink mode={2} href="/dashboard" label="Dashboard">
                 <DashboardSvg width={20} height={20} />
               </ItemLink>
+              <div className="line"></div>
               <ItemLink mode={2} href="/categories" label="Categories">
-                <BookmarkSvg width={20} height={20} />
+                <CategorySvg width={20} height={20} />
               </ItemLink>
-              <ItemLink mode={2} href="/product/create" label="New Product">
+              <ItemLink mode={2} href="/store" label="Store">
+                <StoreSvg width={20} height={20} />
+              </ItemLink>
+              <ItemLink mode={2} href="/product/factory" label="New Product">
                 <AddSvg width={20} height={20} />
               </ItemLink>
               <div className="line"></div>

@@ -7,20 +7,22 @@ import useSWR, { trigger } from 'swr';
 
 import { LoadingSvg } from '@/components/svg';
 import { UserStoreContext } from '@/context/UserStore';
-import { Request } from '@/graphql/index'
-import { UpdateCategoryMutation } from '@/graphql/mutations/category'
-import { GetCategoryQuery } from '@/graphql/queries/category'
+import { Request } from '@/graphql/index';
+import { UpdateCategoryMutation } from '@/graphql/mutations/category';
+import { GetCategoryQuery } from '@/graphql/queries/category';
 import { getAppCookies, verifyToken } from '@/middleware/utils';
 
 import ArrowLeft from '../../assets/svg/arrow-left.svg';
 
 const EditCategory = ({ token, userInfo }) => {
   const router = useRouter();
-  const { cid } = router.query
+  const { cid } = router.query;
 
   const [, setUserStore] = useContext(UserStoreContext);
 
-  const variables = useMemo(() => { return { category_uid: cid } }, [cid])
+  const variables = useMemo(() => {
+    return { category_uid: cid };
+  }, [cid]);
 
   const { data, error } = useSWR([token, GetCategoryQuery, variables]);
 
@@ -56,11 +58,11 @@ const EditCategory = ({ token, userInfo }) => {
         category_name: data?.Category?.category_name,
         category_description: data?.Category?.category_description,
         is_active: data?.Category?.is_active
-      })
+      });
     } else if (error) {
-      console.log(`error`, error)
+      console.log(`error`, error);
     }
-  }, [data, error])
+  }, [data, error]);
 
   useEffect(() => {
     const { account_uid, email, first_name, last_name, privileges } = userInfo;
@@ -99,17 +101,21 @@ const EditCategory = ({ token, userInfo }) => {
             category_description,
             is_active
           }
-        }).then(({ UpdateCategory }) => {
-
-          const CategoryName = UpdateCategory?.category_name;
-          Notify(`🚀 Category '${CategoryName}' successfully updated`, UpdateCategory);
-          trigger([token, GetCategoryQuery, variables])
-
-        }).catch(({ response }) => {
-          const ErrorMessage = response?.message ?? response?.errors[0]?.message
-          Notify(ErrorMessage, !response)
-          // LOGS
         })
+          .then(({ UpdateCategory }) => {
+            const CategoryName = UpdateCategory?.category_name;
+            Notify(
+              `🚀 Category '${CategoryName}' successfully updated`,
+              UpdateCategory
+            );
+            trigger([token, GetCategoryQuery, variables]);
+          })
+          .catch(({ response }) => {
+            const ErrorMessage =
+              response?.message ?? response?.errors[0]?.message;
+            Notify(ErrorMessage, !response);
+            // LOGS
+          });
       } else {
         Notify('Fields should not be empty!', false);
       }
@@ -123,12 +129,13 @@ const EditCategory = ({ token, userInfo }) => {
 
   const HasChange = useMemo(() => {
     if (data) {
-      if (data?.Category?.category_name !== category_name) return true
-      if (data?.Category?.category_description !== category_description) return true
-      if (data?.Category?.is_active !== is_active) return true
+      if (data?.Category?.category_name !== category_name) return true;
+      if (data?.Category?.category_description !== category_description)
+        return true;
+      if (data?.Category?.is_active !== is_active) return true;
     }
-    return false
-  }, [data, category_name, category_description, is_active])
+    return false;
+  }, [data, category_name, category_description, is_active]);
 
   return (
     <div className="form-container">
@@ -160,8 +167,10 @@ const EditCategory = ({ token, userInfo }) => {
         </section>
         <form className="m-auto" onSubmit={SubmitForm}>
           {Loading && (
-            <div className="absolute bg-black bg-opacity-10 rounded-lg inset-0 flex 
-            justify-center items-center">
+            <div
+              className="absolute bg-black bg-opacity-10 rounded-lg inset-0 flex 
+            justify-center items-center"
+            >
               <LoadingSvg width={80} height={80} />
             </div>
           )}

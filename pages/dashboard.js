@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import { useRouter } from 'next/router';
 import PropTypes from 'prop-types';
 import React, { useContext, useEffect } from 'react';
 import { Slide, toast, ToastContainer } from 'react-toastify';
@@ -17,9 +18,9 @@ import Add from '../assets/svg/add.svg';
 // const IsProduction = process.env.NODE_ENV === 'production';
 
 const Dashboard = ({ token, userInfo }) => {
-  const [, setUserStore] = useContext(UserStoreContext);
+  const router = useRouter();
 
-  console.log(`======>`, { token });
+  const [, setUserStore] = useContext(UserStoreContext);
 
   const notify = () =>
     toast.dark(`Welcome back ${userInfo?.first_name ?? ''}`, {
@@ -33,11 +34,24 @@ const Dashboard = ({ token, userInfo }) => {
     });
 
   useEffect(() => {
-    notify();
-    const { account_uid, email, first_name, last_name, privileges } = userInfo;
-    setUserStore((prev) => {
-      return { ...prev, account_uid, email, first_name, last_name, privileges };
-    });
+    if (userInfo) {
+      notify();
+      const { account_uid, email, first_name, last_name, privileges } =
+        userInfo;
+      setUserStore((prev) => {
+        return {
+          ...prev,
+          account_uid,
+          email,
+          first_name,
+          last_name,
+          privileges
+        };
+      });
+    } else {
+      router.push('/');
+    }
+
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [setUserStore, userInfo]);
 
@@ -56,7 +70,7 @@ const Dashboard = ({ token, userInfo }) => {
         transition={Slide}
       />
       <section className="flex justify-end items-center mx-3">
-        <Link href="/product/create">
+        <Link href="/product/factory">
           <a>
             <div
               className="flex justify-center items-center py-2 px-3 bg-blue-600 hover:bg-blue-700 

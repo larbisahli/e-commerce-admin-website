@@ -1,6 +1,7 @@
 import '../styles/tailwind.css';
 import 'simplebar/dist/simplebar.min.css';
 import 'react-toastify/dist/ReactToastify.css';
+import 'react-tabs/style/react-tabs.css';
 
 import Head from 'next/head';
 import { useRouter } from 'next/router';
@@ -15,6 +16,7 @@ import { UserStoreProvider } from '@/context/UserStore';
 import { fetcher } from '@/graphql/index';
 import GlobalStyle from '@/styles/Globals';
 import { PageContainer } from '@/styles/index';
+
 function App({ Component, pageProps }) {
   const { asPath } = useRouter();
 
@@ -44,7 +46,7 @@ function App({ Component, pageProps }) {
     //   // We can send the error to Sentry,
     //   // or show a notification UI.
     // }
-    const ErrorMessage = error?.response?.message
+    const ErrorMessage = error?.response?.message;
     // const ErrorStatus = error?.response?.status
     Notify(ErrorMessage, false);
   };
@@ -99,7 +101,7 @@ function App({ Component, pageProps }) {
           sizes="16x16"
           href="/static/favicons/favicon-16x16.png"
         />
-        <link rel="manifest" href="/manifest.webmanifest" />
+        {/* <link rel="manifest" href="/manifest.webmanifest" /> */}
         <link rel="mask-icon" href="/safari-pinned-tab.svg" color="#ffffff" />
         <meta name="msapplication-TileColor" content="#ffffff" />
         <meta name="theme-color" content="#ffffff" />

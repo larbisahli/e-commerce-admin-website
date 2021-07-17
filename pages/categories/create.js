@@ -5,8 +5,8 @@ import { Slide, toast, ToastContainer } from 'react-toastify';
 
 import { LoadingSvg } from '@/components/svg';
 import { UserStoreContext } from '@/context/UserStore';
-import { Request } from '@/graphql/index'
-import { CreateCategoryMutation } from '@/graphql/mutations/category'
+import { Request } from '@/graphql/index';
+import { CreateCategoryMutation } from '@/graphql/mutations/category';
 import { getAppCookies, verifyToken } from '@/middleware/utils';
 
 import ArrowLeft from '../../assets/svg/arrow-left.svg';
@@ -29,7 +29,6 @@ const NewCategory = ({ token, userInfo }) => {
     });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [setUserStore, userInfo]);
-
 
   const Notify = (Message, success) => {
     const Options = {
@@ -67,22 +66,26 @@ const NewCategory = ({ token, userInfo }) => {
             category_description,
             is_active
           }
-        }).then(({ CreateCategory }) => {
-
-          const CategoryName = CreateCategory?.category_name;
-          Notify(`🚀 Category '${CategoryName}' successfully created`, CreateCategory);
-
-          if (CreateCategory) {
-            CategoryNameRef.current.value = '';
-            CategoryDescriptionRef.current.value = '';
-            IsActiveRef.current.checked = true;
-          }
-
-        }).catch(({ response }) => {
-          const ErrorMessage = response?.message ?? response?.errors[0]?.message
-          Notify(ErrorMessage, !response)
-          // LOGS
         })
+          .then(({ CreateCategory }) => {
+            const CategoryName = CreateCategory?.category_name;
+            Notify(
+              `🚀 Category '${CategoryName}' successfully created`,
+              CreateCategory
+            );
+
+            if (CreateCategory) {
+              CategoryNameRef.current.value = '';
+              CategoryDescriptionRef.current.value = '';
+              IsActiveRef.current.checked = true;
+            }
+          })
+          .catch(({ response }) => {
+            const ErrorMessage =
+              response?.message ?? response?.errors[0]?.message;
+            Notify(ErrorMessage, !response);
+            // LOGS
+          });
       } else {
         Notify('Fields should not be empty!', false);
       }
@@ -125,14 +128,18 @@ const NewCategory = ({ token, userInfo }) => {
         </section>
         <form className="m-auto relative" onSubmit={SubmitForm}>
           {Loading && (
-            <div className="absolute bg-black bg-opacity-10 rounded-lg inset-0 flex 
-            justify-center items-center">
+            <div
+              className="absolute bg-black bg-opacity-10 rounded-lg inset-0 flex 
+            justify-center items-center"
+            >
               <LoadingSvg width={80} height={80} />
             </div>
           )}
           <div className="shadow overflow-hidden md:rounded-lg card-container rounded-none">
-            <div className="flex justify-center items-center px-4 py-3 text-gray-800 
-            bg-gray-50 text-right sm:px-6">
+            <div
+              className="flex justify-center items-center px-4 py-3 text-gray-800 
+            bg-gray-50 text-right sm:px-6"
+            >
               <span className="uppercase text-sm">Create a new category</span>
             </div>
             <div className="px-4 py-5 bg-white sm:p-6">

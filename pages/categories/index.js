@@ -1,29 +1,46 @@
 import Image from 'next/image';
 import Link from 'next/link';
+import { useRouter } from 'next/router';
 import PropTypes from 'prop-types';
 import React, { useContext, useEffect } from 'react';
 import useSWR from 'swr';
 
 import { EditSvg, ProductSvg } from '@/components/svg';
 import { UserStoreContext } from '@/context/UserStore';
-import { GetCategoriesQuery } from '@/graphql/queries/category'
+import { GetCategoriesQuery } from '@/graphql/queries/category';
 import { getAppCookies, verifyToken } from '@/middleware/utils';
 
 import Add from '../../assets/svg/add.svg';
 
 const Categories = ({ token, userInfo }) => {
+  const router = useRouter();
   const [, setUserStore] = useContext(UserStoreContext);
   const { data } = useSWR([token, GetCategoriesQuery]);
 
   useEffect(() => {
-    const { account_uid, email, first_name, last_name, privileges } = userInfo;
-    setUserStore((prev) => {
-      return { ...prev, account_uid, email, first_name, last_name, privileges };
-    });
+    if (userInfo) {
+      const { account_uid, email, first_name, last_name, privileges } =
+        userInfo;
+      setUserStore((prev) => {
+        return {
+          ...prev,
+          account_uid,
+          email,
+          first_name,
+          last_name,
+          privileges
+        };
+      });
+    } else {
+      router.push('/');
+    }
+
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [setUserStore, userInfo]);
 
-  data?.Categories?.sort((a, b) => (a.display_order > b.display_order) ? 1 : -1)
+  data?.Categories?.sort((a, b) =>
+    a.display_order > b.display_order ? 1 : -1
+  );
 
   return (
     <div className="m-auto categories-cart-container mb-20">
@@ -43,11 +60,15 @@ const Categories = ({ token, userInfo }) => {
         </Link>
       </section>
       <section className="flex flex-wrap">
-        {
-          data?.Categories?.map(({ category_uid, category_name }) => {
-            return <CategoryCard key={category_uid} label={category_name} categoryId={category_uid} />
-          })
-        }
+        {data?.Categories?.map(({ category_uid, category_name }) => {
+          return (
+            <CategoryCard
+              key={category_uid}
+              label={category_name}
+              categoryId={category_uid}
+            />
+          );
+        })}
       </section>
     </div>
   );
@@ -78,12 +99,14 @@ const CategoryCard = ({ label, categoryId }) => {
         {/* ------ */}
         <Link
           href={{
-            pathname: '/categories/products',
+            pathname: '/store',
             query: { cid: categoryId }
           }}
         >
-          <a className="flex justify-center items-center w-full 
-          h-full flex-col py-1 px-1 hover:bg-blue-50">
+          <a
+            className="flex justify-center items-center w-full 
+          h-full flex-col py-1 px-1 hover:bg-blue-50"
+          >
             <div className="py-1">
               <ProductSvg width={25} height={25} />
             </div>
@@ -102,7 +125,11 @@ const CategoryCard = ({ label, categoryId }) => {
         border-gray-200 border-solid border-l px-1 hover:bg-blue-50 rounded-br-md"
           >
             <div className="py-1">
-              <EditSvg width={25} height={25} />
+              <EditSvg
+                width={25}
+                height={25}
+                className="custom-color-edit"
+              ></EditSvg>
             </div>
             <span className="font-light text-xs">Edit</span>
           </a>

@@ -12,7 +12,7 @@ import {
 
 import { getAppCookies, verifyToken } from '../middleware/utils';
 
-const Home = () => {
+const Login = () => {
   const email = useRef(null);
   const password = useRef(null);
   const rememberMe = useRef(null);
@@ -221,8 +221,6 @@ export async function getServerSideProps(context) {
   const { token } = getAppCookies(req);
   const userInfo = token ? verifyToken(token) : null;
 
-  console.log(`/index userInfo`, userInfo);
-
   if (userInfo) {
     return {
       redirect: {
@@ -237,4 +235,4 @@ export async function getServerSideProps(context) {
   };
 }
 
-export default Home;
+export default Login;
