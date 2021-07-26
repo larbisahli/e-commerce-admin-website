@@ -1,7 +1,7 @@
 version: '3.8'
 services:
-  admin_nextjs:
-    container_name: admin-nextjs-app
+  dropgala_admin:
+    container_name: admin-website
     restart: always
     build: .
     ports:
@@ -9,7 +9,5 @@ services:
     volumes:
       - /usr/src/app/node_modules
       - /usr/src/app/.next
-networks:
-  default:
-    external:
-      name: backend
+    networks:
+      - backend-network
