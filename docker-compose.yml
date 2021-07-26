@@ -11,3 +11,7 @@ services:
       - /usr/src/app/.next
     networks:
       - backend-network
+
+networks:
+  backend-network:
+    driver: bridge
