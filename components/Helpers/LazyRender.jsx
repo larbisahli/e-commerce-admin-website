@@ -1,5 +1,5 @@
-import { useState, useEffect, memo } from 'react';
 import PropTypes from 'prop-types';
+import { memo, useEffect, useState } from 'react';
 
 const LazyRender = ({ children, render, Suspense = null }) => {
   const [Seen, setSeen] = useState(false);

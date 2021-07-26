@@ -3,13 +3,16 @@
     "baseUrl": ".",
     "paths": {
       "@/components/*": ["components/*"],
+      "@/context/*": ["context/*"],
       "@/utils/*": ["utils/*"],
       "@/hooks/*": ["hooks/*"],
       "@/lib/*": ["lib/*"],
       "@/assets/*": ["assets/*"],
       "@/containers/*": ["containers/*"],
       "@/styles/*": ["styles/*"],
-      "@/data/*": ["data/*"]
+      "@/middleware/*": ["middleware/*"],
+      "@/data/*": ["data/*"],
+      "@/graphql/*": ["graphql/*"]
     }
   },
   "exclude": ["node_modules"]

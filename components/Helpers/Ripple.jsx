@@ -1,5 +1,6 @@
 import React from 'react';
-import { RippleStyle, RippleDiv } from './styles';
+
+import { RippleDiv, RippleStyle } from './styles';
 
 const Ripple = () => {
   return (

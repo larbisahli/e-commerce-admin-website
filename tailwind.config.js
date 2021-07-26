@@ -1,11 +1,27 @@
 module.exports = {
-  purge: [],
-  darkMode: false, // or 'media' or 'class'
+  purge: [
+    './pages/**/*.{js,ts,jsx,tsx}',
+    './components/**/*.{js,ts,jsx,tsx}',
+    './containers/**/*.{js,ts,jsx,tsx}'
+  ],
+  darkMode: false,
   theme: {
-    extend: {}
+    extend: {},
+    maxWidth: {
+      '1/4': '25%',
+      '1/2': '50%',
+      '3/4': '75%'
+    },
+    minWidth: {
+      '1/4': '25%',
+      '1/2': '50%',
+      '3/4': '75%'
+    }
   },
   variants: {
-    extend: {}
+    extend: {
+      opacity: ['group-hover']
+    }
   },
   plugins: []
 };

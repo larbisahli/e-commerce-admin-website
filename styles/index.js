@@ -48,23 +48,20 @@ export const Visible = css`
 
 export const PageContainer = styled.div`
   font-size: 1rem;
-  margin-top: 5em;
-  width: 100%;
-  flex: 1 0 auto;
+  margin-top: 56px;
   overflow: hidden;
-  margin-right: auto;
-  margin-left: auto;
-  max-width: 1150px;
+  margin-left: 240px;
+  padding-top: 50px;
+  display: none;
+  position: relative;
+  transition: margin-left 80ms cubic-bezier(0.4, 0, 0.6, 1) 0ms;
 
-  /* background: red; */
-
-  @media screen and (max-width: 1150px) {
-    max-width: 95vw;
-    font-size: 0.95rem;
+  @media screen and (max-width: 1330px) {
+    margin-left: 90px !important;
   }
 
-  @media screen and (max-width: 735px) {
-    max-width: 100%;
-    font-size: 0.88rem;
+  @media screen and (max-width: 800px) {
+    margin-left: 0 !important;
+    font-size: 0.9rem;
   }
 `;

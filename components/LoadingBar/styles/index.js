@@ -1,4 +1,5 @@
 import styled, { css } from 'styled-components';
+
 import { LoadingBarProgress } from '@/styles/keyframes';
 
 export const LoadingBarContainer = styled.div`

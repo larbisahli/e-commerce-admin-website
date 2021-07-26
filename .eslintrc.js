@@ -19,13 +19,14 @@ module.exports = {
     node: true
   },
   extends: [
+    'next',
+    'next/core-web-vitals',
     'eslint:recommended',
-    'plugin:react/recommended',
     'plugin:jsx-a11y/recommended'
-    // 'plugin:prettier/recommended'
   ],
   rules: {
-    // 'prettier/prettier': ['error', {}, { usePrettierrc: true }],
+    'simple-import-sort/imports': 'error',
+    'simple-import-sort/exports': 'error',
     'react/react-in-jsx-scope': 'off',
     'jsx-a11y/anchor-is-valid': [
       'error',

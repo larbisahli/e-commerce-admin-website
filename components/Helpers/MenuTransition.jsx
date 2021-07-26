@@ -1,19 +1,9 @@
-import React, { memo, useEffect, useState, forwardRef } from 'react';
-import { CSSTransition } from 'react-transition-group';
 import PropTypes from 'prop-types';
+import React, { forwardRef, memo, useEffect, useState } from 'react';
+import { CSSTransition } from 'react-transition-group';
 
 const MenuTransition = forwardRef(
-  (
-    {
-      children,
-      disTran = false,
-      Show = false,
-      onEnterFunc = () => void 0,
-      onExitedFunc = () => void 0,
-      unMount = false
-    },
-    ref
-  ) => {
+  ({ children, disTran = false, Show = false, unMount = false }, ref) => {
     const [disable, setdisable] = useState(false);
 
     useEffect(() => {
@@ -30,8 +20,8 @@ const MenuTransition = forwardRef(
         in={Show}
         timeout={disable ? 0 : 200}
         unmountOnExit={unMount}
-        onEnter={onEnterFunc}
-        onExited={onExitedFunc}
+        onEnter={() => ref.current && (ref.current.style.display = 'block')}
+        onExited={() => ref.current && (ref.current.style.display = 'none')}
         classNames={{
           enter: 'menu-enter',
           enterActive: 'menu-enter-active',

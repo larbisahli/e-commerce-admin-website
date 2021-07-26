@@ -1,160 +1,155 @@
-import React, { useState, useRef } from 'react';
-import {
-  Nav,
-  LeftContainer,
-  RightContainer,
-  ProfileContainer,
-  NotificationContainer,
-  NotificationCart,
-  NotificationCartWrap,
-  NotificationWrapper,
-  ProfileCart,
-  ProfileWrapper
-} from './styles';
-import BellSvg from '../../assets/svg/bell.svg';
 import Image from 'next/image';
-import { RippleEffect } from '@/components/index';
-import { Menuburger } from '@/components/svg/index';
-import { MenuTransition } from '@/components/index';
-import NotificationEmpty from './NotificationEmpty';
+import { useRouter } from 'next/router';
+import PropTypes from 'prop-types';
+import React, { memo, useContext, useRef, useState } from 'react';
 
-const Navbar = ({}) => {
+import { RippleEffect } from '@/components/index';
+import { EventDrop, LoadingBar } from '@/components/index';
+import { BellSvg } from '@/components/svg';
+import { Menuburger } from '@/components/svg/index';
+import { UserStoreContext } from '@/context/UserStore';
+
+import NotificationEmpty from './NotificationEmpty';
+import {
+  LeftContainer,
+  MenuContainer,
+  Nav,
+  NotificationCartContainer,
+  NotificationCartWrap,
+  NotificationContainer,
+  NotificationWrapper,
+  ProfileCartContainer,
+  ProfileContainer,
+  ProfileWrapper,
+  RightContainer
+} from './styles';
+
+const Navbar = ({ setGuideState }) => {
+  const { asPath } = useRouter();
+
   const ProfileDropNodeRef = useRef(null);
   const NotificationDropNodeRef = useRef(null);
+
+  const [UserStore] = useContext(UserStoreContext);
 
   const [ShowNotificationDrop, setShowNotificationDrop] = useState(false);
   const [ShowProfileDrop, setShowProfileDrop] = useState(false);
 
-  const OnEnterNotification = () => {
-    let NotifyNode = document.getElementById('notification-cart');
-    if (NotifyNode) NotifyNode.style.display = 'block';
-  };
-
-  const OnExitNotification = () => {
-    let NotifyNode = document.getElementById('notification-cart');
-    if (NotifyNode) NotifyNode.style.display = 'none';
-  };
-
-  const HandleToggleNotificationEvent = (e) => {
-    const target = e.target;
-    const NotificationCart = document.getElementById('notification-cart');
-    const NotificationBtn = document.getElementById('noti-btn');
-
-    if (
-      !NotificationCart?.contains(target) &&
-      !NotificationBtn?.contains(target)
-    ) {
-      setShowNotificationDrop(false);
-      document.removeEventListener('click', HandleToggleNotificationEvent);
-    }
-  };
-
-  const HandleToggleNotification = () => {
-    setShowNotificationDrop((prev) => !prev);
-    document.addEventListener('click', HandleToggleNotificationEvent);
-  };
-
-  // --------- PROFILE AREA --------- //
-
-  const OnEnterProfile = () => {
-    let NotifyNode = document.getElementById('profile-drop');
-    if (NotifyNode) NotifyNode.style.display = 'block';
-  };
-
-  const OnExitProfile = () => {
-    let NotifyNode = document.getElementById('profile-drop');
-    if (NotifyNode) NotifyNode.style.display = 'none';
-  };
-
-  const HandleToggleProfileEvent = (e) => {
-    const target = e.target;
-    const ProfileCart = document.getElementById('profile-drop');
-    const ProfileBtn = document.getElementById('profile-btn');
-
-    if (!ProfileCart?.contains(target) && !ProfileBtn?.contains(target)) {
-      setShowProfileDrop(false);
-      document.removeEventListener('click', HandleToggleProfileEvent);
-    }
-  };
-
-  const HandleToggleProfile = () => {
-    setShowProfileDrop((prev) => !prev);
-    document.addEventListener('click', HandleToggleProfileEvent);
+  const HandleGuide = () => {
+    setGuideState((prev) => {
+      const absWidth = window.innerWidth;
+      if (prev.mode === 2) {
+        return {
+          show: !prev.show,
+          mode: prev.mode === 2 ? 1 : 2
+        };
+      } else if (prev.mode === 1 && absWidth >= 1330) {
+        return {
+          show: !prev.show,
+          mode: 2
+        };
+      } else if (prev.mode === 1 && absWidth <= 1330) {
+        return {
+          show: !prev.show,
+          mode: 1
+        };
+      } else if (prev.mode === 0) {
+        return {
+          show: !prev.show,
+          mode: 0
+        };
+      }
+      return prev;
+    });
   };
 
   return (
     <Nav>
+      <LoadingBar></LoadingBar>
       <LeftContainer>
-        {false && <Menuburger menuIsOpen={false} />}
-        <span>{`dashboard`}</span>
+        <MenuContainer>
+          <div
+            onClick={HandleGuide}
+            role="button"
+            tabIndex={0}
+            onKeyDown={() => void 0}
+            className="menu-btn"
+          >
+            <RippleEffect Style={{ padding: '10px', borderRadius: '3px' }}>
+              <Menuburger menuIsOpen={false} />
+            </RippleEffect>
+          </div>
+        </MenuContainer>
+        <div className="page-title-container">
+          <div className="ptc-slash"></div>
+          { asPath.split('/')[1].split('?')[0]}
+        </div>
       </LeftContainer>
       <RightContainer>
         <NotificationContainer>
-          <NotificationWrapper id="noti-btn" onClick={HandleToggleNotification}>
+          <div className="notify-container"></div>
+          <NotificationWrapper
+            id="notification-btn"
+            onClick={() => setShowNotificationDrop((prev) => !prev)}
+          >
             <RippleEffect Style={{ padding: '8px', borderRadius: '50%' }}>
-              <BellSvg />
+              <BellSvg width={24} height={24} isNav={true} />
             </RippleEffect>
           </NotificationWrapper>
-          <MenuTransition
+          {/* Start Notification DropDown */}
+          <EventDrop
             ref={NotificationDropNodeRef}
-            Show={ShowNotificationDrop}
-            onEnterFunc={OnEnterNotification}
-            onExitedFunc={OnExitNotification}
+            btnId="notification-btn"
+            setState={setShowNotificationDrop}
+            state={ShowNotificationDrop}
           >
-            <NotificationCart
-              ref={NotificationDropNodeRef}
-              id="notification-cart"
-            >
+            <NotificationCartContainer ref={NotificationDropNodeRef}>
               <NotificationCartWrap>
-                {false ? (
-                  <NotificationContent
-                    setCartItems={setCartItems}
-                    Results={cartItems}
-                    IsMobile={IsMobile}
-                  />
-                ) : (
-                  <NotificationEmpty />
-                )}
+                <NotificationEmpty />
               </NotificationCartWrap>
-            </NotificationCart>
-          </MenuTransition>
+            </NotificationCartContainer>
+          </EventDrop>
+          {/* End Notification DropDown */}
         </NotificationContainer>
         <ProfileContainer>
           <RippleEffect
             Id="profile-btn"
-            onClick={HandleToggleProfile}
+            onClick={() => setShowProfileDrop((prev) => !prev)}
             Style={{ margin: '0 1em 0 1em', borderRadius: '999px' }}
           >
             <ProfileWrapper>
               <div className="profile-img-wrap">
                 <Image
-                  src="/images/profile.jpg"
+                  src="/static/images/profile.jpg"
                   width={40}
                   height={40}
+                  alt=""
                   quality={95}
                 />
               </div>
-              <span>{`Jane Doe`}</span>
+              <span>{UserStore?.first_name ?? ''}</span>
             </ProfileWrapper>
           </RippleEffect>
-          <MenuTransition
+          {/* Start Profile DropDown */}
+          <EventDrop
             ref={ProfileDropNodeRef}
-            Show={ShowProfileDrop}
-            onEnterFunc={OnEnterProfile}
-            onExitedFunc={OnExitProfile}
+            btnId="profile-btn"
+            setState={setShowProfileDrop}
+            state={ShowProfileDrop}
           >
-            <ProfileCart ref={ProfileDropNodeRef} id="profile-drop">
+            <ProfileCartContainer ref={ProfileDropNodeRef}>
               <span>Sign out</span>
-            </ProfileCart>
-          </MenuTransition>
+            </ProfileCartContainer>
+          </EventDrop>
+          {/* End Profile DropDown */}
         </ProfileContainer>
       </RightContainer>
     </Nav>
   );
 };
 
-const NotificationContent = () => {
-  return <div></div>;
+Navbar.propTypes = {
+  setGuideState: PropTypes.func
 };
 
-export default Navbar;
+export default memo(Navbar);
