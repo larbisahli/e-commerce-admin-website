@@ -2,7 +2,7 @@ name: Build & Deploy
 
 on:
   push:
-    branches: [main]
+    branches: [ develop ]
 
 jobs:
   deploy:
@@ -19,7 +19,7 @@ jobs:
             eval $(ssh-agent -s)
             ssh-add /home/isaac/.ssh/id_rsa_github
             cd admin.dropgala.com
-            git pull origin main
+            git pull origin develop
             echo 'Successfully Deploy to DigitalOcean'
 
           # echo ${{ secrets.USER_PASSWORD }} | sudo -S docker-compose rm -sv admin_nextjs

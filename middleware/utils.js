@@ -1,6 +1,6 @@
-import jwt from 'jsonwebtoken';
 import cookie from 'cookie';
 import fs from 'fs';
+import jwt from 'jsonwebtoken';
 
 const PublicKEY = fs.readFileSync('./middleware/jwtRS256.key.pub', 'utf8');
 
