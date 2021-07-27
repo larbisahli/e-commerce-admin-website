@@ -9,9 +9,8 @@ services:
     volumes:
       - /usr/src/app/node_modules
       - /usr/src/app/.next
-    networks:
-      - backend-network
 
 networks:
-  backend-network:
-    driver: bridge
+  default:
+    external:
+      name: backend-network
