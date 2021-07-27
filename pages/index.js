@@ -217,17 +217,22 @@ const HomePage = () => {
 };
 
 export async function getServerSideProps(context) {
-  const { req } = context;
-  const { token } = getAppCookies(req);
-  const userInfo = token ? verifyToken(token) : null;
 
-  if (userInfo) {
-    return {
-      redirect: {
-        permanent: false,
-        destination: '/dashboard'
-      }
-    };
+  try {
+    const { req } = context;
+    const { token } = getAppCookies(req);
+    const userInfo = token ? verifyToken(token) : null;
+
+    if (userInfo) {
+      return {
+        redirect: {
+          permanent: false,
+          destination: '/dashboard'
+        }
+      };
+    }
+  } catch (error) {
+    console.log(`<< Error Index >>`, { error })
   }
 
   return {
