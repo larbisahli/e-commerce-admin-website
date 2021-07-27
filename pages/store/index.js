@@ -2,7 +2,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import PropTypes from 'prop-types';
-import React, { useContext, useEffect, useMemo, useState } from 'react';
+import React, { useCallback, useContext, useEffect, useMemo, useState } from 'react';
 import ReactPaginate from 'react-paginate';
 import useSWR from 'swr';
 
@@ -26,6 +26,7 @@ const Store = ({ token, userInfo }) => {
   const [, setUserStore] = useContext(UserStoreContext);
 
   const [Page, setPage] = useState(0);
+  // eslint-disable-next-line no-unused-vars
   const [limit, setLimit] = useState(10);
   const [Count, setCount] = useState(0);
 
@@ -44,19 +45,22 @@ const Store = ({ token, userInfo }) => {
 
   console.log(`======>`, { data, error });
 
-  async function fetchData() {
-    await Request({
-      token,
-      mutation: ProductCountQuery,
-      variables: {}
-    })
-      .then(({ ProductsCount }) => {
-        setCount(() => ProductsCount?.count ?? 0)
+  const fetchData = useCallback(
+    async () => {
+      await Request({
+        token,
+        mutation: ProductCountQuery,
+        variables: {}
       })
-      .catch(({ response }) => {
-        console.log(`Count response Error:>`, { response })
-      });
-  }
+        .then(({ ProductsCount }) => {
+          setCount(() => ProductsCount?.count ?? 0)
+        })
+        .catch(({ response }) => {
+          console.log(`Count response Error:>`, { response })
+        });
+    },
+    [token],
+  )
 
   useEffect(() => {
     try {
@@ -64,7 +68,7 @@ const Store = ({ token, userInfo }) => {
     } catch (error) {
       console.log('count error :>> ', { error });
     }
-  }, [])
+  }, [fetchData])
 
   useEffect(() => {
     if (userInfo) {
@@ -173,6 +177,9 @@ const ProductCard = ({ product }) => {
   );
 
   const { product_uid, account_uid, category_uid, discount, inventory, price, thumbnail, title } = product
+
+  console.log('=>', { product_uid, account_uid, category_uid, discount, inventory })
+
   const url = thumbnail?.image
 
   useEffect(() => {
