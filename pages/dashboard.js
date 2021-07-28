@@ -11,8 +11,8 @@ import {
   SalesChart
 } from '@/components/index';
 import { UserStoreContext } from '@/context/UserStore';
-// import { getAppCookies, verifyToken } from '@/middleware/utils';
 
+// import { getAppCookies, verifyToken } from '@/middleware/utils';
 import Add from '../assets/svg/add.svg';
 
 // const IsProduction = process.env.NODE_ENV === 'production';
@@ -101,7 +101,7 @@ function Dashboard({ token, userInfo }) {
   );
 }
 
-export async function getServerSideProps(context) {
+export async function getServerSideProps() {
   // const { req } = context;
   // const { token } = getAppCookies(req);
   // const userInfo = token ? verifyToken(token) : null;
