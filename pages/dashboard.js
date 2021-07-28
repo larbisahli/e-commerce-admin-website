@@ -11,8 +11,8 @@ import {
   SalesChart
 } from '@/components/index';
 import { UserStoreContext } from '@/context/UserStore';
+import { getAppCookies, verifyToken } from '@/middleware/utils';
 
-// import { getAppCookies, verifyToken } from '@/middleware/utils';
 import Add from '../assets/svg/add.svg';
 
 // const IsProduction = process.env.NODE_ENV === 'production';
@@ -101,27 +101,35 @@ function Dashboard({ token, userInfo }) {
   );
 }
 
-export async function getServerSideProps() {
-  // const { req } = context;
-  // const { token } = getAppCookies(req);
-  // const userInfo = token ? verifyToken(token) : null;
+export async function getServerSideProps(context) {
+  try {
+    const { req } = context;
+    const { token } = getAppCookies(req);
+    const userInfo = token ? verifyToken(token) : null;
 
-  // if (!userInfo) {
-  //   return {
-  //     redirect: {
-  //       permanent: false,
-  //       destination: '/'
-  //     }
-  //   };
-  // }
+    if (!userInfo) {
+      return {
+        redirect: {
+          permanent: false,
+          destination: '/'
+        }
+      };
+    }
 
-  const token = "lool"
-  const userInfo = "woow"
+    return {
+      props: {
+        token,
+        userInfo
+      }
+    };
+  } catch (err) {
+    console.log(`err`, err)
+  }
 
   return {
     props: {
-      token,
-      userInfo
+      token: '123',
+      userInfo: '321'
     }
   };
 }
