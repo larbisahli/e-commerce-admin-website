@@ -11,7 +11,7 @@ import {
   SalesChart
 } from '@/components/index';
 import { UserStoreContext } from '@/context/UserStore';
-import { getAppCookies, verifyToken } from '@/middleware/utils';
+// import { getAppCookies, verifyToken } from '@/middleware/utils';
 
 import Add from '../assets/svg/add.svg';
 
