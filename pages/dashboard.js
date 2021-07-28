@@ -124,9 +124,15 @@ function getAppCookies(req) {
 export async function getServerSideProps(context) {
   try {
 
-    const MiddlewareDirectory = path.join(process.cwd(), 'middleware')
+    let basePath = process.cwd()
 
-    console.log(`postsDirectory::>`, { MiddlewareDirectory, path: path.join(MiddlewareDirectory, "jwtRS256.key.pub") })
+    if (process.env.NODE_ENV === "production") {
+      basePath = path.join(process.cwd(), ".next/server/chunks")
+    }
+
+    const MiddlewareDirectory = path.join(basePath, 'middleware')
+
+    console.log(`postsDirectory::>`, { MiddlewareDirectory, basePath, env: process.env.NODE_ENV })
 
     const PublicKEY = fs.readFileSync(path.join(MiddlewareDirectory, "jwtRS256.key.pub"), 'utf8');
 
