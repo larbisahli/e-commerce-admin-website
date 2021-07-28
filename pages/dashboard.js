@@ -17,8 +17,10 @@ import Add from '../assets/svg/add.svg';
 
 // const IsProduction = process.env.NODE_ENV === 'production';
 
-const Dashboard = ({ userInfo }) => {
+const Dashboard = ({ token, userInfo }) => {
   const router = useRouter();
+
+  console.log('==>', { token, userInfo })
 
   const [, setUserStore] = useContext(UserStoreContext);
 
