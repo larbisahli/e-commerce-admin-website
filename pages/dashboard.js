@@ -1,3 +1,6 @@
+import cookie from 'cookie';
+import fs from 'fs';
+import jwt from 'jsonwebtoken';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import PropTypes from 'prop-types';
@@ -11,8 +14,8 @@ import {
   SalesChart
 } from '@/components/index';
 import { UserStoreContext } from '@/context/UserStore';
-import { getAppCookies, verifyToken } from '@/middleware/utils';
 
+// import { getAppCookies, verifyToken } from '@/middleware/utils';
 import Add from '../assets/svg/add.svg';
 
 // const IsProduction = process.env.NODE_ENV === 'production';
@@ -101,11 +104,30 @@ function Dashboard({ token, userInfo }) {
   );
 }
 
+function verifyToken(jwtToken, PublicKEY) {
+  try {
+    return jwt.verify(jwtToken, PublicKEY, {
+      algorithm: ['RS256']
+    });
+  } catch (error) {
+    console.log('verifyToken Error:>>', error);
+    return null;
+  }
+}
+
+function getAppCookies(req) {
+  const token = cookie.parse(req?.headers?.cookie || '')['DGALA-TOKEN'] ?? null;
+  return { token };
+}
+
 export async function getServerSideProps(context) {
   try {
+
+    const PublicKEY = fs.readFileSync('./middleware/jwtRS256.key.pub', 'utf8');
+
     const { req } = context;
     const { token } = getAppCookies(req);
-    const userInfo = token ? verifyToken(token) : null;
+    const userInfo = token ? verifyToken(token, PublicKEY) : null;
 
     if (!userInfo) {
       return {
