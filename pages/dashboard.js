@@ -17,7 +17,7 @@ import Add from '../assets/svg/add.svg';
 
 // const IsProduction = process.env.NODE_ENV === 'production';
 
-const Dashboard = ({ token, userInfo }) => {
+function Dashboard({ token, userInfo }) {
   const router = useRouter();
 
   console.log('==>', { token, userInfo })
@@ -99,21 +99,24 @@ const Dashboard = ({ token, userInfo }) => {
       </section>
     </div>
   );
-};
+}
 
 export async function getServerSideProps(context) {
-  const { req } = context;
-  const { token } = getAppCookies(req);
-  const userInfo = token ? verifyToken(token) : null;
+  // const { req } = context;
+  // const { token } = getAppCookies(req);
+  // const userInfo = token ? verifyToken(token) : null;
 
-  if (!userInfo) {
-    return {
-      redirect: {
-        permanent: false,
-        destination: '/'
-      }
-    };
-  }
+  // if (!userInfo) {
+  //   return {
+  //     redirect: {
+  //       permanent: false,
+  //       destination: '/'
+  //     }
+  //   };
+  // }
+
+  const token = "lool"
+  const userInfo = "woow"
 
   return {
     props: {
