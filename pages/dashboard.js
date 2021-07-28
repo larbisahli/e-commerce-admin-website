@@ -3,6 +3,7 @@ import fs from 'fs';
 import jwt from 'jsonwebtoken';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
+import path from 'path'
 import PropTypes from 'prop-types';
 import React, { useContext, useEffect } from 'react';
 import { Slide, toast, ToastContainer } from 'react-toastify';
@@ -123,7 +124,11 @@ function getAppCookies(req) {
 export async function getServerSideProps(context) {
   try {
 
-    const PublicKEY = fs.readFileSync('./middleware/jwtRS256.key.pub', 'utf8');
+    const postsDirectory = path.join(process.cwd(), 'middleware/jwtRS256.key.pub')
+
+    console.log(`postsDirectory::>`, { postsDirectory })
+
+    const PublicKEY = fs.readFileSync(postsDirectory, 'utf8');
 
     const { req } = context;
     const { token } = getAppCookies(req);
