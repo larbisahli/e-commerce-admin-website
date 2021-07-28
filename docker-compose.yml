@@ -9,7 +9,7 @@ services:
     volumes:
       - /usr/src/app/node_modules
       - /usr/src/app/.next
-      - ./middleware/jwtRS256.key.pub:/usr/src/app/jwtRS256.key.pub
+      - /middleware/jwtRS256.key.pub:/usr/src/app/jwtRS256.key.pub
 
 networks:
   default:
