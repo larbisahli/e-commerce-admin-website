@@ -18,6 +18,7 @@ WORKDIR /app
 
 ENV NODE_ENV production
 
+COPY --from=builder /app/jwtRS256.key.pub ./middleware/jwtRS256.key.pub
 COPY --from=builder /app/next.config.js ./
 COPY --from=builder /app/public ./public
 COPY --from=builder /app/.next ./.next
