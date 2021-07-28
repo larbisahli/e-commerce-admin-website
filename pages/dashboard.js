@@ -124,11 +124,11 @@ function getAppCookies(req) {
 export async function getServerSideProps(context) {
   try {
 
-    const postsDirectory = path.join(process.cwd(), 'middleware/jwtRS256.key.pub')
+    const MiddlewareDirectory = path.join(process.cwd(), 'middleware')
 
-    console.log(`postsDirectory::>`, { postsDirectory })
+    console.log(`postsDirectory::>`, { MiddlewareDirectory, path: path.join(MiddlewareDirectory, "jwtRS256.key.pub") })
 
-    const PublicKEY = fs.readFileSync(postsDirectory, 'utf8');
+    const PublicKEY = fs.readFileSync(path.join(MiddlewareDirectory, "jwtRS256.key.pub"), 'utf8');
 
     const { req } = context;
     const { token } = getAppCookies(req);
