@@ -10,7 +10,7 @@ import {
   FormWrapper
 } from '@/styles/Pages/index';
 
-// import { getAppCookies, verifyToken } from '../middleware/utils';
+import { getAppCookies, verifyToken } from '../middleware/utils';
 
 const HomePage = () => {
   const email = useRef(null);
@@ -216,28 +216,33 @@ const HomePage = () => {
   );
 };
 
-// export async function getServerSideProps(context) {
+export async function getServerSideProps(context) {
 
-//   try {
-//     const { req } = context;
-//     const { token } = getAppCookies(req);
-//     const userInfo = token ? verifyToken(token) : null;
+  try {
+    const { req } = context;
+    const { token } = getAppCookies(req);
+    const userInfo = token ? verifyToken(token) : null;
 
-//     if (userInfo) {
-//       return {
-//         redirect: {
-//           permanent: false,
-//           destination: '/dashboard'
-//         }
-//       };
-//     }
-//   } catch (error) {
-//     console.log(`<< Error Index >>`, { error })
-//   }
+    if (userInfo) {
+      return {
+        redirect: {
+          permanent: false,
+          destination: '/dashboard'
+        }
+      };
+    }
 
-//   return {
-//     props: {}
-//   };
-// }
+    return {
+      props: {}
+    };
+  } catch (error) {
+    console.log(`getServerSideProps error :>`, error)
+    return {
+      props: {
+        error
+      }
+    }
+  }
+}
 
 export default HomePage;

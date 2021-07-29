@@ -140,25 +140,34 @@ const CategoryCard = ({ label, categoryId }) => {
 };
 
 export async function getServerSideProps(context) {
-  const { req } = context;
-  const { token } = getAppCookies(req);
-  const userInfo = token ? verifyToken(token) : null;
+  try {
+    const { req } = context;
+    const { token } = getAppCookies(req);
+    const userInfo = token ? verifyToken(token) : null;
 
-  if (!userInfo) {
+    if (!userInfo) {
+      return {
+        redirect: {
+          permanent: false,
+          destination: '/'
+        }
+      };
+    }
+
     return {
-      redirect: {
-        permanent: false,
-        destination: '/'
+      props: {
+        token,
+        userInfo
       }
     };
-  }
-
-  return {
-    props: {
-      token,
-      userInfo
+  } catch (error) {
+    console.log(`getServerSideProps error :>`, error)
+    return {
+      props: {
+        error
+      }
     }
-  };
+  }
 }
 
 CategoryCard.propTypes = {

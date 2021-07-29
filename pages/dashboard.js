@@ -1,9 +1,5 @@
-import cookie from 'cookie';
-import fs from 'fs';
-import jwt from 'jsonwebtoken';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
-import path from 'path'
 import PropTypes from 'prop-types';
 import React, { useContext, useEffect } from 'react';
 import { Slide, toast, ToastContainer } from 'react-toastify';
@@ -15,8 +11,8 @@ import {
   SalesChart
 } from '@/components/index';
 import { UserStoreContext } from '@/context/UserStore';
+import { getAppCookies, verifyToken } from '@/middleware/utils';
 
-// import { getAppCookies, verifyToken } from '@/middleware/utils';
 import Add from '../assets/svg/add.svg';
 
 // const IsProduction = process.env.NODE_ENV === 'production';
@@ -105,36 +101,11 @@ function Dashboard({ token, userInfo }) {
   );
 }
 
-function verifyToken(jwtToken, PublicKEY) {
-  try {
-    return jwt.verify(jwtToken, PublicKEY, {
-      algorithm: ['RS256']
-    });
-  } catch (error) {
-    console.log('verifyToken Error:>>', error);
-    return null;
-  }
-}
-
-function getAppCookies(req) {
-  const token = cookie.parse(req?.headers?.cookie || '')['DGALA-TOKEN'] ?? null;
-  return { token };
-}
-
 export async function getServerSideProps(context) {
   try {
-
-    const basePath = process.cwd()
-
-    const jwtRS256File = path.join(basePath, "jwtRS256.key.pub")
-
-    console.log(`postsDirectory::>`, { jwtRS256File, basePath })
-
-    const PublicKEY = fs.readFileSync(jwtRS256File, 'utf8');
-
     const { req } = context;
     const { token } = getAppCookies(req);
-    const userInfo = token ? verifyToken(token, PublicKEY) : null;
+    const userInfo = token ? verifyToken(token) : null;
 
     if (!userInfo) {
       return {
@@ -151,16 +122,14 @@ export async function getServerSideProps(context) {
         userInfo
       }
     };
-  } catch (err) {
-    console.log(`err`, err)
-  }
-
-  return {
-    props: {
-      token: '123',
-      userInfo: '321'
+  } catch (error) {
+    console.log(`getServerSideProps error :>`, error)
+    return {
+      props: {
+        error
+      }
     }
-  };
+  }
 }
 
 Dashboard.propTypes = {
