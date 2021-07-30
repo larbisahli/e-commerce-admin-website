@@ -2,7 +2,6 @@ FROM node:alpine AS deps
 
 RUN apk add --no-cache libc6-compat
 WORKDIR /app
-COPY ./middleware/jwtRS256.key.pub ./
 COPY package.json yarn.lock ./
 RUN yarn install --frozen-lockfile
 

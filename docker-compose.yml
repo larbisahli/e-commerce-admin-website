@@ -1,6 +1,6 @@
 version: '3.8'
 services:
-  dropgala_admin:
+  admin_website:
     container_name: admin-website
     restart: always
     build: .
@@ -13,4 +13,4 @@ services:
 networks:
   default:
     external:
-      name: backend-network
+      name: backend
