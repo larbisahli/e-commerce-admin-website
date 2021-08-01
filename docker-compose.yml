@@ -5,7 +5,7 @@ services:
     restart: always
     build: .
     ports:
-      - '4000:3000'
+      - '5000:3000'
     volumes:
       - /usr/src/app/node_modules
       - /usr/src/app/.next
