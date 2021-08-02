@@ -5,7 +5,7 @@
   "scripts": {
     "dev": "next dev -p 3001",
     "build": "next build",
-    "start": "next start -p 3001",
+    "start": "next start",
     "test": "jest",
     "lint": "next lint",
     "prettier": "prettier --write \"**/*.{js,jsx,scss,json,md,yml}\""

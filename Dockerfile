@@ -32,4 +32,4 @@ USER nextjs
 
 EXPOSE 3001
 
-CMD ["node_modules/.bin/next", "start"]
+CMD ["node_modules/.bin/next", "start -p 3001"]
