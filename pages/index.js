@@ -37,7 +37,7 @@ const HomePage = () => {
     setLoading(true);
 
     const HostUrl =
-      process.env.NODE_ENV === 'production' ? '' : 'http://127.0.0.1:5001';
+      process.env.NODE_ENV === 'production' ? process.env.ADMIN_API_URL : 'http://127.0.0.1:5001';
 
     if (email.current.value && password.current.value) {
       try {

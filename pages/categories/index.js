@@ -2,7 +2,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import PropTypes from 'prop-types';
-import React, { useContext, useEffect } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import useSWR from 'swr';
 
 import { EditSvg, ProductSvg } from '@/components/svg';
@@ -64,7 +64,7 @@ const Categories = ({ token, userInfo }) => {
           return (
             <CategoryCard
               key={category_uid}
-              label={category_name}
+              categoryName={category_name}
               categoryId={category_uid}
             />
           );
@@ -74,7 +74,10 @@ const Categories = ({ token, userInfo }) => {
   );
 };
 
-const CategoryCard = ({ label, categoryId }) => {
+const CategoryCard = ({ categoryName, categoryId }) => {
+
+  const [imgSrc, setImgSrc] = useState(false);
+
   return (
     <div className="card-container rounded-lg m-3 flex-col category-card-wrapper">
       <div
@@ -87,10 +90,13 @@ const CategoryCard = ({ label, categoryId }) => {
             width={35}
             height={35}
             alt=""
-            src="/static/svg/briefcase.svg"
+            src={imgSrc ? `${process.env.MEDIA_URL}/static/svg/briefcase.svg` : `${process.env.MEDIA_URL}/svg/${categoryName}.svg`}
+            onError={() => {
+              setImgSrc(true);
+            }}
           />
         </div>
-        <span className="text-base uppercase pt-2 font-normal">{label}</span>
+        <span className="text-base uppercase pt-2 font-normal">{categoryName}</span>
       </div>
       <div
         style={{ height: '60px' }}

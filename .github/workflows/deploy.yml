@@ -20,7 +20,6 @@ jobs:
             ssh-add /home/isaac/.ssh/id_rsa_github
             cd admin.dropgala.com
             git pull origin develop
+            echo ${{ secrets.USER_PASSWORD }} | sudo -S docker-compose down
+            echo ${{ secrets.USER_PASSWORD }} | sudo -S docker-compose up -d --build
             echo 'Successfully Deploy to DigitalOcean'
-
-          # echo ${{ secrets.USER_PASSWORD }} | sudo -S docker-compose rm -sv admin_nextjs
-          # echo ${{ secrets.USER_PASSWORD }} | sudo -S docker-compose up -d --no-deps --build admin_nextjs
