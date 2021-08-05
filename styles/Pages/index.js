@@ -19,7 +19,7 @@ export const Container = styled.div`
     bottom: 0;
     right: 0;
     left: 0;
-    z-index: 100;
+    z-index: 10;
   }
 
   .footer {
@@ -99,6 +99,7 @@ export const FormWrapper = styled.div`
   box-shadow: 0 0 3px #999999;
   height: 350px;
   border-radius: 3px;
+  z-index: 99;
 
   .col-left,
   .col-right {

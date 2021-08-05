@@ -12,7 +12,7 @@ import {
 
 import { getAppCookies, verifyToken } from '../middleware/utils';
 
-const Login = () => {
+const HomePage = () => {
   const email = useRef(null);
   const password = useRef(null);
   const rememberMe = useRef(null);
@@ -37,7 +37,7 @@ const Login = () => {
     setLoading(true);
 
     const HostUrl =
-      process.env.NODE_ENV === 'production' ? '' : 'http://127.0.0.1:5001';
+      process.env.NODE_ENV === 'production' ? process.env.ADMIN_API_URL : 'http://127.0.0.1:5001';
 
     if (email.current.value && password.current.value) {
       try {
@@ -217,22 +217,32 @@ const Login = () => {
 };
 
 export async function getServerSideProps(context) {
-  const { req } = context;
-  const { token } = getAppCookies(req);
-  const userInfo = token ? verifyToken(token) : null;
 
-  if (userInfo) {
+  try {
+    const { req } = context;
+    const { token } = getAppCookies(req);
+    const userInfo = token ? verifyToken(token) : null;
+
+    if (userInfo) {
+      return {
+        redirect: {
+          permanent: false,
+          destination: '/dashboard'
+        }
+      };
+    }
+
     return {
-      redirect: {
-        permanent: false,
-        destination: '/dashboard'
-      }
+      props: {}
     };
+  } catch (error) {
+    console.log(`getServerSideProps error :>`, error)
+    return {
+      props: {
+        error
+      }
+    }
   }
-
-  return {
-    props: {}
-  };
 }
 
-export default Login;
+export default HomePage;

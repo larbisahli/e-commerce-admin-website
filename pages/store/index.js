@@ -185,7 +185,7 @@ const ProductCard = ({ product }) => {
   useEffect(() => {
     async function toBase64() {
       const arr = url?.split('.')
-      const data = await fetch(`https://dropgala-test.fra1.digitaloceanspaces.com${arr[0]}_placeholder.${arr[1]}`);
+      const data = await fetch(`${process.env.MEDIA_URL}${arr[0]}_placeholder.${arr[1]}`);
       const blob = await data.blob();
       // eslint-disable-next-line no-undef
       return await new Promise((resolve) => {
@@ -220,8 +220,8 @@ const ProductCard = ({ product }) => {
             placeholder="blur"
             alt=""
             className="bg-blue-100 rounded-t"
-            unoptimized={true}
-            src={`https://dropgala-test.fra1.digitaloceanspaces.com${url}`}
+            unoptimized={true} // remove when v11.0.2
+            src={`${process.env.MEDIA_URL}${url}`}
           />
           {/* ------------ */}
           <div
@@ -292,25 +292,34 @@ const ProductCard = ({ product }) => {
 };
 
 export async function getServerSideProps(context) {
-  const { req } = context;
-  const { token } = getAppCookies(req);
-  const userInfo = token ? verifyToken(token) : null;
+  try {
+    const { req } = context;
+    const { token } = getAppCookies(req);
+    const userInfo = token ? verifyToken(token) : null;
 
-  if (!userInfo) {
+    if (!userInfo) {
+      return {
+        redirect: {
+          permanent: false,
+          destination: '/'
+        }
+      };
+    }
+
     return {
-      redirect: {
-        permanent: false,
-        destination: '/'
+      props: {
+        token,
+        userInfo
       }
     };
-  }
-
-  return {
-    props: {
-      token,
-      userInfo
+  } catch (error) {
+    console.log(`getServerSideProps error :>`, error)
+    return {
+      props: {
+        error
+      }
     }
-  };
+  }
 }
 
 ProductCard.propTypes = {

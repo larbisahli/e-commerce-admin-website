@@ -4,18 +4,15 @@ module.exports = {
     deviceSizes: [320, 420, 768, 1024, 1200],
     // iconSizes: [],
     domains: [
-      '127.0.0.1:80',
-      '127.0.0.1:3000',
-      '127.0.0.1',
       'dropgala.com',
-      'media.dropgala.com',
-      'dropgala-test.fra1.digitaloceanspaces.com'
+      'media.dropgala.com'
     ],
     path: '/_next/image',
     loader: 'default'
   },
   env: {
-    JWT_KEY: '',
+    ADMIN_API_URL: 'https://admin-api.dropgala.com',
+    MEDIA_URL: 'https://media.dropgala.com',
     GTAG_MEASUREMENT_ID: '',
     FB_APPID: '',
     NEXT_PUBLIC_LOGROCKET_ID: '',

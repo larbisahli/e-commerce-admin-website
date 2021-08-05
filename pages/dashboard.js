@@ -17,8 +17,10 @@ import Add from '../assets/svg/add.svg';
 
 // const IsProduction = process.env.NODE_ENV === 'production';
 
-const Dashboard = ({ userInfo }) => {
+function Dashboard({ token, userInfo }) {
   const router = useRouter();
+
+  console.log('==>', { token, userInfo })
 
   const [, setUserStore] = useContext(UserStoreContext);
 
@@ -97,28 +99,37 @@ const Dashboard = ({ userInfo }) => {
       </section>
     </div>
   );
-};
+}
 
 export async function getServerSideProps(context) {
-  const { req } = context;
-  const { token } = getAppCookies(req);
-  const userInfo = token ? verifyToken(token) : null;
+  try {
+    const { req } = context;
+    const { token } = getAppCookies(req);
+    const userInfo = token ? verifyToken(token) : null;
 
-  if (!userInfo) {
+    if (!userInfo) {
+      return {
+        redirect: {
+          permanent: false,
+          destination: '/'
+        }
+      };
+    }
+
     return {
-      redirect: {
-        permanent: false,
-        destination: '/'
+      props: {
+        token,
+        userInfo
       }
     };
-  }
-
-  return {
-    props: {
-      token,
-      userInfo
+  } catch (error) {
+    console.log(`getServerSideProps error :>`, error)
+    return {
+      props: {
+        error
+      }
     }
-  };
+  }
 }
 
 Dashboard.propTypes = {
