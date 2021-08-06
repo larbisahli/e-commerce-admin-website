@@ -87,7 +87,7 @@ function Dashboard({ token, userInfo }) {
         </Link>
       </section>
       <section
-        style={{ backgroundColor: '#acebfd' }}
+        style={{ backgroundColor: '#f0f7ff' }}
         className="m-3 rounded-lg card-container"
       >
         <SalesChart />

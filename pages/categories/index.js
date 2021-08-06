@@ -90,7 +90,7 @@ const CategoryCard = ({ categoryName, categoryId }) => {
             width={35}
             height={35}
             alt=""
-            src={imgSrc ? `${process.env.MEDIA_URL}/static/svg/briefcase.svg` : `${process.env.MEDIA_URL}/svg/${categoryName}.svg`}
+            src={imgSrc ? `/static/svg/briefcase.svg` : `${process.env.MEDIA_URL}/svg/${categoryName}.svg`}
             onError={() => {
               setImgSrc(true);
             }}
