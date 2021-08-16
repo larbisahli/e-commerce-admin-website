@@ -20,7 +20,7 @@ import Add from '../assets/svg/add.svg';
 function Dashboard({ token, userInfo }) {
   const router = useRouter();
 
-  console.log('==>', { token, userInfo })
+  console.log('==>', { token, userInfo });
 
   const [, setUserStore] = useContext(UserStoreContext);
 
@@ -123,12 +123,12 @@ export async function getServerSideProps(context) {
       }
     };
   } catch (error) {
-    console.log(`getServerSideProps error :>`, error)
+    console.log(`getServerSideProps error :>`, error);
     return {
       props: {
         error
       }
-    }
+    };
   }
 }
 

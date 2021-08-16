@@ -82,7 +82,7 @@ const Navbar = ({ setGuideState }) => {
         </MenuContainer>
         <div className="page-title-container">
           <div className="ptc-slash"></div>
-          { asPath.split('/')[1].split('?')[0]}
+          {asPath.split('/')[1].split('?')[0]}
         </div>
       </LeftContainer>
       <RightContainer>

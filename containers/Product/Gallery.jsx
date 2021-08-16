@@ -1,7 +1,7 @@
 import classNames from 'classnames';
 import Image from 'next/image';
 import { useRouter } from 'next/router';
-import React, { memo, useEffect,useState } from 'react';
+import React, { memo, useEffect, useState } from 'react';
 import { toast } from 'react-toastify';
 
 import { DeleteSvg, WarningSvg } from '@/components/svg';
@@ -9,11 +9,11 @@ import { DeleteSvg, WarningSvg } from '@/components/svg';
 const HostUrl =
   process.env.NODE_ENV === 'production' ? '' : 'http://localhost:5001';
 
-const Gallery = ({token, thumbnail, gallery, MutateProduct}) => {
+const Gallery = ({ token, thumbnail, gallery, MutateProduct }) => {
   const router = useRouter();
   const { pid } = router.query;
 
-  console.log('thumbnail, gallery :>> ',{thumbnail, gallery});
+  console.log('thumbnail, gallery :>> ', { thumbnail, gallery });
 
   return thumbnail || gallery ? (
     <div className="bg-white shadow">
@@ -23,36 +23,39 @@ const Gallery = ({token, thumbnail, gallery, MutateProduct}) => {
       >
         <span className="text-md">Product Thumbnail</span>
         <span
-            className={classNames(
-              'absolute',
-              'font-medium',
-              'right-0',
-              'p-1',
-              'rounded-full',
-              'mr-3',
-              'text-xs',
-              'border',
-              'border-solid',
-              {
-                'text-green-800': !pid,
-                'bg-green-300': !pid,
-                'border-green-500': !pid,
-                'text-yellow-800': pid,
-                'bg-yellow-300': pid,
-                'border-yellow-500': pid
-              }
-            )}
-          >
-            {pid ? 'Update Mode' : 'Create Mode'}
-          </span>
+          className={classNames(
+            'absolute',
+            'font-medium',
+            'right-0',
+            'p-1',
+            'rounded-full',
+            'mr-3',
+            'text-xs',
+            'border',
+            'border-solid',
+            {
+              'text-green-800': !pid,
+              'bg-green-300': !pid,
+              'border-green-500': !pid,
+              'text-yellow-800': pid,
+              'bg-yellow-300': pid,
+              'border-yellow-500': pid
+            }
+          )}
+        >
+          {pid ? 'Update Mode' : 'Create Mode'}
+        </span>
       </div>
       {/* Thumbnail */}
       <div className="flex justify-center items-center p-2">
-        {thumbnail[0]?.image && <ProductCard url={thumbnail[0]?.image} 
-        image_uid={thumbnail[0]?.image_uid} 
-        token={token}
-        MutateProduct={MutateProduct}
-        />}
+        {thumbnail[0]?.image && (
+          <ProductCard
+            url={thumbnail[0]?.image}
+            image_uid={thumbnail[0]?.image_uid}
+            token={token}
+            MutateProduct={MutateProduct}
+          />
+        )}
       </div>
       <div
         className="flex justify-center items-center px-4 py-3 
@@ -62,18 +65,23 @@ const Gallery = ({token, thumbnail, gallery, MutateProduct}) => {
       </div>
       {/* Gallery */}
       <div className="flex flex-wrap justify-center items-center">
-        {gallery?.map(({image_uid, image})=>{
-          return <ProductCard key={image_uid} url={image} 
-          image_uid={image_uid} token={token}
-          MutateProduct={MutateProduct} />
+        {gallery?.map(({ image_uid, image }) => {
+          return (
+            <ProductCard
+              key={image_uid}
+              url={image}
+              image_uid={image_uid}
+              token={token}
+              MutateProduct={MutateProduct}
+            />
+          );
         })}
       </div>
     </div>
-  ):null;
+  ) : null;
 };
 
-
-const ProductCard = memo(({ url, image_uid, token,MutateProduct }) => {
+const ProductCard = memo(({ url, image_uid, token, MutateProduct }) => {
   const [Base64Placeholder, setBase64Placeholder] = useState(
     'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mM8eftXPQAIMgMfS5tX7gAAAABJRU5ErkJggg=='
   );
@@ -99,8 +107,10 @@ const ProductCard = memo(({ url, image_uid, token,MutateProduct }) => {
 
   useEffect(() => {
     async function toBase64() {
-      const arr = url?.split('.')
-      const data = await fetch(`https://dropgala-test.fra1.digitaloceanspaces.com${arr[0]}_placeholder.${arr[1]}`);
+      const arr = url?.split('.');
+      const data = await fetch(
+        `https://dropgala-test.fra1.digitaloceanspaces.com${arr[0]}_placeholder.${arr[1]}`
+      );
       const blob = await data.blob();
       // eslint-disable-next-line no-undef
       return await new Promise((resolve) => {
@@ -124,40 +134,38 @@ const ProductCard = memo(({ url, image_uid, token,MutateProduct }) => {
     e.preventDefault();
     console.log('image_uid :>> ', image_uid);
 
-    if(image_uid){
+    if (image_uid) {
       fetch(`${HostUrl}/api/upload`, {
-            method: 'DELETE',
-            withCredentials: true,
-            credentials: 'include',
-            headers: {
-              Authorization: 'Bearer ' + token,
-              'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({image_uid})
-          }).then((r) => r.json())
-          .then(({success})=> {
-            console.log('<<: data :>> ', success);
+        method: 'DELETE',
+        withCredentials: true,
+        credentials: 'include',
+        headers: {
+          Authorization: 'Bearer ' + token,
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ image_uid })
+      })
+        .then((r) => r.json())
+        .then(({ success }) => {
+          console.log('<<: data :>> ', success);
 
-            if(success){
-              Notify(`Image successfully deleted.`, true);
-              MutateProduct()
-            }else{
-              Notify(`Ops, something went wrong.`, false);
-            }
-    
-          })
-          .catch((error)=>{
-            console.log('error :>> ', error);
-          })
+          if (success) {
+            Notify(`Image successfully deleted.`, true);
+            MutateProduct();
+          } else {
+            Notify(`Ops, something went wrong.`, false);
+          }
+        })
+        .catch((error) => {
+          console.log('error :>> ', error);
+        });
     }
 
     setShowMessageBox(false);
   };
 
   return (
-    <div
-      className="card-container m-3 flex-col product-card-wrapper"
-    >
+    <div className="card-container m-3 flex-col product-card-wrapper">
       <div className="">
         <div className="relative">
           <Image
@@ -193,7 +201,7 @@ const ProductCard = memo(({ url, image_uid, token,MutateProduct }) => {
   );
 });
 
-ProductCard.displayName = 'ProductCard'
+ProductCard.displayName = 'ProductCard';
 
 const DeleteConfirmation = ({ setShowMessageBox, HandleDelete }) => {
   return (

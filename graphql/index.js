@@ -1,7 +1,9 @@
 import { GraphQLClient } from 'graphql-request';
 
 const IsProduction = process.env.NODE_ENV === 'production';
-const HostUrl = IsProduction ? process.env.ADMIN_API_URL : 'http://127.0.0.1:5001';
+const HostUrl = IsProduction
+  ? process.env.ADMIN_API_URL
+  : 'http://127.0.0.1:5001';
 const endpoint = `${HostUrl}/graphql`;
 
 export function fetcher(token, query, variables) {

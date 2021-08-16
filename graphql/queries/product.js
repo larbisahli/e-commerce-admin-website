@@ -34,8 +34,6 @@ export const GetProductQuery = gql`
       short_description
       inventory
       product_weight
-      available_sizes
-      available_colors
       is_new
       note
       thumbnail {
@@ -80,6 +78,8 @@ export const ProductPaginationMutation = gql`
 
 export const ProductCountQuery = gql`
   {
-    ProductsCount {count}
+    ProductsCount {
+      count
+    }
   }
 `;

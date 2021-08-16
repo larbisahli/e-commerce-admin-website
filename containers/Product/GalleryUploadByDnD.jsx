@@ -89,7 +89,7 @@ const GalleryUploadByDnD = ({
           setLoading(() => false);
           setProgress(100);
           setThumbnailImage([]);
-          MutateProduct()
+          MutateProduct();
         }
       } catch (error) {
         console.log('error :>> ', { message: error?.message, error });
@@ -165,7 +165,7 @@ const GalleryUploadByDnD = ({
           setLoading(() => false);
           console.log('ErrorImages :>> ', { ErrorImages });
           setImages([...ErrorImages]);
-          MutateProduct()
+          MutateProduct();
         })
         .catch((err) => {
           console.log(err);

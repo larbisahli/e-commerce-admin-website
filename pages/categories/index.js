@@ -75,7 +75,6 @@ const Categories = ({ token, userInfo }) => {
 };
 
 const CategoryCard = ({ categoryName, categoryId }) => {
-
   const [imgSrc, setImgSrc] = useState(false);
 
   return (
@@ -90,13 +89,19 @@ const CategoryCard = ({ categoryName, categoryId }) => {
             width={35}
             height={35}
             alt=""
-            src={imgSrc ? `/static/svg/briefcase.svg` : `${process.env.MEDIA_URL}/svg/${categoryName}.svg`}
+            src={
+              imgSrc
+                ? `/static/svg/briefcase.svg`
+                : `${process.env.MEDIA_URL}/svg/${categoryName}.svg`
+            }
             onError={() => {
               setImgSrc(true);
             }}
           />
         </div>
-        <span className="text-base uppercase pt-2 font-normal">{categoryName}</span>
+        <span className="text-base uppercase pt-2 font-normal">
+          {categoryName}
+        </span>
       </div>
       <div
         style={{ height: '60px' }}
@@ -167,12 +172,12 @@ export async function getServerSideProps(context) {
       }
     };
   } catch (error) {
-    console.log(`getServerSideProps error :>`, error)
+    console.log(`getServerSideProps error :>`, error);
     return {
       props: {
         error
       }
-    }
+    };
   }
 }
 

@@ -3,10 +3,8 @@
 /* eslint-disable react/display-name */
 // eslint-disable-next-line simple-import-sort/imports
 import { useRouter } from 'next/router';
-import React, { memo, useState,useRef } from 'react';
+import React, { memo, useState } from 'react';
 import classNames from 'classnames';
-import Add from '../../assets/svg/add.svg';
-import {DeleteSvg} from '@/components/svg'
 import { LoadingContainer } from '@/components/index';
 import { Request } from '@/graphql/index';
 import {
@@ -14,10 +12,18 @@ import {
   UpdateProductMutation
 } from '@/graphql/mutations/product';
 
-const Form = ({ ProductState, dispatchProduct, token, Notify, Categories, HasChange,MutateProduct }) => {
+const Form = ({
+  ProductState,
+  dispatchProduct,
+  token,
+  Notify,
+  Categories,
+  HasChange,
+  MutateProduct
+}) => {
   const router = useRouter();
   const { pid } = router.query;
-  
+
   const [Loading, setLoading] = useState(false);
 
   const {
@@ -32,8 +38,6 @@ const Form = ({ ProductState, dispatchProduct, token, Notify, Categories, HasCha
     short_description,
     inventory,
     product_weight,
-    available_sizes,
-    available_colors,
     is_new,
     note
   } = ProductState;
@@ -74,8 +78,6 @@ const Form = ({ ProductState, dispatchProduct, token, Notify, Categories, HasCha
             short_description,
             inventory,
             product_weight,
-            available_sizes,
-            available_colors,
             is_new,
             note
           }
@@ -98,8 +100,8 @@ const Form = ({ ProductState, dispatchProduct, token, Notify, Categories, HasCha
               dispatchProduct({
                 type: 'reset'
               });
-            }else{
-              MutateProduct()
+            } else {
+              MutateProduct();
             }
           })
           .catch(({ response }) => {
@@ -126,7 +128,7 @@ const Form = ({ ProductState, dispatchProduct, token, Notify, Categories, HasCha
   ];
 
   // const discounted_price = original_price - (original_price * discount / 100)
-  const discounted_price = price - (price * discount / 100)
+  const discounted_price = price - (price * discount) / 100;
 
   return (
     <form className="m-auto" onSubmit={SubmitProductDetails}>
@@ -187,7 +189,7 @@ const Form = ({ ProductState, dispatchProduct, token, Notify, Categories, HasCha
                 rows={3}
                 className="shadow-sm border-2 focus:border-indigo-500 mt-1 
                                       block w-full border-solid border-gray-300 rounded-md p-1"
-                placeholder="My product"
+                placeholder="My product title"
               />
             </div>
             {/* ******************* price ******************* */}
@@ -207,6 +209,7 @@ const Form = ({ ProductState, dispatchProduct, token, Notify, Categories, HasCha
                 name="price"
                 id="price"
                 min={0}
+                step={0.01}
                 value={price}
                 onChange={HandleInputChange}
                 className="mt-1 focus:border-indigo-500 block w-full 
@@ -227,6 +230,7 @@ const Form = ({ ProductState, dispatchProduct, token, Notify, Categories, HasCha
                 name="discount"
                 max={100}
                 min={0}
+                step={0.01}
                 id="discount"
                 value={discount}
                 onChange={HandleInputChange}
@@ -234,10 +238,11 @@ const Form = ({ ProductState, dispatchProduct, token, Notify, Categories, HasCha
                                   shadow-sm border-2 border-solid border-gray-300 rounded-md p-1"
               />
               <p className="mt-2 text-xs text-gray-500">
-                Product discount percentage number.<br/> Final price:
+                Product discount percentage number.
+                <br /> Final price:
                 <span className="mt-2 text-xs text-green-500">
-                {`$${discounted_price.toFixed(1)}`}
-              </span>
+                  {`$${discounted_price.toFixed(1)}`}
+                </span>
               </p>
             </div>
             {/* ******************* warehouse_location ******************* */}
@@ -306,6 +311,7 @@ const Form = ({ ProductState, dispatchProduct, token, Notify, Categories, HasCha
                 type="number"
                 name="product_weight"
                 id="product_weight"
+                step={0.01}
                 min={0}
                 value={product_weight}
                 onChange={HandleInputChange}
@@ -411,40 +417,6 @@ const Form = ({ ProductState, dispatchProduct, token, Notify, Categories, HasCha
                 <span>Select a category where this product belongs too.</span>
               </p>
             </div>
-            {/* ******************* available_sizes ******************* */}
-            <div className="mb-4">
-            <ShowCollection 
-              Collection={available_sizes} 
-              dispatchProduct={dispatchProduct}
-              AddType={'AddSize'} 
-              RemoveType={'RemoveSize'}
-              label={'Available Sizes'}
-              placeholder={'Size, e.g: L'}
-              />
-              <p className="flex items-center mt-1 text-xs text-gray-500">
-                <span>
-                  Add multiple sizes available for this product. (not required)
-                </span>
-              </p>
-            </div>
-            
-            {/* ******************* available_colors ******************* */}
-            <div className="mb-4">
-              <ShowCollection 
-              Collection={available_colors} 
-              dispatchProduct={dispatchProduct}
-              AddType={'AddColor'} 
-              RemoveType={'RemoveColor'}
-              IsColor
-              label={'Available Colors'}
-              placeholder={'Color, e.g: black'}
-              />
-              <p className="flex items-center mt-1 text-xs text-gray-500">
-                <span>
-                  Add multiple colors available for this product. (not required)
-                </span>
-              </p>
-            </div>
             {/* ******************* is_new ******************* */}
             <div className="flex items-start">
               <div className="flex items-center h-5">
@@ -467,7 +439,7 @@ const Form = ({ ProductState, dispatchProduct, token, Notify, Categories, HasCha
                 </p>
               </div>
             </div>
-            {/* ******************* short_description ******************* */}
+            {/* ******************* note ******************* */}
             <div className="mb-4 mt-4">
               <label
                 htmlFor="note"
@@ -501,128 +473,41 @@ const Form = ({ ProductState, dispatchProduct, token, Notify, Categories, HasCha
           <button
             type="submit"
             className={classNames(
-                  'inline-flex',
-                  'justify-center',
-                  'py-2',
-                  'px-4',
-                  'border',
-                  'border-transparent',
-                  'shadow-sm',
-                  'text-sm',
-                  'font-medium',
-                  'rounded-md',
-                  'text-white',
-                  'focus:outline-none',
-                  
-                  {
-                    'bg-green-600': pid && HasChange,
-                    'hover:bg-green-700': pid && HasChange,
-                    'focus:ring-2': pid && HasChange,
-                    'focus:ring-offset-2': pid && HasChange,
-                    'focus:ring-green-500': pid && HasChange,
-                    'cursor-pointer': pid && HasChange,
-                    'cursor-not-allowed': pid && !HasChange,
-                    'bg-gray-400': pid && !HasChange,
-                    'focus:ring-indigo-500': !pid,
-                    'hover:bg-indigo-700': !pid,
-                    'bg-indigo-600': !pid,
-                  }
-                )}
-                disabled={pid && !HasChange}
+              'inline-flex',
+              'justify-center',
+              'py-2',
+              'px-4',
+              'border',
+              'border-transparent',
+              'shadow-sm',
+              'text-sm',
+              'font-medium',
+              'rounded-md',
+              'text-white',
+              'focus:outline-none',
+
+              {
+                'bg-green-600': pid && HasChange,
+                'hover:bg-green-700': pid && HasChange,
+                'focus:ring-2': pid && HasChange,
+                'focus:ring-offset-2': pid && HasChange,
+                'focus:ring-green-500': pid && HasChange,
+                'cursor-pointer': pid && HasChange,
+                'cursor-not-allowed': pid && !HasChange,
+                'bg-gray-400': pid && !HasChange,
+                'focus:ring-indigo-500': !pid,
+                'hover:bg-indigo-700': !pid,
+                'bg-indigo-600': !pid
+              }
+            )}
+            disabled={pid && !HasChange}
           >
-            {pid?'Save':'Submit'}
+            {pid ? 'Save' : 'Submit'}
           </button>
         </div>
       </div>
     </form>
   );
 };
-
-const ShowCollection = ({Collection, dispatchProduct, AddType, RemoveType, IsColor,label, placeholder})=>{
-  
-  const InputRef = useRef(null);
-
-  const HandleChange = (e) => {
-    if(e.keyCode == 13){
-      e.preventDefault()
-      const txt = InputRef.current.value;
-      if (txt) {
-        dispatchProduct({
-                  type:AddType,
-                  value: txt
-                });
-        InputRef.current.value = null;
-    }
-    }
-  };
-
-  const RemoveChange = (value)=>{
-    dispatchProduct({
-                type:RemoveType,
-                value
-              });
-  }
-
-  return <div className="">
-              <div className="block text-sm font-medium text-gray-700 mb-1">
-               {label}
-              </div>
-              {/* -- Thumbnail URL -- */}
-              <div>
-                <input
-                  type="text"
-                  ref={InputRef}
-                  onKeyDown={HandleChange}
-                  placeholder={placeholder}
-                  className="mt-1 focus:border-indigo-500 block w-full 
-                      shadow-sm border-2 border-solid border-gray-300 rounded-md p-1"
-                />
-              </div>
-              <div
-                role="button"
-                onClick={HandleChange}
-                className="m-1 mb-4 flex justify-end"
-              >
-                <span className="bg-green-400 hover:bg-green-500 rounded-sm px-2 py-1 text-white cursor-pointer">
-                  <Add width={18} height={18} />
-                </span>
-              </div>
-              {/* -- Thumbnail Showcase -- */}
-              <div className="mt-1 flex justify-center px-4 pt-3 pb-4 border-2 border-gray-300 border-dashed rounded-md">
-                <div className="space-y-1 text-center w-full">
-                  <div className="mt-1 flex justify-center px-4 pt-3 pb-4 rounded-md">
-                    <div
-                      className={classNames('w-full', 'h-full', 'rounded-md')}
-                    >
-                      <div className="flex justify-center flex-wrap items-center">
-                        {Collection?.map((value, index)=>{
-                          return (
-                          <div 
-                          key={index} 
-                            
-                          className="relative card-container rounded m-2">
-                            <div className="m-2">
-                              <span>{value}</span>
-                            </div>
-                            {IsColor && <div style={{background: value, width: '10px',height:'10px'}} className='absolute top-0 right-0 rounded-full border border-solid border-gray-200'></div>}
-                            <div className="flex justify-center rounded-b border-gray-300 border-solid items-center">
-                              <div
-                                role="button"
-                                className="rounded-br cursor-pointer text-xs bg-red-400 w-full p-1 text-center hover:bg-red-500 text-white"
-                                onClick={() => RemoveChange(value)}
-                              >
-                                <DeleteSvg width={15} height={15}/>
-                              </div>
-                            </div>
-                          </div>
-                        )
-                        })}
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-}
 
 export default memo(Form);

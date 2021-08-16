@@ -309,12 +309,12 @@ export async function getServerSideProps(context) {
       }
     };
   } catch (error) {
-    console.log(`getServerSideProps error :>`, error)
+    console.log(`getServerSideProps error :>`, error);
     return {
       props: {
         error
       }
-    }
+    };
   }
 }
 

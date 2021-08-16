@@ -1,14 +1,13 @@
 import cookie from 'cookie';
 import fs from 'fs';
 import jwt from 'jsonwebtoken';
-import path from 'path'
+import path from 'path';
 
-let PublicKEY = null
+let PublicKEY = null;
 
 if (process.env.NODE_ENV === 'production') {
-  const jwtRS256File = path.join(process.cwd(), "jwtRS256.key.pub")
+  const jwtRS256File = path.join(process.cwd(), 'jwtRS256.key.pub');
   PublicKEY = fs.readFileSync(jwtRS256File, 'utf8');
-
 } else {
   PublicKEY = fs.readFileSync('./middleware/jwtRS256.key.pub', 'utf8');
 }
