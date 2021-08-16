@@ -20,7 +20,7 @@ import Add from '../assets/svg/add.svg';
 function Dashboard({ token, userInfo }) {
   const router = useRouter();
 
-  console.log('==>', { token, userInfo })
+  console.log('==>', { token, userInfo });
 
   const [, setUserStore] = useContext(UserStoreContext);
 
@@ -87,7 +87,7 @@ function Dashboard({ token, userInfo }) {
         </Link>
       </section>
       <section
-        style={{ backgroundColor: '#acebfd' }}
+        style={{ backgroundColor: '#f0f7ff' }}
         className="m-3 rounded-lg card-container"
       >
         <SalesChart />
@@ -123,12 +123,12 @@ export async function getServerSideProps(context) {
       }
     };
   } catch (error) {
-    console.log(`getServerSideProps error :>`, error)
+    console.log(`getServerSideProps error :>`, error);
     return {
       props: {
         error
       }
-    }
+    };
   }
 }
 

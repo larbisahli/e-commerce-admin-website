@@ -2,7 +2,13 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import PropTypes from 'prop-types';
-import React, { useCallback, useContext, useEffect, useMemo, useState } from 'react';
+import React, {
+  useCallback,
+  useContext,
+  useEffect,
+  useMemo,
+  useState
+} from 'react';
 import ReactPaginate from 'react-paginate';
 import useSWR from 'swr';
 
@@ -15,7 +21,10 @@ import {
 import { StoreHead } from '@/containers/index';
 import { UserStoreContext } from '@/context/UserStore';
 import { Request } from '@/graphql/index';
-import { ProductCountQuery, ProductPaginationMutation } from '@/graphql/queries/product';
+import {
+  ProductCountQuery,
+  ProductPaginationMutation
+} from '@/graphql/queries/product';
 import { getAppCookies, verifyToken } from '@/middleware/utils';
 
 import Add from '../../assets/svg/add.svg';
@@ -30,7 +39,7 @@ const Store = ({ token, userInfo }) => {
   const [limit, setLimit] = useState(10);
   const [Count, setCount] = useState(0);
 
-  const pageCount = Math.ceil((Count / limit))
+  const pageCount = Math.ceil(Count / limit);
 
   const ProductVariable = useMemo(() => {
     return {
@@ -41,26 +50,27 @@ const Store = ({ token, userInfo }) => {
     };
   }, [cid, Page, limit, userInfo]);
 
-  const { data, error } = useSWR([token, ProductPaginationMutation, ProductVariable]);
+  const { data, error } = useSWR([
+    token,
+    ProductPaginationMutation,
+    ProductVariable
+  ]);
 
   console.log(`======>`, { data, error });
 
-  const fetchData = useCallback(
-    async () => {
-      await Request({
-        token,
-        mutation: ProductCountQuery,
-        variables: {}
+  const fetchData = useCallback(async () => {
+    await Request({
+      token,
+      mutation: ProductCountQuery,
+      variables: {}
+    })
+      .then(({ ProductsCount }) => {
+        setCount(() => ProductsCount?.count ?? 0);
       })
-        .then(({ ProductsCount }) => {
-          setCount(() => ProductsCount?.count ?? 0)
-        })
-        .catch(({ response }) => {
-          console.log(`Count response Error:>`, { response })
-        });
-    },
-    [token],
-  )
+      .catch(({ response }) => {
+        console.log(`Count response Error:>`, { response });
+      });
+  }, [token]);
 
   useEffect(() => {
     try {
@@ -68,7 +78,7 @@ const Store = ({ token, userInfo }) => {
     } catch (error) {
       console.log('count error :>> ', { error });
     }
-  }, [fetchData])
+  }, [fetchData]);
 
   useEffect(() => {
     if (userInfo) {
@@ -93,11 +103,10 @@ const Store = ({ token, userInfo }) => {
     const page = selected + 1;
     console.log(`data ==>`, {
       selected,
-      page,
+      page
     });
     setPage(() => page);
   };
-
 
   return (
     <div className="m-auto product-cart-container mb-20">
@@ -129,7 +138,7 @@ const Store = ({ token, userInfo }) => {
         {/* ------- Product Showcase ------- */}
         <div className="flex flex-wrap">
           {data?.Products?.map((product) => {
-            return <ProductCard key={product.product_uid} product={product} />
+            return <ProductCard key={product.product_uid} product={product} />;
           })}
         </div>
         {/* ------- Pagination Area ------- */}
@@ -176,16 +185,33 @@ const ProductCard = ({ product }) => {
     'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mM8eftXPQAIMgMfS5tX7gAAAABJRU5ErkJggg=='
   );
 
-  const { product_uid, account_uid, category_uid, discount, inventory, price, thumbnail, title } = product
+  const {
+    product_uid,
+    account_uid,
+    category_uid,
+    discount,
+    inventory,
+    price,
+    thumbnail,
+    title
+  } = product;
 
-  console.log('=>', { product_uid, account_uid, category_uid, discount, inventory })
+  console.log('=>', {
+    product_uid,
+    account_uid,
+    category_uid,
+    discount,
+    inventory
+  });
 
-  const url = thumbnail?.image
+  const url = thumbnail?.image;
 
   useEffect(() => {
     async function toBase64() {
-      const arr = url?.split('.')
-      const data = await fetch(`${process.env.MEDIA_URL}${arr[0]}_placeholder.${arr[1]}`);
+      const arr = url?.split('.');
+      const data = await fetch(
+        `${process.env.MEDIA_URL}${arr[0]}_placeholder.${arr[1]}`
+      );
       const blob = await data.blob();
       // eslint-disable-next-line no-undef
       return await new Promise((resolve) => {
@@ -313,12 +339,12 @@ export async function getServerSideProps(context) {
       }
     };
   } catch (error) {
-    console.log(`getServerSideProps error :>`, error)
+    console.log(`getServerSideProps error :>`, error);
     return {
       props: {
         error
       }
-    }
+    };
   }
 }
 

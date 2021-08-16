@@ -1,4 +1,4 @@
-import * as React from "react"
+import * as React from 'react';
 
 function CategorySvg(props) {
   return (
@@ -6,8 +6,8 @@ function CategorySvg(props) {
       xmlns="http://www.w3.org/2000/svg"
       aria-hidden="true"
       style={{
-        msTransform: "rotate(360deg)",
-        WebkitTransform: "rotate(360deg)",
+        msTransform: 'rotate(360deg)',
+        WebkitTransform: 'rotate(360deg)'
       }}
       viewBox="0 0 20 20"
       transform="rotate(360)"
@@ -19,7 +19,7 @@ function CategorySvg(props) {
         className="svg-active"
       />
     </svg>
-  )
+  );
 }
 
-export default CategorySvg
+export default CategorySvg;

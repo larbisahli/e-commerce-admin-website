@@ -37,7 +37,9 @@ const HomePage = () => {
     setLoading(true);
 
     const HostUrl =
-      process.env.NODE_ENV === 'production' ? process.env.ADMIN_API_URL : 'http://127.0.0.1:5001';
+      process.env.NODE_ENV === 'production'
+        ? process.env.ADMIN_API_URL
+        : 'http://127.0.0.1:5001';
 
     if (email.current.value && password.current.value) {
       try {
@@ -217,7 +219,6 @@ const HomePage = () => {
 };
 
 export async function getServerSideProps(context) {
-
   try {
     const { req } = context;
     const { token } = getAppCookies(req);
@@ -236,12 +237,12 @@ export async function getServerSideProps(context) {
       props: {}
     };
   } catch (error) {
-    console.log(`getServerSideProps error :>`, error)
+    console.log(`getServerSideProps error :>`, error);
     return {
       props: {
         error
       }
-    }
+    };
   }
 }
 
