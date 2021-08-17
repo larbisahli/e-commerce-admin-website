@@ -26,3 +26,14 @@ export const UpdateAttributeMutation = gql`
     }
   }
 `;
+
+
+export const DeleteAttributeMutation = gql`
+  mutation DeleteAttribute($attribute_uid: ID!) {
+    DeleteAttribute(
+      attribute_uid: $attribute_uid
+    ) {
+      attribute_name
+    }
+  }
+`;

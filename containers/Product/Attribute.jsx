@@ -10,9 +10,10 @@ import Add from '../../assets/svg/add.svg';
 import { Request } from '@/graphql/index';
 import uuid from 'react-uuid';
 import useSWR, { mutate } from 'swr';
-import { CreateAttributeMutation } from '@/graphql/mutations/attribute';
+import { CreateAttributeMutation, UpdateAttributeMutation, DeleteAttributeMutation } from '@/graphql/mutations/attribute';
 import { GetProductAttributesQuery } from '@/graphql/queries/attribute';
-import { DeleteOptionMutation } from '@/graphql/mutations/option';
+import { CreateOptionMutation, UpdateOptionMutation, DeleteOptionMutation } from '@/graphql/mutations/option';
+import classNames from 'classnames';
 
 const Attribute = ({ token, Notify }) => {
   const router = useRouter();
@@ -78,12 +79,90 @@ const Attribute = ({ token, Notify }) => {
     });
   };
 
-  const AddOption = () => {
+  const AddOption = async() => {
     if (option_name) {
       const _uuid = uuid();
 
-      if (attr_uid && opt_uid) {
+      if (attr_uid && !opt_uid) {
+        // option Create api api call + mutate
+        setLoading(true);
+
+        await Request({
+          token,
+          mutation: CreateOptionMutation,
+          variables: {
+            attribute_uid:attr_uid,
+            option_name,
+            additional_price,
+            color_hex
+          }
+        })
+          .then(({ CreateOption }) => {
+            console.log('CreateOption :>> ', CreateOption);
+            const option_name = CreateOption?.option_name;
+            const message = `Option ${option_name ?? ''} successfully Created!`;
+
+            if (option_name) {
+              Notify(message, option_name);
+              // clear
+              setOptionFields(() => {
+                return {
+                  option_uid: null,
+                  option_name: null,
+                  additional_price: 0,
+                  color_hex: null
+                };
+              });
+              MutateAttribute();
+            }
+          })
+          .catch(({ response }) => {
+            const ErrorMessage =
+              response?.message ?? response?.errors[0]?.message;
+            Notify(ErrorMessage, !response);
+            // LOGS
+          });
+        setLoading(false);
+      } else if (attr_uid && opt_uid) {
         // option update api api call + mutate
+        setLoading(true);
+
+        await Request({
+          token,
+          mutation: UpdateOptionMutation,
+          variables: {
+            option_uid:opt_uid,
+            option_name,
+            additional_price,
+            color_hex
+          }
+        })
+          .then(({ UpdateOption }) => {
+            console.log('UpdateOption :>> ', UpdateOption);
+            const option_name = UpdateOption?.option_name;
+            const message = `Option ${option_name ?? ''} successfully Updated!`;
+
+            if (option_name) {
+              Notify(message, option_name);
+              // clear
+              setOptionFields(() => {
+                return {
+                  option_uid: null,
+                  option_name: null,
+                  additional_price: 0,
+                  color_hex: null
+                };
+              });
+              MutateAttribute();
+            }
+          })
+          .catch(({ response }) => {
+            const ErrorMessage =
+              response?.message ?? response?.errors[0]?.message;
+            Notify(ErrorMessage, !response);
+            // LOGS
+          });
+        setLoading(false);
       } else if (!attr_uid && opt_uid) {
         // update option from useState
         setCurrentOptions((prev) => [
@@ -178,8 +257,60 @@ const Attribute = ({ token, Notify }) => {
     }
   };
 
-  const DeleteAttribute = (_attribute_uid) => {
+  const DeleteAttribute = async(_attribute_uid) => {
     // make a call to delete attribute && mutate swr
+
+    let Attr_options = null
+    let Attr = []
+    if (_attribute_uid && Attributes?.length > 0) {
+      Attr = Attributes?.filter(
+        ({ attribute_uid }) => attribute_uid === _attribute_uid
+      );
+      if (Attr[0]) {
+        Attr_options = Attr[0]?.options
+      }
+    }
+
+    if(Attr_options?.length > 0){
+      Notify(`Please remove all ${Attr[0]?.attribute_name} options first.`, false);
+      return
+    }
+
+    setLoading(true);
+
+        await Request({
+          token,
+          mutation: DeleteAttributeMutation,
+          variables: {
+            attribute_uid:_attribute_uid,
+          }
+        })
+          .then(({DeleteAttribute }) => {
+            console.log('DeleteOption :>> ', DeleteAttribute);
+            const attribute_name = DeleteAttribute?.attribute_name;
+            const message = `Attribute ${attribute_name ?? ''} successfully Deleted!`;
+
+              Notify(message, attribute_name);
+              // clear
+              setOptionFields(() => {
+                return {
+                  option_uid: null,
+                  option_name: null,
+                  additional_price: 0,
+                  color_hex: null
+                };
+              });
+              MutateAttribute();
+              ClearAttrUid()
+          })
+          .catch(({ response }) => {
+            console.log(`Error response :>`, {response})
+            const ErrorMessage =
+              response?.message ?? response?.errors[0]?.message;
+            Notify(ErrorMessage, !response);
+            // LOGS
+          });
+        setLoading(false);
   };
 
   const EditAttribute = (_attribute_uid) => {
@@ -245,11 +376,12 @@ const Attribute = ({ token, Notify }) => {
 
             const message = `🚀 Attribute ${
               attribute_name ?? ''
-            } successfully created`;
-            Notify(message, attribute_name);
+            } successfully Created`;
 
-            // setCurrentOptions([]);
-            // setAttributeName('');
+            Notify(message, attribute_name);
+            setCurrentOptions([]);
+            setAttributeName('');
+            MutateAttribute();
           })
           .catch(({ response }) => {
             const ErrorMessage =
@@ -268,7 +400,44 @@ const Attribute = ({ token, Notify }) => {
     setLoading(false);
   };
 
-  const UpdateAttribute = () => {};
+  const UpdateAttribute = async() => {
+    setLoading(true);
+
+        await Request({
+          token,
+          mutation: UpdateAttributeMutation,
+          variables: {
+            attribute_uid: attr_uid,
+            attribute_name
+          }
+        })
+          .then(({ UpdateAttribute }) => {
+            console.log('UpdateAttribute :>> ', UpdateAttribute);
+            const attribute_name = UpdateAttribute?.attribute_name;
+            const message = `Attribute ${attribute_name ?? ''} successfully Updated!`;
+
+            if (attribute_name) {
+              Notify(message, attribute_name);
+              // clear
+              setOptionFields(() => {
+                return {
+                  option_uid: null,
+                  option_name: null,
+                  additional_price: 0,
+                  color_hex: null
+                };
+              });
+              MutateAttribute();
+            }
+          })
+          .catch(({ response }) => {
+            const ErrorMessage =
+              response?.message ?? response?.errors[0]?.message;
+            Notify(ErrorMessage, !response);
+            // LOGS
+          });
+        setLoading(false);
+  };
 
   const ClearAttrUid = () => {
     if (attr_uid) {
@@ -306,6 +475,29 @@ const Attribute = ({ token, Notify }) => {
       >
         <div className="relative flex justify-center items-center px-4 py-3 text-gray-800 bg-gray-100 text-right sm:px-6">
           <span className="uppercase text-sm">Create Product Attributes</span>
+          <span
+            className={classNames(
+              'absolute',
+              'font-medium',
+              'right-0',
+              'p-1',
+              'rounded-full',
+              'mr-3',
+              'text-xs',
+              'border',
+              'border-solid',
+              {
+                'text-green-800': !pid,
+                'bg-green-300': !pid,
+                'border-green-500': !pid,
+                'text-yellow-800': pid,
+                'bg-yellow-300': pid,
+                'border-yellow-500': pid
+              }
+            )}
+          >
+            {pid ? 'Update Mode' : 'Create Mode'}
+          </span>
         </div>
         <div className="px-4 py-5 bg-white sm:p-6">
           <div className="block">
@@ -360,13 +552,16 @@ const Attribute = ({ token, Notify }) => {
                   </div>
                 );
               })}
-              {pid && Attributes && (
+              {pid && Attributes && attr_uid && (
+                <div className="flex justify-center items-center">
                 <div
                   onClick={ClearAttrUid}
                   role="button"
-                  className="bg-green-400 hover:bg-green-500 rounded-sm px-2 py-1 cursor-pointer flex justify-center items-center"
+                  style={{width:"30px", height:"30px"}}
+                  className="bg-green-400 hover:bg-green-500 rounded-full px-2 py-1 cursor-pointer flex justify-center items-center"
                 >
                   <Add width={18} height={18} />
+                </div>
                 </div>
               )}
             </div>

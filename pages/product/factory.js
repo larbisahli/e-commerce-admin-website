@@ -277,14 +277,15 @@ const NewProduct = ({ token, userInfo }) => {
                   MutateProduct={MutateProduct}
                 />
               </TabPanel>
-              <TabPanel>
+
+              {(thumbnail || gallery) && <TabPanel>
                 <Gallery
                   token={token}
                   thumbnail={thumbnail}
                   gallery={gallery}
                   MutateProduct={MutateProduct}
                 />
-              </TabPanel>
+              </TabPanel>}
             </Tabs>
           </TabPanel>
           <TabPanel forceRender>

@@ -1,10 +1,10 @@
 import classNames from 'classnames';
-import Image from 'next/image';
 import { useRouter } from 'next/router';
-import React, { memo, useEffect, useState } from 'react';
+import React, { memo, useState } from 'react';
 import { toast } from 'react-toastify';
 
 import { DeleteSvg, WarningSvg } from '@/components/svg';
+import {ImageComponent} from '@/containers/index'
 
 const HostUrl =
   process.env.NODE_ENV === 'production' ? '' : 'http://localhost:5001';
@@ -82,9 +82,6 @@ const Gallery = ({ token, thumbnail, gallery, MutateProduct }) => {
 };
 
 const ProductCard = memo(({ url, image_uid, token, MutateProduct }) => {
-  const [Base64Placeholder, setBase64Placeholder] = useState(
-    'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mM8eftXPQAIMgMfS5tX7gAAAABJRU5ErkJggg=='
-  );
 
   const [ShowMessageBox, setShowMessageBox] = useState(false);
 
@@ -104,31 +101,6 @@ const ProductCard = memo(({ url, image_uid, token, MutateProduct }) => {
       toast.error(Message, Options);
     }
   };
-
-  useEffect(() => {
-    async function toBase64() {
-      const arr = url?.split('.');
-      const data = await fetch(
-        `https://dropgala-test.fra1.digitaloceanspaces.com${arr[0]}_placeholder.${arr[1]}`
-      );
-      const blob = await data.blob();
-      // eslint-disable-next-line no-undef
-      return await new Promise((resolve) => {
-        const reader = new window.FileReader();
-        reader.readAsDataURL(blob);
-        reader.onloadend = () => {
-          const base64data = reader.result;
-          return resolve(base64data);
-        };
-      }).then((res) => {
-        console.log(`res`, res);
-        setBase64Placeholder(res);
-        return res;
-      });
-    }
-
-    if (url) toBase64();
-  }, [url]);
 
   const HandleDelete = (e) => {
     e.preventDefault();
@@ -168,16 +140,13 @@ const ProductCard = memo(({ url, image_uid, token, MutateProduct }) => {
     <div className="card-container m-3 flex-col product-card-wrapper">
       <div className="">
         <div className="relative">
-          <Image
+          <ImageComponent
             quality={95}
             width={250}
             height={250}
-            blurDataURL={Base64Placeholder}
-            placeholder="blur"
-            alt=""
+            alt="product-image"
             className="bg-blue-100 rounded-t"
-            unoptimized={true}
-            src={`https://dropgala-test.fra1.digitaloceanspaces.com${url}`}
+            url={url}
           />
           {/* ------------ */}
           <button

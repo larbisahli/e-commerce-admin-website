@@ -1,4 +1,3 @@
-import Image from 'next/image';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import PropTypes from 'prop-types';
@@ -14,11 +13,10 @@ import useSWR from 'swr';
 
 import {
   EditSvg,
-  EyeSvg,
   PaginationLArrowSvg,
   PaginationRArrowSvg
 } from '@/components/svg';
-import { StoreHead } from '@/containers/index';
+import { ImageComponent, StoreHead } from '@/containers/index';
 import { UserStoreContext } from '@/context/UserStore';
 import { Request } from '@/graphql/index';
 import {
@@ -181,9 +179,6 @@ const Store = ({ token, userInfo }) => {
 };
 
 const ProductCard = ({ product }) => {
-  const [Base64Placeholder, setBase64Placeholder] = useState(
-    'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mM8eftXPQAIMgMfS5tX7gAAAABJRU5ErkJggg=='
-  );
 
   const {
     product_uid,
@@ -201,35 +196,14 @@ const ProductCard = ({ product }) => {
     account_uid,
     category_uid,
     discount,
-    inventory
+    inventory,
+    price,
+    thumbnail,
+    title
   });
 
-  const url = thumbnail?.image;
+  const url = thumbnail[0]?.image;
 
-  useEffect(() => {
-    async function toBase64() {
-      const arr = url?.split('.');
-      const data = await fetch(
-        `${process.env.MEDIA_URL}${arr[0]}_placeholder.${arr[1]}`
-      );
-      const blob = await data.blob();
-      // eslint-disable-next-line no-undef
-      return await new Promise((resolve) => {
-        const reader = new window.FileReader();
-        reader.readAsDataURL(blob);
-        reader.onloadend = () => {
-          const base64data = reader.result;
-          return resolve(base64data);
-        };
-      }).then((res) => {
-        console.log(`res`, res);
-        setBase64Placeholder(res);
-        return res;
-      });
-    }
-
-    if (url) toBase64();
-  }, [url]);
 
   return (
     <div
@@ -238,43 +212,20 @@ const ProductCard = ({ product }) => {
     >
       <div className="">
         <div className="relative">
-          <Image
+          <ImageComponent
             quality={95}
             width={250}
             height={250}
-            blurDataURL={Base64Placeholder}
-            placeholder="blur"
-            alt=""
+            alt={title}
             className="bg-blue-100 rounded-t"
-            unoptimized={true} // remove when v11.0.2
-            src={`${process.env.MEDIA_URL}${url}`}
+            url={url}
           />
           {/* ------------ */}
           <div
             style={{ background: 'rgba(0, 0, 0, 0.8)' }}
-            className="absolute right-0 bottom-12 flex justify-center items-center m-1 h-9 w-9 rounded-full"
+            className="absolute right-0 bottom-12 flex justify-center items-center p-1 rounded-sm"
           >
-            <span className="text-white text-sm font-normal">{`${price}`}</span>
-          </div>
-          {/* View */}
-          <div
-            style={{ background: 'rgba(0, 0, 0, 0.8)' }}
-            className="pointer shadow absolute right-0 top-10 flex justify-center items-center 
-            border-2 border-solid border-grey-300 
-            hover:border-green-500 m-1 h-9 w-9 rounded-full"
-          >
-            <Link
-              href={{
-                pathname: '/categories/sub-categories/edit',
-                query: { cid: '1234-5678', scid: '123-456' }
-              }}
-            >
-              <a>
-                <div className="">
-                  <EyeSvg width={22} height={22} />
-                </div>
-              </a>
-            </Link>
+            <span className="text-white text-sm font-normal">{`$${price}`}</span>
           </div>
           {/* Edit */}
           <div
@@ -285,8 +236,8 @@ const ProductCard = ({ product }) => {
           >
             <Link
               href={{
-                pathname: '/categories/sub-categories/edit',
-                query: { cid: '1234-5678', scid: '123-456' }
+                pathname: '/product/factory',
+                query: { pid: product_uid }
               }}
             >
               <a>
