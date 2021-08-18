@@ -52,8 +52,8 @@ const GalleryUploadByUrl = ({
   const Form_Data = (image, title, index) => {
     const formData = new FormData();
     formData.append('image', image);
-    formData.append('title', title);
-    if (index) formData.append('index', title);
+    formData.append('product_uid', pid);
+    formData.append('index', index);
     return formData;
   };
 
@@ -68,7 +68,7 @@ const GalleryUploadByUrl = ({
 
     if (!pid) {
       Notify(
-        `You must submit your product details in order to upload an image.`,
+        `You must submit your product details in order to upload images.`,
         false
       );
       return;
@@ -86,7 +86,7 @@ const GalleryUploadByUrl = ({
           headers: {
             Authorization: 'Bearer ' + token
           },
-          body: Form_Data(ThumbnailUrl, title)
+          body: Form_Data(ThumbnailUrl, title, 0)
         });
 
         const { success, error } = await response.json();
@@ -95,16 +95,18 @@ const GalleryUploadByUrl = ({
           console.error(error);
           Notify(error.message, false);
           setLoading(() => false);
+          // LOGS
         }
 
         if (success) {
-          Notify(`🚀 Thumbnail successfully uploaded`, true);
+          Notify(`🚀 Thumbnail successfully uploaded!`, true);
           setLoading(() => false);
           setProgress(100);
           setThumbnailUrl(null);
         }
       } catch (error) {
         console.log('error :>> ', { message: error.message, error });
+        // LOGS
       }
     }
   };
@@ -118,7 +120,7 @@ const GalleryUploadByUrl = ({
     }
     if (!pid) {
       Notify(
-        `You must submit your product details in order to upload an image.`,
+        `You must submit your product details in order to upload images.`,
         false
       );
     }
@@ -154,18 +156,15 @@ const GalleryUploadByUrl = ({
       await Promise.all(FetchArray)
         .then((response) => Promise.all(response.map((r) => r.json())))
         .then((data) => {
-          console.log(`data`, { data });
-
           let count = null;
-
           const ErrorImages = [];
 
           data.forEach(({ success, error }, index) => {
             if (success) count++;
-
             if (error) {
               ErrorImages.push(ImagesUrl[index]);
               Notify(`Can't upload ${ImagesUrl[index]?.file?.name}`, false);
+              // LOGS
             }
           });
 
@@ -180,6 +179,7 @@ const GalleryUploadByUrl = ({
           console.log(err);
           Notify(`🚀 Ops, something happened`, false);
           setLoading(() => false);
+          // LOGS
         });
     }
   };

@@ -7,7 +7,7 @@ import useSWR from 'swr';
 
 import { EditSvg, ProductSvg } from '@/components/svg';
 import { UserStoreContext } from '@/context/UserStore';
-import { GetCategoriesQuery } from '@/graphql/queries/category';
+import { GetCategoriesQuery } from '@/graphql/queries/index';
 import { getAppCookies, verifyToken } from '@/middleware/utils';
 
 import Add from '../../assets/svg/add.svg';

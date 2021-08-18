@@ -1,21 +1,27 @@
 import { gql } from 'graphql-request';
 
 export const GetProductsQuery = gql`
-  query getCategory(
+  query ProductPagination(
     $account_uid: ID!
     $category_uid: ID!
     $page: Int!
-    $limit: Int!
+    $limit: Int
   ) {
-    Category(
+    Products(
       account_uid: $account_uid
       category_uid: $category_uid
       page: $page
       limit: $limit
     ) {
       product_uid
+      category_uid
+      account_uid
       title
       price
+      thumbnail {
+        image_uid
+        image
+      }
     }
   }
 `;
@@ -41,34 +47,6 @@ export const GetProductQuery = gql`
         image
       }
       gallery {
-        image_uid
-        image
-      }
-    }
-  }
-`;
-
-export const ProductPaginationMutation = gql`
-  query ProductPagination(
-    $account_uid: ID!
-    $category_uid: ID!
-    $page: Int!
-    $limit: Int
-  ) {
-    Products(
-      account_uid: $account_uid
-      category_uid: $category_uid
-      page: $page
-      limit: $limit
-    ) {
-      product_uid
-      category_uid
-      account_uid
-      title
-      price
-      discount
-      inventory
-      thumbnail {
         image_uid
         image
       }

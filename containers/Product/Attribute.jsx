@@ -314,6 +314,14 @@ const Attribute = ({ token, Notify }) => {
   };
 
   const EditAttribute = (_attribute_uid) => {
+    setOptionFields(() => {
+                return {
+                  option_uid: null,
+                  option_name: null,
+                  additional_price: 0,
+                  color_hex: null
+                };
+              });
     router.push(
       {
         pathname: '/product/factory',
@@ -446,6 +454,14 @@ const Attribute = ({ token, Notify }) => {
       delete _query['opt_uid'];
       setAttributeName('');
       setCurrentOptions([]);
+      setOptionFields(() => {
+                return {
+                  option_uid: null,
+                  option_name: null,
+                  additional_price: 0,
+                  color_hex: null
+                };
+              });
       router.push(
         {
           pathname: '/product/factory',
@@ -487,16 +503,16 @@ const Attribute = ({ token, Notify }) => {
               'border',
               'border-solid',
               {
-                'text-green-800': !pid,
-                'bg-green-300': !pid,
-                'border-green-500': !pid,
-                'text-yellow-800': pid,
-                'bg-yellow-300': pid,
-                'border-yellow-500': pid
+                'text-green-800': !attr_uid,
+                'bg-green-300': !attr_uid,
+                'border-green-500': !attr_uid,
+                'text-yellow-800': attr_uid,
+                'bg-yellow-300': attr_uid,
+                'border-yellow-500': attr_uid
               }
             )}
           >
-            {pid ? 'Update Mode' : 'Create Mode'}
+            {attr_uid ? 'Update Mode' : 'Create Mode'}
           </span>
         </div>
         <div className="px-4 py-5 bg-white sm:p-6">

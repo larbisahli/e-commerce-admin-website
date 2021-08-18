@@ -2,14 +2,14 @@ import classNames from 'classnames';
 import { useRouter } from 'next/router';
 import PropTypes from 'prop-types';
 import React, { useContext, useEffect, useMemo, useState } from 'react';
-import { Slide, toast, ToastContainer } from 'react-toastify';
-import useSWR, { trigger } from 'swr';
+import { toast } from 'react-toastify';
+import useSWR, { mutate } from 'swr';
 
 import { LoadingSvg } from '@/components/svg';
 import { UserStoreContext } from '@/context/UserStore';
 import { Request } from '@/graphql/index';
-import { UpdateCategoryMutation } from '@/graphql/mutations/category';
-import { GetCategoryQuery } from '@/graphql/queries/category';
+import { UpdateCategoryMutation } from '@/graphql/mutations/index';
+import { GetCategoryQuery } from '@/graphql/queries/index';
 import { getAppCookies, verifyToken } from '@/middleware/utils';
 
 import ArrowLeft from '../../assets/svg/arrow-left.svg';
@@ -53,7 +53,7 @@ const EditCategory = ({ token, userInfo }) => {
   };
 
   useEffect(() => {
-    if (data) {
+    if (data?.Category?.category_name) {
       setState({
         category_name: data?.Category?.category_name,
         category_description: data?.Category?.category_description,
@@ -104,11 +104,14 @@ const EditCategory = ({ token, userInfo }) => {
         })
           .then(({ UpdateCategory }) => {
             const CategoryName = UpdateCategory?.category_name;
-            Notify(
-              `🚀 Category '${CategoryName}' successfully updated`,
-              UpdateCategory
-            );
-            trigger([token, GetCategoryQuery, variables]);
+
+            if (CategoryName) {
+              Notify(
+                `Category '${CategoryName}' successfully updated!`,
+                UpdateCategory
+              );
+              mutate([token, GetCategoryQuery, variables]);
+            }
           })
           .catch(({ response }) => {
             const ErrorMessage =
@@ -139,19 +142,6 @@ const EditCategory = ({ token, userInfo }) => {
 
   return (
     <div className="form-container">
-      <ToastContainer
-        position="bottom-right"
-        autoClose={5000}
-        className="text-sm"
-        hideProgressBar
-        newestOnTop={false}
-        closeOnClick
-        rtl={false}
-        pauseOnFocusLoss
-        draggable
-        pauseOnHover
-        transition={Slide}
-      />
       <div className="form-wrapper">
         <section className="flex justify-between items-center md:ml-0 ml-2 mb-3">
           <button
@@ -175,8 +165,13 @@ const EditCategory = ({ token, userInfo }) => {
             </div>
           )}
           <div className="shadow overflow-hidden md:rounded-lg card-container rounded-none">
-            <div className="flex justify-center items-center px-4 py-3 text-gray-800 bg-gray-50 text-right sm:px-6">
+            <div className="relative flex justify-center items-center px-4 py-3 text-gray-800 bg-gray-50 text-right sm:px-6">
               <span className="uppercase text-sm">Edit name category</span>
+              <span
+                className='absolute font-medium right-0 p-1 rounded-full mr-3 text-xs border border-solid text-yellow-800 bg-yellow-300 border-yellow-500'
+              >
+                Update Mode
+              </span>
             </div>
             <div className="px-4 py-5 bg-white sm:p-6">
               <div className="block">

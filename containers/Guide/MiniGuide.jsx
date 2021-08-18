@@ -1,6 +1,6 @@
-import dynamic from 'next/dynamic';
 import PropTypes from 'prop-types';
 import React, { memo, useEffect, useState } from 'react';
+import SimpleBar from 'simplebar-react';
 
 import {
   AddSvg,
@@ -16,10 +16,6 @@ import { useMediaQuery } from '@/hooks/useMediaQuery';
 import ItemLink from './ItemLink';
 import { Container } from './styles/MiniGuideStyle';
 
-const SimpleBarReact = dynamic(() => import('simplebar-react'), {
-  // eslint-disable-next-line react/display-name
-  loading: () => <div></div>
-});
 
 const MiniGuide = ({ GuideState }) => {
   const { mode, show } = GuideState;
@@ -42,7 +38,7 @@ const MiniGuide = ({ GuideState }) => {
 
   return (
     <Container Mode={mode} Show={show} QueryMatches={QueryMatches1330}>
-      <SimpleBarReact
+      <SimpleBar
         style={{
           maxHeight: '100%',
           padding: '.9em 0 1.15em 0',
@@ -79,7 +75,7 @@ const MiniGuide = ({ GuideState }) => {
         <ItemLink mode={1} href="/invoices" label="Invoices">
           <InvoiceSvg width={24} height={24} />
         </ItemLink>
-      </SimpleBarReact>
+      </SimpleBar>
     </Container>
   );
 };

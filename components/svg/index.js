@@ -19,6 +19,7 @@ export { default as Menuburger } from './Menuburger';
 export { default as PaginationLArrowSvg } from './PaginationLArrowSvg';
 export { default as PaginationRArrowSvg } from './PaginationRArrowSvg';
 export { default as ProductSvg } from './ProductSvg';
+export { default as Refresh } from './Refresh';
 export { default as RevenueSvg } from './RevenueSvg';
 export { default as Search } from './Search';
 export { default as SelectorSvg } from './SelectorSvg';

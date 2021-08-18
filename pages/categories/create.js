@@ -1,12 +1,12 @@
 import { useRouter } from 'next/router';
 import PropTypes from 'prop-types';
 import React, { useContext, useEffect, useRef, useState } from 'react';
-import { Slide, toast, ToastContainer } from 'react-toastify';
+import { toast } from 'react-toastify';
 
 import { LoadingSvg } from '@/components/svg';
 import { UserStoreContext } from '@/context/UserStore';
 import { Request } from '@/graphql/index';
-import { CreateCategoryMutation } from '@/graphql/mutations/category';
+import { CreateCategoryMutation } from '@/graphql/mutations/index';
 import { getAppCookies, verifyToken } from '@/middleware/utils';
 
 import ArrowLeft from '../../assets/svg/arrow-left.svg';
@@ -69,12 +69,14 @@ const NewCategory = ({ token, userInfo }) => {
         })
           .then(({ CreateCategory }) => {
             const CategoryName = CreateCategory?.category_name;
-            Notify(
-              `🚀 Category '${CategoryName}' successfully created`,
-              CreateCategory
-            );
 
-            if (CreateCategory) {
+            if (CategoryName) {
+
+              Notify(
+                `🚀 Category '${CategoryName}' successfully created!`,
+                CreateCategory
+              );
+
               CategoryNameRef.current.value = '';
               CategoryDescriptionRef.current.value = '';
               IsActiveRef.current.checked = true;
@@ -99,19 +101,6 @@ const NewCategory = ({ token, userInfo }) => {
 
   return (
     <div className="form-container">
-      <ToastContainer
-        position="bottom-right"
-        autoClose={5000}
-        className="text-sm"
-        hideProgressBar
-        newestOnTop={false}
-        closeOnClick
-        rtl={false}
-        pauseOnFocusLoss
-        draggable
-        pauseOnHover
-        transition={Slide}
-      />
       <div className="form-wrapper">
         <section className="flex justify-between items-center md:ml-0 ml-2 mb-3">
           <button
@@ -137,10 +126,15 @@ const NewCategory = ({ token, userInfo }) => {
           )}
           <div className="shadow overflow-hidden md:rounded-lg card-container rounded-none">
             <div
-              className="flex justify-center items-center px-4 py-3 text-gray-800 
+              className="relative flex justify-center items-center px-4 py-3 text-gray-800 
             bg-gray-50 text-right sm:px-6"
             >
               <span className="uppercase text-sm">Create a new category</span>
+              <span
+                className='absolute font-medium right-0 p-1 rounded-full mr-3 text-xs border border-solid text-green-800 bg-green-300 border-green-500'
+              >
+                Create Mode
+              </span>
             </div>
             <div className="px-4 py-5 bg-white sm:p-6">
               <div className="block">

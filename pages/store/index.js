@@ -11,17 +11,18 @@ import React, {
 import ReactPaginate from 'react-paginate';
 import useSWR from 'swr';
 
+import { ImageComponent } from '@/components/index'
 import {
   EditSvg,
   PaginationLArrowSvg,
   PaginationRArrowSvg
 } from '@/components/svg';
-import { ImageComponent, StoreHead } from '@/containers/index';
+import { StoreHead } from '@/containers/index';
 import { UserStoreContext } from '@/context/UserStore';
 import { Request } from '@/graphql/index';
 import {
-  ProductCountQuery,
-  ProductPaginationMutation
+  GetProductsQuery,
+  ProductCountQuery
 } from '@/graphql/queries/product';
 import { getAppCookies, verifyToken } from '@/middleware/utils';
 
@@ -50,7 +51,7 @@ const Store = ({ token, userInfo }) => {
 
   const { data, error } = useSWR([
     token,
-    ProductPaginationMutation,
+    GetProductsQuery,
     ProductVariable
   ]);
 
@@ -182,28 +183,14 @@ const ProductCard = ({ product }) => {
 
   const {
     product_uid,
-    account_uid,
-    category_uid,
-    discount,
-    inventory,
+    // account_uid,
+    // category_uid,
     price,
     thumbnail,
     title
   } = product;
 
-  console.log('=>', {
-    product_uid,
-    account_uid,
-    category_uid,
-    discount,
-    inventory,
-    price,
-    thumbnail,
-    title
-  });
-
   const url = thumbnail[0]?.image;
-
 
   return (
     <div

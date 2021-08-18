@@ -1,16 +1,15 @@
 /* eslint-disable jsx-a11y/interactive-supports-focus */
 /* eslint-disable jsx-a11y/click-events-have-key-events */
-/* eslint-disable react/display-name */
-// eslint-disable-next-line simple-import-sort/imports
+import classNames from 'classnames';
 import { useRouter } from 'next/router';
 import React, { memo, useState } from 'react';
-import classNames from 'classnames';
+
 import { LoadingContainer } from '@/components/index';
 import { Request } from '@/graphql/index';
 import {
   CreateProductMutation,
   UpdateProductMutation
-} from '@/graphql/mutations/product';
+} from '@/graphql/mutations/index';
 
 const Form = ({
   ProductState,
@@ -41,8 +40,6 @@ const Form = ({
     is_new,
     note
   } = ProductState;
-
-  console.log('ProductState :>-> ', ProductState);
 
   const HandleInputChange = (e) => {
     const target = e.target;
@@ -87,8 +84,8 @@ const Form = ({
               CreateProduct?.product_uid ?? UpdateProduct?.product_uid;
 
             const message = pid
-              ? `🚀 Product successfully updated`
-              : `🚀 Product successfully created`;
+              ? `🚀 Product successfully updated!`
+              : `🚀 Product successfully created!`;
             Notify(message, product_uid);
 
             if (product_uid && !UpdateProduct) {

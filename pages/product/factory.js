@@ -21,8 +21,7 @@ import {
 } from '@/containers/index';
 import Gallery from '@/containers/Product/Gallery';
 import { UserStoreContext } from '@/context/UserStore';
-import { GetCategoriesQuery } from '@/graphql/queries/category';
-import { GetProductQuery } from '@/graphql/queries/product';
+import { GetCategoriesQuery, GetProductQuery } from '@/graphql/queries/index';
 import { getAppCookies, verifyToken } from '@/middleware/utils';
 
 import ArrowLeft from '../../assets/svg/arrow-left.svg';
@@ -74,11 +73,16 @@ const NewProduct = ({ token, userInfo }) => {
     return { product_uid: pid };
   }, [pid]);
 
-  const { data } = useSWR([token, GetCategoriesQuery]);
+  const { data: AvailableCategories } = useSWR([token, GetCategoriesQuery]);
 
-  const { data: StoredProduct } = useSWR(
+  const { data: CurrentProduct, error: ProductError } = useSWR(
     pid ? [token, GetProductQuery, ProductVariable] : null
   );
+
+  console.log(`<======>`, { CurrentProduct, ProductError })
+
+  const Categories = AvailableCategories?.Categories
+  const Product = CurrentProduct?.Product
 
   const [, setUserStore] = useContext(UserStoreContext);
   const [ProductState, dispatchProduct] = useReducer(reducer, initialState);
@@ -88,8 +92,6 @@ const NewProduct = ({ token, userInfo }) => {
 
   const [images, setImages] = useState([]);
   const [ThumbnailImage, setThumbnailImage] = useState([]);
-
-  console.log('======== :>> ', { data, StoredProduct, ProductState });
 
   const Notify = useCallback((Message, success) => {
     const Options = {
@@ -101,6 +103,7 @@ const NewProduct = ({ token, userInfo }) => {
       draggable: true,
       progress: undefined
     };
+
     if (success) {
       toast.success(Message, Options);
     } else {
@@ -134,9 +137,9 @@ const NewProduct = ({ token, userInfo }) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [setUserStore, userInfo]);
 
-  // ------- Category -------
+  // ------- Default Category -------
   useEffect(() => {
-    const Default_cid = data?.Categories[0]?.category_uid;
+    const Default_cid = Categories && Categories[0]?.category_uid;
     if (cid || Default_cid) {
       dispatchProduct({
         type: 'insert',
@@ -144,25 +147,23 @@ const NewProduct = ({ token, userInfo }) => {
         field: 'category_uid'
       });
     }
-  }, [cid, data, dispatchProduct]);
+  }, [cid, Categories, dispatchProduct]);
 
   // ------- Product -------
   useEffect(() => {
-    const Product = StoredProduct?.Product;
-
     if (Product) {
       dispatchProduct({
         type: 'populate',
         product: Product
       });
-    } else if (pid && Product === null) {
+    } else if (pid && ProductError) {
       Notify('Product Not Available', false);
       router.push({
         pathname: '/product/factory'
       });
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [StoredProduct, dispatchProduct, pid]);
+  }, [Product, ProductError, dispatchProduct, pid]);
 
   const MutateProduct = useCallback(() => {
     mutate([token, GetProductQuery, ProductVariable]);
@@ -170,47 +171,47 @@ const NewProduct = ({ token, userInfo }) => {
 
   //  Input Change
   const HasChange = useMemo(() => {
-    if (StoredProduct) {
-      if (StoredProduct?.Product?.category_uid !== ProductState?.category_uid)
+    if (Product) {
+      if (Product?.category_uid !== ProductState?.category_uid)
         return true;
       if (
-        StoredProduct?.Product?.quiz_description !==
+        Product?.quiz_description !==
         ProductState?.quiz_description
       )
         return true;
-      if (StoredProduct?.Product?.title !== ProductState?.title) return true;
-      if (StoredProduct?.Product?.price !== ProductState?.price) return true;
-      if (StoredProduct?.Product?.discount !== ProductState?.discount)
+      if (Product?.title !== ProductState?.title) return true;
+      if (Product?.price !== ProductState?.price) return true;
+      if (Product?.discount !== ProductState?.discount)
         return true;
       if (
-        StoredProduct?.Product?.warehouse_location !==
+        Product?.warehouse_location !==
         ProductState?.warehouse_location
       )
         return true;
       if (
-        StoredProduct?.Product?.product_description !==
+        Product?.product_description !==
         ProductState?.product_description
       )
         return true;
       if (
-        StoredProduct?.Product?.short_description !==
+        Product?.short_description !==
         ProductState?.short_description
       )
         return true;
-      if (StoredProduct?.Product?.inventory !== ProductState?.inventory)
+      if (Product?.inventory !== ProductState?.inventory)
         return true;
       if (
-        StoredProduct?.Product?.product_weight !== ProductState?.product_weight
+        Product?.product_weight !== ProductState?.product_weight
       )
         return true;
-      if (StoredProduct?.Product?.is_new !== ProductState?.is_new) return true;
-      if (StoredProduct?.Product?.note !== ProductState?.note) return true;
+      if (Product?.is_new !== ProductState?.is_new) return true;
+      if (Product?.note !== ProductState?.note) return true;
     }
     return false;
-  }, [StoredProduct, ProductState]);
+  }, [Product, ProductState]);
 
-  const thumbnail = StoredProduct?.Product?.thumbnail;
-  const gallery = StoredProduct?.Product?.gallery;
+  const thumbnail = Product?.thumbnail;
+  const gallery = Product?.gallery;
 
   return (
     <div className="form-container">
@@ -239,7 +240,7 @@ const NewProduct = ({ token, userInfo }) => {
               dispatchProduct={dispatchProduct}
               token={token}
               Notify={Notify}
-              Categories={data?.Categories}
+              Categories={Categories}
               HasChange={HasChange}
               MutateProduct={MutateProduct}
             />
@@ -277,7 +278,6 @@ const NewProduct = ({ token, userInfo }) => {
                   MutateProduct={MutateProduct}
                 />
               </TabPanel>
-
               {(thumbnail || gallery) && <TabPanel>
                 <Gallery
                   token={token}

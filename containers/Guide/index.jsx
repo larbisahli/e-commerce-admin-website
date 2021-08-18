@@ -1,6 +1,6 @@
-import dynamic from 'next/dynamic';
 import PropTypes from 'prop-types';
 import React, { Fragment, memo, useCallback, useEffect, useState } from 'react';
+import SimpleBar from 'simplebar-react';
 
 import {
   AddSvg,
@@ -16,10 +16,6 @@ import { useMediaQuery } from '@/hooks/useMediaQuery';
 import ItemLink from './ItemLink';
 import { Bg, Container, ContentContainer, Wrapper } from './styles';
 
-const SimpleBarReact = dynamic(() => import('simplebar-react'), {
-  // eslint-disable-next-line react/display-name
-  loading: () => <div></div>
-});
 
 const Guide = ({ GuideState, setGuideState }) => {
   const { mode, show } = GuideState;
@@ -77,7 +73,7 @@ const Guide = ({ GuideState, setGuideState }) => {
       >
         <Wrapper>
           <ContentContainer>
-            <SimpleBarReact
+            <SimpleBar
               style={{
                 maxHeight: '100%',
                 padding: '.9em 0 1.15em 0',
@@ -114,7 +110,7 @@ const Guide = ({ GuideState, setGuideState }) => {
               <ItemLink mode={2} href="/invoices" label="Invoices">
                 <InvoiceSvg width={20} height={20} />
               </ItemLink>
-            </SimpleBarReact>
+            </SimpleBar>
           </ContentContainer>
         </Wrapper>
       </Container>

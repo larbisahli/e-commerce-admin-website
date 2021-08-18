@@ -1,7 +1,7 @@
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import React, { useRef, useState } from 'react';
-import { Slide, toast, ToastContainer } from 'react-toastify';
+import { toast } from 'react-toastify';
 
 import {
   Container,
@@ -19,18 +19,23 @@ const HomePage = () => {
   const Router = useRouter();
 
   const [Loading, setLoading] = useState(false);
-  const [Message, setMessage] = useState('');
 
-  const notify = () =>
-    toast.dark(Message, {
+  const Notify = (Message, success) => {
+    const Options = {
       position: 'bottom-right',
-      autoClose: 5000,
+      autoClose: 6000,
       hideProgressBar: true,
       closeOnClick: true,
       pauseOnHover: true,
       draggable: true,
       progress: undefined
-    });
+    };
+    if (success) {
+      toast.dark(Message, Options);
+    } else {
+      toast.warning(Message, Options);
+    }
+  }
 
   const LogIn = async (e) => {
     e.preventDefault();
@@ -58,15 +63,16 @@ const HomePage = () => {
           method: 'POST'
         });
 
-        const { success, message } = await res.json();
-        console.log(`message`, { message });
+        const { success, message, userInfo } = await res.json();
+        console.log(`message`, { success, message, userInfo });
 
         if (success) {
+          Notify(`Welcome back ${userInfo?.first_name ?? ''} ${userInfo?.last_name ?? ''}`, true)
           Router.push('/dashboard');
         } else {
-          setMessage(message);
-          notify();
+          Notify(message, false)
         }
+
       } catch (err) {
         console.log('err :>> ', err);
       }
@@ -79,18 +85,6 @@ const HomePage = () => {
 
   return (
     <Container>
-      <ToastContainer
-        position="bottom-right"
-        autoClose={5000}
-        hideProgressBar
-        newestOnTop={false}
-        closeOnClick
-        rtl={false}
-        pauseOnFocusLoss
-        draggable
-        pauseOnHover
-        transition={Slide}
-      />
       <FormContainer>
         <FormWrapper>
           <div className="col-left">
@@ -110,7 +104,7 @@ const HomePage = () => {
                 className="input"
                 name="email"
                 type="email"
-                placeholder="Username or Email"
+                placeholder="Email"
                 ref={email}
                 autoComplete="email"
               />

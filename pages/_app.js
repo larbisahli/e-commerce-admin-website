@@ -56,7 +56,7 @@ function App({ Component, pageProps }) {
     if (error.status === 404) return;
 
     // Never retry for a specific key.
-    if (key === '/api/user') return;
+    // if (key === '/api/user') return;
 
     // Only retry up to 5 times.
     if (retryCount >= 5) return;
@@ -71,7 +71,7 @@ function App({ Component, pageProps }) {
         position="bottom-right"
         autoClose={5000}
         className="text-sm"
-        hideProgressBar
+        // hideProgressBar
         newestOnTop={false}
         closeOnClick
         rtl={false}

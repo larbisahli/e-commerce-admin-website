@@ -7,6 +7,7 @@ export { default as LazyRender } from './Helpers/LazyRender';
 export { default as MenuTransition } from './Helpers/MenuTransition';
 export { default as Ripple } from './Helpers/Ripple';
 export { default as Spinner } from './Helpers/Spinner';
+export { default as ImageComponent } from './ImageComponent';
 export { default as LoadingBar } from './LoadingBar/';
 export { default as LoadingContainer } from './LoadingContainer';
 export { default as RippleEffect } from './RippleEffect/';

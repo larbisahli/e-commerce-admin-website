@@ -47,7 +47,7 @@ const GalleryUploadByDnD = ({
     return formData;
   };
 
-  // ------------- Thumbnail ---------------
+  // ------------- Thumbnail Image ---------------
   const SubmitThumbnail = async (e) => {
     e.preventDefault();
 
@@ -56,7 +56,7 @@ const GalleryUploadByDnD = ({
     }
     if (!pid) {
       Notify(
-        `You must submit your product details in order to upload an image.`,
+        `You must submit your product details in order to upload images.`,
         false
       );
     }
@@ -82,6 +82,7 @@ const GalleryUploadByDnD = ({
           console.error(error);
           Notify(error?.message ?? 'Ops, something happened', false);
           setLoading(() => false);
+          // LOGS
         }
 
         if (success) {
@@ -93,11 +94,12 @@ const GalleryUploadByDnD = ({
         }
       } catch (error) {
         console.log('error :>> ', { message: error?.message, error });
+        // LOGS
       }
     }
   };
 
-  // ----------- Gallery -------------
+  // ----------- Gallery Images -------------
   const SubmitImages = async (e) => {
     e.preventDefault();
 
@@ -107,7 +109,7 @@ const GalleryUploadByDnD = ({
     }
     if (!pid) {
       Notify(
-        `You must submit your product details in order to upload an image.`,
+        `You must submit your product details in order to upload images.`,
         false
       );
       return;
@@ -144,26 +146,22 @@ const GalleryUploadByDnD = ({
       await Promise.all(FetchArray)
         .then((response) => Promise.all(response.map((r) => r.json())))
         .then((data) => {
-          console.log(`data`, { data });
-
           let count = null;
-
           const ErrorImages = [];
 
           data.forEach(({ success, error }, index) => {
             if (success) count++;
-
             if (error) {
               ErrorImages.push(images[index]);
-              Notify(`Can't upload ${images[index]?.file?.name}`, false);
+              Notify(`Couldn't upload ${images[index]?.file?.name ?? 'an image'}`, false);
+              // LOGS
             }
           });
 
           if (count) {
-            Notify(`🚀 ${count} Gallery Images successfully uploaded`, true);
+            Notify(`🚀 ${count} Gallery Images successfully uploaded!`, true);
           }
           setLoading(() => false);
-          console.log('ErrorImages :>> ', { ErrorImages });
           setImages([...ErrorImages]);
           MutateProduct();
         })

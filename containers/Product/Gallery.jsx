@@ -1,10 +1,12 @@
+/* eslint-disable jsx-a11y/interactive-supports-focus */
+/* eslint-disable jsx-a11y/click-events-have-key-events */
 import classNames from 'classnames';
 import { useRouter } from 'next/router';
 import React, { memo, useState } from 'react';
 import { toast } from 'react-toastify';
 
-import { DeleteSvg, WarningSvg } from '@/components/svg';
-import {ImageComponent} from '@/containers/index'
+import {ImageComponent} from '@/components/index'
+import { DeleteSvg, EmptyBox, Refresh,WarningSvg } from '@/components/svg';
 
 const HostUrl =
   process.env.NODE_ENV === 'production' ? '' : 'http://localhost:5001';
@@ -15,36 +17,43 @@ const Gallery = ({ token, thumbnail, gallery, MutateProduct }) => {
 
   console.log('thumbnail, gallery :>> ', { thumbnail, gallery });
 
-  return thumbnail || gallery ? (
+  return (
     <div className="bg-white shadow">
       <div
         className="relative flex justify-center items-center px-4 py-3 
            text-gray-800 bg-gray-100 text-right sm:px-6"
       >
         <span className="text-md">Product Thumbnail</span>
-        <span
-          className={classNames(
-            'absolute',
-            'font-medium',
-            'right-0',
-            'p-1',
-            'rounded-full',
-            'mr-3',
-            'text-xs',
-            'border',
-            'border-solid',
-            {
-              'text-green-800': !pid,
-              'bg-green-300': !pid,
-              'border-green-500': !pid,
-              'text-yellow-800': pid,
-              'bg-yellow-300': pid,
-              'border-yellow-500': pid
-            }
-          )}
-        >
-          {pid ? 'Update Mode' : 'Create Mode'}
-        </span>
+        <div className="absolute right-0 flex justify-center items-center">
+          <span
+            className={classNames(
+              'font-medium',
+              'p-1',
+              'rounded-full',
+              'mr-3',
+              'text-xs',
+              'border',
+              'border-solid',
+              {
+                'text-green-800': !pid,
+                'bg-green-300': !pid,
+                'border-green-500': !pid,
+                'text-yellow-800': pid,
+                'bg-yellow-300': pid,
+                'border-yellow-500': pid
+              }
+            )}
+          >
+            {pid ? 'Update Mode' : 'Create Mode'}
+          </span>
+          <div
+            className='rounded-md cursor-pointer mr-3 border border-solid border-gray-500 bg-green-400 hover:bg-green-500'
+            onClick={()=>MutateProduct()}
+            role='button'
+          >
+            <Refresh width={20} height={20}/>
+          </div>
+        </div>
       </div>
       {/* Thumbnail */}
       <div className="flex justify-center items-center p-2">
@@ -56,6 +65,11 @@ const Gallery = ({ token, thumbnail, gallery, MutateProduct }) => {
             MutateProduct={MutateProduct}
           />
         )}
+        {
+          thumbnail?.length === 0 && <span className="text-gray-500 self-center justify-self-center m-6">
+                    <EmptyBox width={30} height={30} />
+          </span>
+        }
       </div>
       <div
         className="flex justify-center items-center px-4 py-3 
@@ -76,9 +90,14 @@ const Gallery = ({ token, thumbnail, gallery, MutateProduct }) => {
             />
           );
         })}
+        {
+          gallery?.length === 0 && <span className="text-gray-500 m-6 self-center justify-self-center">
+                    <EmptyBox width={30} height={30} />
+          </span>
+        }
       </div>
     </div>
-  ) : null;
+  );
 };
 
 const ProductCard = memo(({ url, image_uid, token, MutateProduct }) => {
@@ -104,7 +123,6 @@ const ProductCard = memo(({ url, image_uid, token, MutateProduct }) => {
 
   const HandleDelete = (e) => {
     e.preventDefault();
-    console.log('image_uid :>> ', image_uid);
 
     if (image_uid) {
       fetch(`${HostUrl}/api/upload`, {
@@ -119,7 +137,6 @@ const ProductCard = memo(({ url, image_uid, token, MutateProduct }) => {
       })
         .then((r) => r.json())
         .then(({ success }) => {
-          console.log('<<: data :>> ', success);
 
           if (success) {
             Notify(`Image successfully deleted.`, true);
@@ -130,6 +147,7 @@ const ProductCard = memo(({ url, image_uid, token, MutateProduct }) => {
         })
         .catch((error) => {
           console.log('error :>> ', error);
+          // LOGS
         });
     }
 
@@ -148,7 +166,6 @@ const ProductCard = memo(({ url, image_uid, token, MutateProduct }) => {
             className="bg-blue-100 rounded-t"
             url={url}
           />
-          {/* ------------ */}
           <button
             className="flex items-center w-full justify-center text-sm p-2 pb-1 bg-red-600 hover:bg-red-700"
             onClick={(e) => {
