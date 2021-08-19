@@ -8,7 +8,8 @@
     "start": "next start -p 3001",
     "test": "jest",
     "lint": "next lint",
-    "prettier": "prettier --write \"**/*.{js,jsx,scss,json,md,yml}\""
+    "prettier": "prettier --write \"**/*.{js,jsx,scss,json,md,yml}\"",
+    "prepare": "husky install"
   },
   "dependencies": {
     "@sentry/nextjs": "^6.8.0",
@@ -51,7 +52,7 @@
     "eslint-plugin-react-hooks": "^4.2.0",
     "eslint-plugin-simple-import-sort": "^7.0.0",
     "globby": "^11.0.3",
-    "husky": "^4.3.6",
+    "husky": "^7.0.0",
     "jest": "^26.6.3",
     "lint-staged": "^11.0.0",
     "postcss": "^8.2.15",
