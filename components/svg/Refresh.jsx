@@ -1,4 +1,4 @@
-import * as React from "react"
+import * as React from 'react';
 
 function Refresh(props) {
   return (
@@ -13,7 +13,7 @@ function Refresh(props) {
         fill="#333"
       />
     </svg>
-  )
+  );
 }
 
-export default Refresh
+export default Refresh;

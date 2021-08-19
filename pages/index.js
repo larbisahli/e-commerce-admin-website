@@ -35,7 +35,7 @@ const HomePage = () => {
     } else {
       toast.warning(Message, Options);
     }
-  }
+  };
 
   const LogIn = async (e) => {
     e.preventDefault();
@@ -67,12 +67,16 @@ const HomePage = () => {
         console.log(`message`, { success, message, userInfo });
 
         if (success) {
-          Notify(`Welcome back ${userInfo?.first_name ?? ''} ${userInfo?.last_name ?? ''}`, true)
+          Notify(
+            `Welcome back ${userInfo?.first_name ?? ''} ${
+              userInfo?.last_name ?? ''
+            }`,
+            true
+          );
           Router.push('/dashboard');
         } else {
-          Notify(message, false)
+          Notify(message, false);
         }
-
       } catch (err) {
         console.log('err :>> ', err);
       }

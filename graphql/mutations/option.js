@@ -6,13 +6,13 @@ export const CreateOptionMutation = gql`
     $option_name: String!
     $additional_price: Float!
     $color_hex: String
-    ) {
+  ) {
     CreateOption(
       attribute_uid: $attribute_uid
       option_name: $option_name
       additional_price: $additional_price
       color_hex: $color_hex
-      ) {
+    ) {
       option_name
     }
   }
@@ -24,13 +24,13 @@ export const UpdateOptionMutation = gql`
     $option_name: String!
     $additional_price: Float!
     $color_hex: String
-    ) {
+  ) {
     UpdateOption(
       option_uid: $option_uid
       option_name: $option_name
       additional_price: $additional_price
       color_hex: $color_hex
-      ) {
+    ) {
       option_name
     }
   }

@@ -5,8 +5,8 @@ import { useRouter } from 'next/router';
 import React, { memo, useState } from 'react';
 import { toast } from 'react-toastify';
 
-import {ImageComponent} from '@/components/index'
-import { DeleteSvg, EmptyBox, Refresh,WarningSvg } from '@/components/svg';
+import { ImageComponent } from '@/components/index';
+import { DeleteSvg, EmptyBox, Refresh, WarningSvg } from '@/components/svg';
 
 const HostUrl =
   process.env.NODE_ENV === 'production' ? '' : 'http://localhost:5001';
@@ -47,11 +47,11 @@ const Gallery = ({ token, thumbnail, gallery, MutateProduct }) => {
             {pid ? 'Update Mode' : 'Create Mode'}
           </span>
           <div
-            className='rounded-md cursor-pointer mr-3 border border-solid border-gray-500 bg-green-400 hover:bg-green-500'
-            onClick={()=>MutateProduct()}
-            role='button'
+            className="rounded-md cursor-pointer mr-3 border border-solid border-gray-500 bg-green-400 hover:bg-green-500"
+            onClick={() => MutateProduct()}
+            role="button"
           >
-            <Refresh width={20} height={20}/>
+            <Refresh width={20} height={20} />
           </div>
         </div>
       </div>
@@ -65,11 +65,11 @@ const Gallery = ({ token, thumbnail, gallery, MutateProduct }) => {
             MutateProduct={MutateProduct}
           />
         )}
-        {
-          thumbnail?.length === 0 && <span className="text-gray-500 self-center justify-self-center m-6">
-                    <EmptyBox width={30} height={30} />
+        {thumbnail?.length === 0 && (
+          <span className="text-gray-500 self-center justify-self-center m-6">
+            <EmptyBox width={30} height={30} />
           </span>
-        }
+        )}
       </div>
       <div
         className="flex justify-center items-center px-4 py-3 
@@ -90,18 +90,17 @@ const Gallery = ({ token, thumbnail, gallery, MutateProduct }) => {
             />
           );
         })}
-        {
-          gallery?.length === 0 && <span className="text-gray-500 m-6 self-center justify-self-center">
-                    <EmptyBox width={30} height={30} />
+        {gallery?.length === 0 && (
+          <span className="text-gray-500 m-6 self-center justify-self-center">
+            <EmptyBox width={30} height={30} />
           </span>
-        }
+        )}
       </div>
     </div>
   );
 };
 
 const ProductCard = memo(({ url, image_uid, token, MutateProduct }) => {
-
   const [ShowMessageBox, setShowMessageBox] = useState(false);
 
   const Notify = (Message, success) => {
@@ -137,7 +136,6 @@ const ProductCard = memo(({ url, image_uid, token, MutateProduct }) => {
       })
         .then((r) => r.json())
         .then(({ success }) => {
-
           if (success) {
             Notify(`Image successfully deleted.`, true);
             MutateProduct();

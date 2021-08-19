@@ -11,7 +11,7 @@ import React, {
 import ReactPaginate from 'react-paginate';
 import useSWR from 'swr';
 
-import { ImageComponent } from '@/components/index'
+import { ImageComponent } from '@/components/index';
 import {
   EditSvg,
   PaginationLArrowSvg,
@@ -20,10 +20,7 @@ import {
 import { StoreHead } from '@/containers/index';
 import { UserStoreContext } from '@/context/UserStore';
 import { Request } from '@/graphql/index';
-import {
-  GetProductsQuery,
-  ProductCountQuery
-} from '@/graphql/queries/product';
+import { GetProductsQuery, ProductCountQuery } from '@/graphql/queries/product';
 import { getAppCookies, verifyToken } from '@/middleware/utils';
 
 import Add from '../../assets/svg/add.svg';
@@ -49,11 +46,7 @@ const Store = ({ token, userInfo }) => {
     };
   }, [cid, Page, limit, userInfo]);
 
-  const { data, error } = useSWR([
-    token,
-    GetProductsQuery,
-    ProductVariable
-  ]);
+  const { data, error } = useSWR([token, GetProductsQuery, ProductVariable]);
 
   console.log(`======>`, { data, error });
 
@@ -180,7 +173,6 @@ const Store = ({ token, userInfo }) => {
 };
 
 const ProductCard = ({ product }) => {
-
   const {
     product_uid,
     // account_uid,

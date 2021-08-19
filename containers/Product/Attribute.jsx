@@ -10,9 +10,17 @@ import Add from '../../assets/svg/add.svg';
 import { Request } from '@/graphql/index';
 import uuid from 'react-uuid';
 import useSWR, { mutate } from 'swr';
-import { CreateAttributeMutation, UpdateAttributeMutation, DeleteAttributeMutation } from '@/graphql/mutations/attribute';
+import {
+  CreateAttributeMutation,
+  UpdateAttributeMutation,
+  DeleteAttributeMutation
+} from '@/graphql/mutations/attribute';
 import { GetProductAttributesQuery } from '@/graphql/queries/attribute';
-import { CreateOptionMutation, UpdateOptionMutation, DeleteOptionMutation } from '@/graphql/mutations/option';
+import {
+  CreateOptionMutation,
+  UpdateOptionMutation,
+  DeleteOptionMutation
+} from '@/graphql/mutations/option';
 import classNames from 'classnames';
 
 const Attribute = ({ token, Notify }) => {
@@ -31,28 +39,22 @@ const Attribute = ({ token, Notify }) => {
   const Attributes = data?.attributes;
 
   const [Loading, setLoading] = useState(false);
-
   const [attribute_name, setAttributeName] = useState('');
   const [OriginalAttributeName, setOriginalAttributeName] = useState('');
-
+  const [CurrentOptions, setCurrentOptions] = useState([]);
   const [OptionFields, setOptionFields] = useState({
     option_uid: null,
     option_name: null,
     additional_price: 0,
     color_hex: null
   });
-  const [CurrentOptions, setCurrentOptions] = useState([]);
-
   const { option_name, additional_price, color_hex } = OptionFields;
-
-  // console.log('CurrentOptions :>> ', CurrentOptions);
-  console.log('Attributes :>> ', Attributes);
-  // console.log('Option :>> ', Option);
 
   const MutateAttribute = () => {
     mutate([token, GetProductAttributesQuery, ProductVariable]);
   };
 
+  // Populate Attributes
   useEffect(() => {
     if (attr_uid && Attributes?.length > 0) {
       const Attribute = Attributes?.filter(
@@ -79,11 +81,170 @@ const Attribute = ({ token, Notify }) => {
     });
   };
 
-  const AddOption = async() => {
+  // **** Attribute ****
+  const CreateAttribute = async () => {
+    if (!pid) {
+      Notify(
+        `You must submit your product details in order to upload an image.`,
+        false
+      );
+      return;
+    }
+
+    try {
+      if (attribute_name && CurrentOptions.length > 0) {
+        setLoading(true);
+
+        await Request({
+          token,
+          mutation: CreateAttributeMutation,
+          variables: {
+            product_uid: pid,
+            attribute_name,
+            options: CurrentOptions
+          }
+        })
+          .then(({ CreateAttribute }) => {
+            const attribute_name = CreateAttribute?.attribute_name;
+
+            const message = `🚀 Attribute ${
+              attribute_name ?? ''
+            } successfully Created`;
+
+            Notify(message, attribute_name);
+            setCurrentOptions([]);
+            setAttributeName('');
+            MutateAttribute();
+            Clear({ option: true, attribute: true });
+          })
+          .catch(({ response }) => {
+            const ErrorMessage =
+              response?.message ?? response?.errors[0]?.message;
+            Notify(ErrorMessage, !response);
+            // LOGS
+          });
+      } else {
+        Notify('Fields should not be empty!', false);
+      }
+    } catch (err) {
+      console.log(`Error =>`, err);
+      Notify('Ops something went wrong.', false);
+      // LOGS
+    }
+    setLoading(false);
+  };
+
+  const UpdateAttribute = async () => {
+    if (attribute_name === '') {
+      Notify('Attribute name should not be empty!', false);
+      return;
+    }
+    setLoading(true);
+
+    await Request({
+      token,
+      mutation: UpdateAttributeMutation,
+      variables: {
+        attribute_uid: attr_uid,
+        attribute_name
+      }
+    })
+      .then(({ UpdateAttribute }) => {
+        const attribute_name = UpdateAttribute?.attribute_name;
+        const message = `Attribute ${
+          attribute_name ?? ''
+        } successfully Updated!`;
+
+        if (attribute_name) {
+          Notify(message, attribute_name);
+          MutateAttribute();
+        }
+      })
+      .catch(({ response }) => {
+        const ErrorMessage = response?.message ?? response?.errors[0]?.message;
+        Notify(ErrorMessage, !response);
+        // LOGS
+      });
+    setLoading(false);
+  };
+
+  const DeleteAttribute = async (_attribute_uid) => {
+    // make a call to delete attribute && mutate swr
+
+    let Attr_options = null;
+    let Attr = [];
+    if (_attribute_uid && Attributes?.length > 0) {
+      Attr = Attributes?.filter(
+        ({ attribute_uid }) => attribute_uid === _attribute_uid
+      );
+      if (Attr[0]) {
+        Attr_options = Attr[0]?.options;
+      }
+    }
+
+    if (Attr_options?.length > 0) {
+      Notify(
+        `Please remove all ${Attr[0]?.attribute_name} options first.`,
+        false
+      );
+      return;
+    }
+
+    setLoading(true);
+
+    await Request({
+      token,
+      mutation: DeleteAttributeMutation,
+      variables: {
+        attribute_uid: _attribute_uid
+      }
+    })
+      .then(({ DeleteAttribute }) => {
+        const attribute_name = DeleteAttribute?.attribute_name;
+        const message = `Attribute ${
+          attribute_name ?? ''
+        } successfully Deleted!`;
+
+        Notify(message, attribute_name);
+        // clear
+        MutateAttribute();
+        Clear({ option: true, attribute: true });
+      })
+      .catch(({ response }) => {
+        console.log(`Error response :>`, { response });
+        const ErrorMessage = response?.message ?? response?.errors[0]?.message;
+        Notify(ErrorMessage, !response);
+        // LOGS
+      });
+    setLoading(false);
+  };
+
+  const EditAttribute = (_attribute_uid) => {
+    setOptionFields(() => {
+      return {
+        option_uid: null,
+        option_name: null,
+        additional_price: 0,
+        color_hex: null
+      };
+    });
+    router.push(
+      {
+        pathname: '/product/factory',
+        query: { ...query, attr_uid: _attribute_uid }
+      },
+      undefined,
+      { scroll: false }
+    );
+  };
+
+  // **** Option ****
+
+  const CreateOption = async () => {
     if (option_name) {
       const _uuid = uuid();
 
-      if (attr_uid && !opt_uid) {
+      if (attr_uid) {
         // option Create api api call + mutate
         setLoading(true);
 
@@ -91,28 +252,18 @@ const Attribute = ({ token, Notify }) => {
           token,
           mutation: CreateOptionMutation,
           variables: {
-            attribute_uid:attr_uid,
+            attribute_uid: attr_uid,
             option_name,
             additional_price,
             color_hex
           }
         })
           .then(({ CreateOption }) => {
-            console.log('CreateOption :>> ', CreateOption);
             const option_name = CreateOption?.option_name;
             const message = `Option ${option_name ?? ''} successfully Created!`;
 
             if (option_name) {
               Notify(message, option_name);
-              // clear
-              setOptionFields(() => {
-                return {
-                  option_uid: null,
-                  option_name: null,
-                  additional_price: 0,
-                  color_hex: null
-                };
-              });
               MutateAttribute();
             }
           })
@@ -123,58 +274,6 @@ const Attribute = ({ token, Notify }) => {
             // LOGS
           });
         setLoading(false);
-      } else if (attr_uid && opt_uid) {
-        // option update api api call + mutate
-        setLoading(true);
-
-        await Request({
-          token,
-          mutation: UpdateOptionMutation,
-          variables: {
-            option_uid:opt_uid,
-            option_name,
-            additional_price,
-            color_hex
-          }
-        })
-          .then(({ UpdateOption }) => {
-            console.log('UpdateOption :>> ', UpdateOption);
-            const option_name = UpdateOption?.option_name;
-            const message = `Option ${option_name ?? ''} successfully Updated!`;
-
-            if (option_name) {
-              Notify(message, option_name);
-              // clear
-              setOptionFields(() => {
-                return {
-                  option_uid: null,
-                  option_name: null,
-                  additional_price: 0,
-                  color_hex: null
-                };
-              });
-              MutateAttribute();
-            }
-          })
-          .catch(({ response }) => {
-            const ErrorMessage =
-              response?.message ?? response?.errors[0]?.message;
-            Notify(ErrorMessage, !response);
-            // LOGS
-          });
-        setLoading(false);
-      } else if (!attr_uid && opt_uid) {
-        // update option from useState
-        setCurrentOptions((prev) => [
-          ...prev.map((option) => {
-            if (option.option_uid === opt_uid) {
-              option.option_name = option_name;
-              option.additional_price = additional_price;
-              option.color_hex = color_hex;
-            }
-            return option;
-          })
-        ]);
       } else {
         // create mode for new attribute
         setCurrentOptions((prev) => [
@@ -187,30 +286,58 @@ const Attribute = ({ token, Notify }) => {
           }
         ]);
       }
-
       // clear
-      setOptionFields(() => {
-        return {
-          option_uid: null,
-          option_name: null,
-          additional_price: 0,
-          color_hex: null
-        };
-      });
+      Clear({ option: true });
+    }
+  };
+
+  const UpdateOption = async () => {
+    if (attr_uid && opt_uid) {
+      // option update api api call + mutate
+      setLoading(true);
+
+      await Request({
+        token,
+        mutation: UpdateOptionMutation,
+        variables: {
+          option_uid: opt_uid,
+          option_name,
+          additional_price,
+          color_hex
+        }
+      })
+        .then(({ UpdateOption }) => {
+          const option_name = UpdateOption?.option_name;
+          const message = `Option ${option_name ?? ''} successfully Updated!`;
+
+          if (option_name) {
+            Notify(message, option_name);
+            MutateAttribute();
+          }
+        })
+        .catch(({ response }) => {
+          const ErrorMessage =
+            response?.message ?? response?.errors[0]?.message;
+          Notify(ErrorMessage, !response);
+          // LOGS
+        });
+      setLoading(false);
+    } else {
+      // update option from useState
+      setCurrentOptions((prev) => [
+        ...prev.map((option) => {
+          if (option.option_uid === opt_uid) {
+            option.option_name = option_name;
+            option.additional_price = additional_price;
+            option.color_hex = color_hex;
+          }
+          return option;
+        })
+      ]);
     }
 
-    if (opt_uid) {
-      let _query = { ...query };
-      delete _query['opt_uid'];
-      router.push(
-        {
-          pathname: '/product/factory',
-          query: _query
-        },
-        undefined,
-        { scroll: false }
-      );
-    }
+    // clear
+    Clear({ option: true });
   };
 
   const DeleteOption = async (_option_uid) => {
@@ -225,21 +352,11 @@ const Attribute = ({ token, Notify }) => {
         }
       })
         .then(({ DeleteOption }) => {
-          console.log('DeleteOption :>> ', DeleteOption);
           const option_name = DeleteOption?.option_name;
           const message = `Option ${option_name ?? ''} successfully deleted!`;
 
           if (option_name) {
             Notify(message, option_name);
-            // clear
-            setOptionFields(() => {
-              return {
-                option_uid: null,
-                option_name: null,
-                additional_price: 0,
-                color_hex: null
-              };
-            });
             MutateAttribute();
           }
         })
@@ -255,81 +372,7 @@ const Attribute = ({ token, Notify }) => {
         return prev?.filter(({ option_uid }) => option_uid !== _option_uid);
       });
     }
-  };
-
-  const DeleteAttribute = async(_attribute_uid) => {
-    // make a call to delete attribute && mutate swr
-
-    let Attr_options = null
-    let Attr = []
-    if (_attribute_uid && Attributes?.length > 0) {
-      Attr = Attributes?.filter(
-        ({ attribute_uid }) => attribute_uid === _attribute_uid
-      );
-      if (Attr[0]) {
-        Attr_options = Attr[0]?.options
-      }
-    }
-
-    if(Attr_options?.length > 0){
-      Notify(`Please remove all ${Attr[0]?.attribute_name} options first.`, false);
-      return
-    }
-
-    setLoading(true);
-
-        await Request({
-          token,
-          mutation: DeleteAttributeMutation,
-          variables: {
-            attribute_uid:_attribute_uid,
-          }
-        })
-          .then(({DeleteAttribute }) => {
-            console.log('DeleteOption :>> ', DeleteAttribute);
-            const attribute_name = DeleteAttribute?.attribute_name;
-            const message = `Attribute ${attribute_name ?? ''} successfully Deleted!`;
-
-              Notify(message, attribute_name);
-              // clear
-              setOptionFields(() => {
-                return {
-                  option_uid: null,
-                  option_name: null,
-                  additional_price: 0,
-                  color_hex: null
-                };
-              });
-              MutateAttribute();
-              ClearAttrUid()
-          })
-          .catch(({ response }) => {
-            console.log(`Error response :>`, {response})
-            const ErrorMessage =
-              response?.message ?? response?.errors[0]?.message;
-            Notify(ErrorMessage, !response);
-            // LOGS
-          });
-        setLoading(false);
-  };
-
-  const EditAttribute = (_attribute_uid) => {
-    setOptionFields(() => {
-                return {
-                  option_uid: null,
-                  option_name: null,
-                  additional_price: 0,
-                  color_hex: null
-                };
-              });
-    router.push(
-      {
-        pathname: '/product/factory',
-        query: { ...query, attr_uid: _attribute_uid }
-      },
-      undefined,
-      { scroll: false }
-    );
+    Clear({ option: true });
   };
 
   const EditOption = (_option_uid) => {
@@ -356,112 +399,27 @@ const Attribute = ({ token, Notify }) => {
     );
   };
 
-  const SubmitAttribute = async () => {
-    if (!pid) {
-      Notify(
-        `You must submit your product details in order to upload an image.`,
-        false
-      );
-      return;
-    }
-
-    try {
-      if (attribute_name && CurrentOptions.length > 0) {
-        setLoading(true);
-
-        await Request({
-          token,
-          mutation: CreateAttributeMutation,
-          variables: {
-            product_uid: pid,
-            attribute_name,
-            options: CurrentOptions
-          }
-        })
-          .then(({ CreateAttribute }) => {
-            console.log('CreateAttribute :>> ', CreateAttribute);
-            const attribute_name = CreateAttribute?.attribute_name;
-
-            const message = `🚀 Attribute ${
-              attribute_name ?? ''
-            } successfully Created`;
-
-            Notify(message, attribute_name);
-            setCurrentOptions([]);
-            setAttributeName('');
-            MutateAttribute();
-          })
-          .catch(({ response }) => {
-            const ErrorMessage =
-              response?.message ?? response?.errors[0]?.message;
-            Notify(ErrorMessage, !response);
-            // LOGS
-          });
-      } else {
-        Notify('Fields should not be empty!', false);
-      }
-    } catch (err) {
-      console.log(`Error =>`, err);
-      Notify('Ops something went wrong.', false);
-      // LOGS
-    }
-    setLoading(false);
-  };
-
-  const UpdateAttribute = async() => {
-    setLoading(true);
-
-        await Request({
-          token,
-          mutation: UpdateAttributeMutation,
-          variables: {
-            attribute_uid: attr_uid,
-            attribute_name
-          }
-        })
-          .then(({ UpdateAttribute }) => {
-            console.log('UpdateAttribute :>> ', UpdateAttribute);
-            const attribute_name = UpdateAttribute?.attribute_name;
-            const message = `Attribute ${attribute_name ?? ''} successfully Updated!`;
-
-            if (attribute_name) {
-              Notify(message, attribute_name);
-              // clear
-              setOptionFields(() => {
-                return {
-                  option_uid: null,
-                  option_name: null,
-                  additional_price: 0,
-                  color_hex: null
-                };
-              });
-              MutateAttribute();
-            }
-          })
-          .catch(({ response }) => {
-            const ErrorMessage =
-              response?.message ?? response?.errors[0]?.message;
-            Notify(ErrorMessage, !response);
-            // LOGS
-          });
-        setLoading(false);
-  };
-
-  const ClearAttrUid = () => {
-    if (attr_uid) {
-      let _query = { ...query };
-      delete _query['attr_uid'];
+  // **** Clear ****
+  const Clear = ({ option = false, attribute = false }) => {
+    let _query = { ...query };
+    if (option) {
       delete _query['opt_uid'];
+      setOptionFields(() => {
+        return {
+          option_uid: null,
+          option_name: null,
+          additional_price: 0,
+          color_hex: null
+        };
+      });
+    }
+    if (attribute) {
+      delete _query['attr_uid'];
       setAttributeName('');
       setCurrentOptions([]);
-      setOptionFields(() => {
-                return {
-                  option_uid: null,
-                  option_name: null,
-                  additional_price: 0,
-                  color_hex: null
-                };
-              });
+    }
+
+    if (attr_uid || opt_uid) {
       router.push(
         {
           pathname: '/product/factory',
@@ -474,7 +432,7 @@ const Attribute = ({ token, Notify }) => {
   };
 
   const attributeNameHasChange = useMemo(() => {
-    if (attribute_name !== OriginalAttributeName) return true;
+    if (attribute_name && attribute_name !== OriginalAttributeName) return true;
     return false;
   }, [attribute_name, OriginalAttributeName]);
 
@@ -570,14 +528,14 @@ const Attribute = ({ token, Notify }) => {
               })}
               {pid && Attributes && attr_uid && (
                 <div className="flex justify-center items-center">
-                <div
-                  onClick={ClearAttrUid}
-                  role="button"
-                  style={{width:"30px", height:"30px"}}
-                  className="bg-green-400 hover:bg-green-500 rounded-full px-2 py-1 cursor-pointer flex justify-center items-center"
-                >
-                  <Add width={18} height={18} />
-                </div>
+                  <div
+                    onClick={() => Clear({ option: true, attribute: true })}
+                    role="button"
+                    style={{ width: '30px', height: '30px' }}
+                    className="bg-green-400 hover:bg-green-500 rounded-full px-2 py-1 cursor-pointer flex justify-center items-center"
+                  >
+                    <Add width={18} height={18} />
+                  </div>
                 </div>
               )}
             </div>
@@ -698,15 +656,27 @@ const Attribute = ({ token, Notify }) => {
                   </p>
                 </div>
                 {/* ******************* Add Option ******************* */}
-                <div className="px-4 py-3 text-right sm:px-6">
-                  <div
-                    onClick={AddOption}
-                    role="button"
-                    className="text-sm cursor-pointer bg-blue-500 focus:outline-none text-white rounded-md font-medium inline-flex justify-center py-2 px-4 border border-transparent shadow-sm"
-                  >
-                    {opt_uid ? 'Save Option' : 'Add Option'}
+                {opt_uid ? (
+                  <div className="px-4 py-3 text-right sm:px-6">
+                    <div
+                      onClick={UpdateOption}
+                      role="button"
+                      className="text-sm cursor-pointer bg-green-500 hover:bg-green-400 focus:outline-none text-white rounded-md font-medium inline-flex justify-center py-2 px-4 border border-transparent shadow-sm"
+                    >
+                      Save Option
+                    </div>
                   </div>
-                </div>
+                ) : (
+                  <div className="px-4 py-3 text-right sm:px-6">
+                    <div
+                      onClick={CreateOption}
+                      role="button"
+                      className="text-sm cursor-pointer bg-blue-500 hover:bg-blue-400 focus:outline-none text-white rounded-md font-medium inline-flex justify-center py-2 px-4 border border-transparent shadow-sm"
+                    >
+                      Add Option
+                    </div>
+                  </div>
+                )}
                 {/* ******************* Option Showcase ******************* */}
                 <span className="block text-sm font-medium text-gray-700 mb-1 capitalize">{`${attribute_name} Options`}</span>
                 <div className="relative mt-1 flex justify-center px-6 pt-5 pb-6 border-2 border-gray-300 border-dashed rounded-md w-full">
@@ -758,7 +728,7 @@ const Attribute = ({ token, Notify }) => {
               <div className="px-4 py-3 mt-6 sm:px-6">
                 <div
                   role="button"
-                  onClick={SubmitAttribute}
+                  onClick={CreateAttribute}
                   className="text-sm w-full cursor-pointer bg-green-600 focus:outline-none text-white rounded-md font-medium inline-flex justify-center py-2 px-4 border border-transparent shadow-sm"
                 >
                   Add Attribute

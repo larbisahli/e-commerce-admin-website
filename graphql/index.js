@@ -7,7 +7,6 @@ const HostUrl = IsProduction
 const endpoint = `${HostUrl}/graphql`;
 
 export function fetcher(token, query, variables) {
-
   const graphQLClient = new GraphQLClient(endpoint, {
     withCredentials: true,
     credentials: 'include',

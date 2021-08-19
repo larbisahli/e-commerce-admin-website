@@ -153,7 +153,10 @@ const GalleryUploadByDnD = ({
             if (success) count++;
             if (error) {
               ErrorImages.push(images[index]);
-              Notify(`Couldn't upload ${images[index]?.file?.name ?? 'an image'}`, false);
+              Notify(
+                `Couldn't upload ${images[index]?.file?.name ?? 'an image'}`,
+                false
+              );
               // LOGS
             }
           });

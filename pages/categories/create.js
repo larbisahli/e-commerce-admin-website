@@ -71,7 +71,6 @@ const NewCategory = ({ token, userInfo }) => {
             const CategoryName = CreateCategory?.category_name;
 
             if (CategoryName) {
-
               Notify(
                 `🚀 Category '${CategoryName}' successfully created!`,
                 CreateCategory
@@ -130,9 +129,7 @@ const NewCategory = ({ token, userInfo }) => {
             bg-gray-50 text-right sm:px-6"
             >
               <span className="uppercase text-sm">Create a new category</span>
-              <span
-                className='absolute font-medium right-0 p-1 rounded-full mr-3 text-xs border border-solid text-green-800 bg-green-300 border-green-500'
-              >
+              <span className="absolute font-medium right-0 p-1 rounded-full mr-3 text-xs border border-solid text-green-800 bg-green-300 border-green-500">
                 Create Mode
               </span>
             </div>

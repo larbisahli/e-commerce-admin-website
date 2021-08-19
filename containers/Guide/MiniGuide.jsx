@@ -16,7 +16,6 @@ import { useMediaQuery } from '@/hooks/useMediaQuery';
 import ItemLink from './ItemLink';
 import { Container } from './styles/MiniGuideStyle';
 
-
 const MiniGuide = ({ GuideState }) => {
   const { mode, show } = GuideState;
 

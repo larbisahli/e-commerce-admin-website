@@ -79,10 +79,10 @@ const NewProduct = ({ token, userInfo }) => {
     pid ? [token, GetProductQuery, ProductVariable] : null
   );
 
-  console.log(`<======>`, { CurrentProduct, ProductError })
+  console.log(`<======>`, { CurrentProduct, ProductError });
 
-  const Categories = AvailableCategories?.Categories
-  const Product = CurrentProduct?.Product
+  const Categories = AvailableCategories?.Categories;
+  const Product = CurrentProduct?.Product;
 
   const [, setUserStore] = useContext(UserStoreContext);
   const [ProductState, dispatchProduct] = useReducer(reducer, initialState);
@@ -172,38 +172,20 @@ const NewProduct = ({ token, userInfo }) => {
   //  Input Change
   const HasChange = useMemo(() => {
     if (Product) {
-      if (Product?.category_uid !== ProductState?.category_uid)
-        return true;
-      if (
-        Product?.quiz_description !==
-        ProductState?.quiz_description
-      )
+      if (Product?.category_uid !== ProductState?.category_uid) return true;
+      if (Product?.quiz_description !== ProductState?.quiz_description)
         return true;
       if (Product?.title !== ProductState?.title) return true;
       if (Product?.price !== ProductState?.price) return true;
-      if (Product?.discount !== ProductState?.discount)
+      if (Product?.discount !== ProductState?.discount) return true;
+      if (Product?.warehouse_location !== ProductState?.warehouse_location)
         return true;
-      if (
-        Product?.warehouse_location !==
-        ProductState?.warehouse_location
-      )
+      if (Product?.product_description !== ProductState?.product_description)
         return true;
-      if (
-        Product?.product_description !==
-        ProductState?.product_description
-      )
+      if (Product?.short_description !== ProductState?.short_description)
         return true;
-      if (
-        Product?.short_description !==
-        ProductState?.short_description
-      )
-        return true;
-      if (Product?.inventory !== ProductState?.inventory)
-        return true;
-      if (
-        Product?.product_weight !== ProductState?.product_weight
-      )
-        return true;
+      if (Product?.inventory !== ProductState?.inventory) return true;
+      if (Product?.product_weight !== ProductState?.product_weight) return true;
       if (Product?.is_new !== ProductState?.is_new) return true;
       if (Product?.note !== ProductState?.note) return true;
     }
@@ -278,14 +260,16 @@ const NewProduct = ({ token, userInfo }) => {
                   MutateProduct={MutateProduct}
                 />
               </TabPanel>
-              {(thumbnail || gallery) && <TabPanel>
-                <Gallery
-                  token={token}
-                  thumbnail={thumbnail}
-                  gallery={gallery}
-                  MutateProduct={MutateProduct}
-                />
-              </TabPanel>}
+              {(thumbnail || gallery) && (
+                <TabPanel>
+                  <Gallery
+                    token={token}
+                    thumbnail={thumbnail}
+                    gallery={gallery}
+                    MutateProduct={MutateProduct}
+                  />
+                </TabPanel>
+              )}
             </Tabs>
           </TabPanel>
           <TabPanel forceRender>

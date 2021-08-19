@@ -16,7 +16,6 @@ import { useMediaQuery } from '@/hooks/useMediaQuery';
 import ItemLink from './ItemLink';
 import { Bg, Container, ContentContainer, Wrapper } from './styles';
 
-
 const Guide = ({ GuideState, setGuideState }) => {
   const { mode, show } = GuideState;
 
