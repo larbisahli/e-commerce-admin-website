@@ -3,7 +3,7 @@ import { gql } from 'graphql-request';
 export const GetProductsQuery = gql`
   query ProductPagination(
     $account_uid: ID!
-    $category_uid: ID!
+    $category_uid: ID
     $page: Int!
     $limit: Int
   ) {

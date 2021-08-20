@@ -20,7 +20,7 @@ import {
 import { StoreHead } from '@/containers/index';
 import { UserStoreContext } from '@/context/UserStore';
 import { Request } from '@/graphql/index';
-import { GetProductsQuery, ProductCountQuery } from '@/graphql/queries/product';
+import { GetProductsQuery, ProductCountQuery } from '@/graphql/queries/index';
 import { getAppCookies, verifyToken } from '@/middleware/utils';
 
 import Add from '../../assets/svg/add.svg';
@@ -28,6 +28,7 @@ import Add from '../../assets/svg/add.svg';
 const Store = ({ token, userInfo }) => {
   const router = useRouter();
   const { cid } = router.query;
+
   const [, setUserStore] = useContext(UserStoreContext);
 
   const [Page, setPage] = useState(0);
@@ -48,7 +49,7 @@ const Store = ({ token, userInfo }) => {
 
   const { data, error } = useSWR([token, GetProductsQuery, ProductVariable]);
 
-  console.log(`======>`, { data, error });
+  console.log(`======>`, { data, error, ProductVariable });
 
   const fetchData = useCallback(async () => {
     await Request({
@@ -99,6 +100,7 @@ const Store = ({ token, userInfo }) => {
     });
     setPage(() => page);
   };
+
 
   return (
     <div className="m-auto product-cart-container mb-20">

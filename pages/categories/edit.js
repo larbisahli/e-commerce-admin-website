@@ -168,7 +168,7 @@ const EditCategory = ({ token, userInfo }) => {
             <div className="relative flex justify-center items-center px-4 py-3 text-gray-800 bg-gray-50 text-right sm:px-6">
               <span className="uppercase text-sm">Edit name category</span>
               <span className="absolute font-medium right-0 p-1 rounded-full mr-3 text-xs border border-solid text-yellow-800 bg-yellow-300 border-yellow-500">
-                Update Mode
+                Edit Mode
               </span>
             </div>
             <div className="px-4 py-5 bg-white sm:p-6">

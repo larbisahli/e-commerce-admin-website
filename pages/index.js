@@ -68,8 +68,7 @@ const HomePage = () => {
 
         if (success) {
           Notify(
-            `Welcome back ${userInfo?.first_name ?? ''} ${
-              userInfo?.last_name ?? ''
+            `Welcome back ${userInfo?.first_name ?? ''} ${userInfo?.last_name ?? ''
             }`,
             true
           );
@@ -131,7 +130,7 @@ const HomePage = () => {
                   id="remember_me"
                   ref={rememberMe}
                 />
-                <label htmlFor="remember_me">Remember me for 7 days</label>
+                <label htmlFor="remember_me">Remember me</label>
               </div>
               <button>
                 {Loading && <i className="spinner"></i>}

@@ -470,7 +470,7 @@ const Attribute = ({ token, Notify }) => {
               }
             )}
           >
-            {attr_uid ? 'Update Mode' : 'Create Mode'}
+            {attr_uid ? 'Edit Mode' : 'Create Mode'}
           </span>
         </div>
         <div className="px-4 py-5 bg-white sm:p-6">

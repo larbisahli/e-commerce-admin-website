@@ -161,7 +161,7 @@ const Form = ({
               }
             )}
           >
-            {pid ? 'Update Mode' : 'Create Mode'}
+            {pid ? 'Edit Mode' : 'Create Mode'}
           </span>
         </div>
         <div className="px-4 py-5 bg-white sm:p-6">

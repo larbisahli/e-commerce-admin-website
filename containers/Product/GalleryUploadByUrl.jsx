@@ -13,7 +13,7 @@ import Add from '../../assets/svg/add.svg';
 let QDcurrent = 0;
 
 const HostUrl =
-  process.env.NODE_ENV === 'production' ? '' : 'http://localhost:5001';
+  process.env.NODE_ENV === 'production' ? process.env.ADMIN_API_URL : 'http://localhost:5001';
 
 const GalleryUploadByUrl = ({
   token,
@@ -52,6 +52,7 @@ const GalleryUploadByUrl = ({
   const Form_Data = (image, title, index) => {
     const formData = new FormData();
     formData.append('image', image);
+    formData.append('title', title);
     formData.append('product_uid', pid);
     formData.append('index', index);
     return formData;

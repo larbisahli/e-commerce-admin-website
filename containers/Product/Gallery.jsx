@@ -9,7 +9,7 @@ import { ImageComponent } from '@/components/index';
 import { DeleteSvg, EmptyBox, Refresh, WarningSvg } from '@/components/svg';
 
 const HostUrl =
-  process.env.NODE_ENV === 'production' ? '' : 'http://localhost:5001';
+  process.env.NODE_ENV === 'production' ? process.env.ADMIN_API_URL : 'http://localhost:5001';
 
 const Gallery = ({ token, thumbnail, gallery, MutateProduct }) => {
   const router = useRouter();
