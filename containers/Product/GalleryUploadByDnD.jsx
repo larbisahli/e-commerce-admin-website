@@ -13,7 +13,9 @@ import { replace } from '@/utils/index';
 let QDcurrent = 0;
 
 const HostUrl =
-  process.env.NODE_ENV === 'production' ? process.env.ADMIN_API_URL : 'http://localhost:5001';
+  process.env.NODE_ENV === 'production'
+    ? process.env.ADMIN_API_URL
+    : 'http://localhost:5001';
 
 const GalleryUploadByDnD = ({
   token,
@@ -307,28 +309,31 @@ const GalleryUploadByDnD = ({
                                   />
                                 </div>
                                 <div className="flex justify-center rounded-b border-gray-300 border-solid items-center">
-                                 
                                   <div
-                        role="button"
-                        className="rounded-bl cursor-pointer text-xs bg-red-400 w-full p-1 text-center hover:bg-red-500 text-white"
-                        onClick={() => onImageRemove(index)}
-                      >
-                        <DeleteSvg width={15} height={15} />
-                      </div>
-                      <div
-                        style={{
-                          height: '100%',
-                          width: '2px',
-                          background: 'gray'
-                        }}
-                      ></div>
-                      <div
-                        role="button"
-                        className="rounded-br cursor-pointer text-xs bg-green-400 w-full p-1 text-center hover:bg-green-500 text-white"
-                        onClick={() => onImageUpdate(index)}
-                      >
-                        <EditSvg fill="#fff" width={15} height={15} />
-                      </div>
+                                    role="button"
+                                    className="rounded-bl cursor-pointer text-xs bg-red-400 w-full p-1 text-center hover:bg-red-500 text-white"
+                                    onClick={() => onImageRemove(index)}
+                                  >
+                                    <DeleteSvg width={15} height={15} />
+                                  </div>
+                                  <div
+                                    style={{
+                                      height: '100%',
+                                      width: '2px',
+                                      background: 'gray'
+                                    }}
+                                  ></div>
+                                  <div
+                                    role="button"
+                                    className="rounded-br cursor-pointer text-xs bg-green-400 w-full p-1 text-center hover:bg-green-500 text-white"
+                                    onClick={() => onImageUpdate(index)}
+                                  >
+                                    <EditSvg
+                                      fill="#fff"
+                                      width={15}
+                                      height={15}
+                                    />
+                                  </div>
                                 </div>
                               </div>
                             ))}
@@ -467,26 +472,26 @@ const GalleryUploadByDnD = ({
                               </div>
                               <div className="flex justify-center rounded-b border-gray-300 border-solid items-center">
                                 <div
-                        role="button"
-                        className="rounded-bl cursor-pointer text-xs bg-red-400 w-full p-1 text-center hover:bg-red-500 text-white"
-                        onClick={() => onImageRemove(index)}
-                      >
-                        <DeleteSvg width={15} height={15} />
-                      </div>
-                      <div
-                        style={{
-                          height: '100%',
-                          width: '2px',
-                          background: 'gray'
-                        }}
-                      ></div>
-                      <div
-                        role="button"
-                        className="rounded-br cursor-pointer text-xs bg-green-400 w-full p-1 text-center hover:bg-green-500 text-white"
-                        onClick={() => onImageUpdate(index)}
-                      >
-                        <EditSvg fill="#fff" width={15} height={15} />
-                      </div>
+                                  role="button"
+                                  className="rounded-bl cursor-pointer text-xs bg-red-400 w-full p-1 text-center hover:bg-red-500 text-white"
+                                  onClick={() => onImageRemove(index)}
+                                >
+                                  <DeleteSvg width={15} height={15} />
+                                </div>
+                                <div
+                                  style={{
+                                    height: '100%',
+                                    width: '2px',
+                                    background: 'gray'
+                                  }}
+                                ></div>
+                                <div
+                                  role="button"
+                                  className="rounded-br cursor-pointer text-xs bg-green-400 w-full p-1 text-center hover:bg-green-500 text-white"
+                                  onClick={() => onImageUpdate(index)}
+                                >
+                                  <EditSvg fill="#fff" width={15} height={15} />
+                                </div>
                               </div>
                             </div>
                           ))}

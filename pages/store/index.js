@@ -101,7 +101,6 @@ const Store = ({ token, userInfo }) => {
     setPage(() => page);
   };
 
-
   return (
     <div className="m-auto product-cart-container mb-20">
       <section className="flex justify-end items-center mx-3 mb-3">

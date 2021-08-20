@@ -13,7 +13,9 @@ import Add from '../../assets/svg/add.svg';
 let QDcurrent = 0;
 
 const HostUrl =
-  process.env.NODE_ENV === 'production' ? process.env.ADMIN_API_URL : 'http://localhost:5001';
+  process.env.NODE_ENV === 'production'
+    ? process.env.ADMIN_API_URL
+    : 'http://localhost:5001';
 
 const GalleryUploadByUrl = ({
   token,

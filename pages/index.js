@@ -68,7 +68,8 @@ const HomePage = () => {
 
         if (success) {
           Notify(
-            `Welcome back ${userInfo?.first_name ?? ''} ${userInfo?.last_name ?? ''
+            `Welcome back ${userInfo?.first_name ?? ''} ${
+              userInfo?.last_name ?? ''
             }`,
             true
           );
