@@ -8,7 +8,7 @@ import { UserStoreContext } from '@/context/UserStore';
 import { Request } from '@/graphql/index';
 import { CreateCategoryMutation } from '@/graphql/mutations/index';
 import { getAppCookies, verifyToken } from '@/middleware/utils';
-import { Logs } from '@/utils/index'
+import { Logs } from '@/utils/index';
 
 import ArrowLeft from '../../assets/svg/arrow-left.svg';
 
@@ -24,9 +24,26 @@ const NewCategory = ({ token, userInfo }) => {
   const [Loading, setLoading] = useState(false);
 
   useEffect(() => {
-    const { account_uid, email, first_name, last_name, username, profile_img, privileges } = userInfo;
+    const {
+      account_uid,
+      email,
+      first_name,
+      last_name,
+      username,
+      profile_img,
+      privileges
+    } = userInfo;
     setUserStore((prev) => {
-      return { ...prev, account_uid, email, first_name, last_name, username, profile_img, privileges };
+      return {
+        ...prev,
+        account_uid,
+        email,
+        first_name,
+        last_name,
+        username,
+        profile_img,
+        privileges
+      };
     });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [setUserStore, userInfo]);
@@ -91,7 +108,7 @@ const NewCategory = ({ token, userInfo }) => {
         Notify('Fields should not be empty!', false);
       }
     } catch (error) {
-      Logs({ message: 'SubmitForm /create', error })
+      Logs({ message: 'SubmitForm /create', error });
       Notify('Ops something went wrong.', false);
     }
     setLoading(false);

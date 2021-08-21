@@ -122,9 +122,11 @@ const Navbar = ({ setGuideState }) => {
               <div className="profile-img-wrap">
                 <Image
                   src={
-                  imgSrc
-                    ? '/static/images/avatar.png'
-                    : `${process.env.MEDIA_URL}${UserStore?.profile_img ?? '/'}`
+                    imgSrc
+                      ? '/static/images/avatar.png'
+                      : `${process.env.MEDIA_URL}${
+                          UserStore?.profile_img ?? '/'
+                        }`
                   }
                   onError={() => {
                     setImgSrc(true);

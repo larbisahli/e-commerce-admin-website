@@ -42,7 +42,7 @@ export const replace = (array, index, replacerIndex) => {
 };
 
 export const Logs = ({ message, error }) => {
-  if (process.env.NODE_ENV === 'production') return
-  console.log(`<: ${message} :>`, { error })
-  return
-}
+  if (process.env.NODE_ENV === 'production') return;
+  console.log(`<: ${message} :>`, { error });
+  return;
+};

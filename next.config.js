@@ -1,4 +1,4 @@
-const { withSentryConfig } = require('@sentry/nextjs')
+const { withSentryConfig } = require('@sentry/nextjs');
 
 const moduleExports = {
   reactStrictMode: true,
@@ -19,11 +19,13 @@ const moduleExports = {
     MEDIA_URL: 'https://media.dropgala.com',
     GTAG_MEASUREMENT_ID: '',
     FB_APPID: '',
-    SENTRY_DSN: 'https://37ded038a57b4b9fb298ff89015192ef@o912422.ingest.sentry.io/5849453',
-    NEXT_PUBLIC_SENTRY_DSN: 'https://37ded038a57b4b9fb298ff89015192ef@o912422.ingest.sentry.io/5849453'
+    SENTRY_DSN:
+      'https://37ded038a57b4b9fb298ff89015192ef@o912422.ingest.sentry.io/5849453',
+    NEXT_PUBLIC_SENTRY_DSN:
+      'https://37ded038a57b4b9fb298ff89015192ef@o912422.ingest.sentry.io/5849453'
   }
 };
 
-const SentryWebpackPluginOptions = {}
+const SentryWebpackPluginOptions = {};
 
-module.exports = withSentryConfig(moduleExports, SentryWebpackPluginOptions)
+module.exports = withSentryConfig(moduleExports, SentryWebpackPluginOptions);

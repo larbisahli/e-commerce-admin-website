@@ -10,7 +10,7 @@ import {
   CreateProductMutation,
   UpdateProductMutation
 } from '@/graphql/mutations/index';
-import { Logs } from '@/utils/index'
+import { Logs } from '@/utils/index';
 
 const Form = ({
   ProductState,
@@ -111,7 +111,7 @@ const Form = ({
         Notify('Fields should not be empty!', false);
       }
     } catch (error) {
-      Logs({ message: 'SubmitProductDetails Form.jsx', error })
+      Logs({ message: 'SubmitProductDetails Form.jsx', error });
       Notify('Ops something went wrong.', false);
     }
     setLoading(false);

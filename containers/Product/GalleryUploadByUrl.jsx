@@ -7,7 +7,7 @@ import React, { memo, useEffect, useRef, useState } from 'react';
 
 import { LoadingContainer } from '@/components/index';
 import { replace } from '@/utils/index';
-import { Logs } from '@/utils/index'
+import { Logs } from '@/utils/index';
 
 import Add from '../../assets/svg/add.svg';
 
@@ -24,7 +24,7 @@ const GalleryUploadByUrl = ({
   setThumbnailUrl,
   ImagesUrl,
   setImagesUrl,
-  Notify,
+  Notify
 }) => {
   const router = useRouter();
   const { pid } = router.query;
@@ -106,7 +106,7 @@ const GalleryUploadByUrl = ({
           setThumbnailUrl(null);
         }
       } catch (error) {
-        Logs({ message: 'SubmitThumbnail URL', error })
+        Logs({ message: 'SubmitThumbnail URL', error });
       }
     }
   };
@@ -162,7 +162,7 @@ const GalleryUploadByUrl = ({
           data.forEach(({ success, error }, index) => {
             if (success) count++;
             if (error) {
-              Logs({ message: 'SubmitImages [forEach] URL', error })
+              Logs({ message: 'SubmitImages [forEach] URL', error });
               ErrorImages.push(ImagesUrl[index]);
               Notify(`Can't upload ${ImagesUrl[index]?.file?.name}`, false);
               // LOGS

@@ -8,7 +8,7 @@ import ImageUploading from 'react-images-uploading';
 
 import { LoadingContainer } from '@/components/index';
 import { DeleteSvg, EditSvg } from '@/components/svg';
-import { Logs } from '@/utils/index'
+import { Logs } from '@/utils/index';
 import { replace } from '@/utils/index';
 
 let QDcurrent = 0;
@@ -94,7 +94,7 @@ const GalleryUploadByDnD = ({
           MutateProduct();
         }
       } catch (error) {
-        Logs({ message: 'SubmitThumbnail DND', error })
+        Logs({ message: 'SubmitThumbnail DND', error });
       }
     }
   };
@@ -152,7 +152,7 @@ const GalleryUploadByDnD = ({
           data.forEach(({ success, error }, index) => {
             if (success) count++;
             if (error) {
-              Logs({ message: 'SubmitImages (data.forEach) DND', error })
+              Logs({ message: 'SubmitImages (data.forEach) DND', error });
               ErrorImages.push(images[index]);
               Notify(
                 `Couldn't upload ${images[index]?.file?.name ?? 'an image'}`,

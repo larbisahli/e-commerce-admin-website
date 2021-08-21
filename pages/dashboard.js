@@ -20,7 +20,15 @@ function Dashboard({ userInfo }) {
 
   useEffect(() => {
     if (userInfo) {
-      const { account_uid, email, first_name, last_name, username, profile_img, privileges } = userInfo;
+      const {
+        account_uid,
+        email,
+        first_name,
+        last_name,
+        username,
+        profile_img,
+        privileges
+      } = userInfo;
       setUserStore((prev) => {
         return {
           ...prev,
