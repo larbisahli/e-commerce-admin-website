@@ -48,6 +48,7 @@ Check out our
 details.
 
 ## How do I get into a Docker container's shell?
+
 ```bash
 $  sudo docker exec -it admin-website sh
 ```

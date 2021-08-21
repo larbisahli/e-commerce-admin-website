@@ -17,8 +17,6 @@ const Gallery = ({ token, thumbnail, gallery, MutateProduct }) => {
   const router = useRouter();
   const { pid } = router.query;
 
-  console.log('thumbnail, gallery :>> ', { thumbnail, gallery });
-
   return (
     <div className="bg-white shadow">
       <div

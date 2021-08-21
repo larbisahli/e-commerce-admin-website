@@ -34,6 +34,7 @@ const Navbar = ({ setGuideState }) => {
 
   const [ShowNotificationDrop, setShowNotificationDrop] = useState(false);
   const [ShowProfileDrop, setShowProfileDrop] = useState(false);
+  const [imgSrc, setImgSrc] = useState(false);
 
   const HandleGuide = () => {
     setGuideState((prev) => {
@@ -120,14 +121,21 @@ const Navbar = ({ setGuideState }) => {
             <ProfileWrapper>
               <div className="profile-img-wrap">
                 <Image
-                  src="/static/images/profile.jpg"
+                  src={
+                  imgSrc
+                    ? '/static/images/avatar.png'
+                    : `${process.env.MEDIA_URL}${UserStore?.profile_img ?? '/'}`
+                  }
+                  onError={() => {
+                    setImgSrc(true);
+                  }}
                   width={40}
                   height={40}
                   alt=""
                   quality={95}
                 />
               </div>
-              <span>{UserStore?.first_name ?? ''}</span>
+              <span>{UserStore?.username ?? ''}</span>
             </ProfileWrapper>
           </RippleEffect>
           {/* Start Profile DropDown */}

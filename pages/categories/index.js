@@ -19,7 +19,7 @@ const Categories = ({ token, userInfo }) => {
 
   useEffect(() => {
     if (userInfo) {
-      const { account_uid, email, first_name, last_name, privileges } =
+      const { account_uid, email, first_name, last_name, username, profile_img, privileges } =
         userInfo;
       setUserStore((prev) => {
         return {
@@ -28,7 +28,9 @@ const Categories = ({ token, userInfo }) => {
           email,
           first_name,
           last_name,
-          privileges
+          privileges,
+          username,
+          profile_img
         };
       });
     } else {
@@ -92,7 +94,7 @@ const CategoryCard = ({ categoryName, categoryId }) => {
             src={
               imgSrc
                 ? `/static/svg/briefcase.svg`
-                : `${process.env.MEDIA_URL}/svg/${categoryName}.svg`
+                : `${process.env.MEDIA_URL}/svg/${categoryId}.svg`
             }
             onError={() => {
               setImgSrc(true);

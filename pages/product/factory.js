@@ -79,8 +79,6 @@ const NewProduct = ({ token, userInfo }) => {
     pid ? [token, GetProductQuery, ProductVariable] : null
   );
 
-  console.log(`<======>`, { CurrentProduct, ProductError });
-
   const Categories = AvailableCategories?.Categories;
   const Product = CurrentProduct?.Product;
 
@@ -114,7 +112,7 @@ const NewProduct = ({ token, userInfo }) => {
   // ------- User Info -------
   useEffect(() => {
     if (userInfo) {
-      const { account_uid, email, first_name, last_name, privileges } =
+      const { account_uid, email, first_name, last_name, username, profile_img, privileges } =
         userInfo;
       setUserStore((prev) => {
         return {
@@ -123,7 +121,9 @@ const NewProduct = ({ token, userInfo }) => {
           email,
           first_name,
           last_name,
-          privileges
+          privileges,
+          username,
+          profile_img
         };
       });
       dispatchProduct({
@@ -244,7 +244,6 @@ const NewProduct = ({ token, userInfo }) => {
                   ThumbnailImage={ThumbnailImage}
                   setThumbnailImage={setThumbnailImage}
                   Notify={Notify}
-                  title={ProductState.title}
                   MutateProduct={MutateProduct}
                 />
               </TabPanel>
@@ -256,7 +255,6 @@ const NewProduct = ({ token, userInfo }) => {
                   ImagesUrl={ImagesUrl}
                   setImagesUrl={setImagesUrl}
                   Notify={Notify}
-                  title={ProductState.title}
                   MutateProduct={MutateProduct}
                 />
               </TabPanel>

@@ -47,9 +47,7 @@ const Store = ({ token, userInfo }) => {
     };
   }, [cid, Page, limit, userInfo]);
 
-  const { data, error } = useSWR([token, GetProductsQuery, ProductVariable]);
-
-  console.log(`======>`, { data, error, ProductVariable });
+  const { data } = useSWR([token, GetProductsQuery, ProductVariable]);
 
   const fetchData = useCallback(async () => {
     await Request({
@@ -75,7 +73,7 @@ const Store = ({ token, userInfo }) => {
 
   useEffect(() => {
     if (userInfo) {
-      const { account_uid, email, first_name, last_name, privileges } =
+      const { account_uid, email, first_name, last_name, username, profile_img, privileges } =
         userInfo;
       setUserStore((prev) => {
         return {
@@ -84,7 +82,9 @@ const Store = ({ token, userInfo }) => {
           email,
           first_name,
           last_name,
-          privileges
+          privileges,
+          username,
+          profile_img
         };
       });
     }
@@ -94,10 +94,6 @@ const Store = ({ token, userInfo }) => {
   const handlePageClick = (data) => {
     let selected = data.selected;
     const page = selected + 1;
-    console.log(`data ==>`, {
-      selected,
-      page
-    });
     setPage(() => page);
   };
 

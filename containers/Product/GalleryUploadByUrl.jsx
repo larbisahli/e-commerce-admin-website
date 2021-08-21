@@ -7,6 +7,7 @@ import React, { memo, useEffect, useRef, useState } from 'react';
 
 import { LoadingContainer } from '@/components/index';
 import { replace } from '@/utils/index';
+import { Logs } from '@/utils/index'
 
 import Add from '../../assets/svg/add.svg';
 
@@ -24,7 +25,6 @@ const GalleryUploadByUrl = ({
   ImagesUrl,
   setImagesUrl,
   Notify,
-  title
 }) => {
   const router = useRouter();
   const { pid } = router.query;
@@ -51,10 +51,9 @@ const GalleryUploadByUrl = ({
     }
   };
 
-  const Form_Data = (image, title, index) => {
+  const Form_Data = (image, index) => {
     const formData = new FormData();
     formData.append('image', image);
-    formData.append('title', title);
     formData.append('product_uid', pid);
     formData.append('index', index);
     return formData;
@@ -89,7 +88,7 @@ const GalleryUploadByUrl = ({
           headers: {
             Authorization: 'Bearer ' + token
           },
-          body: Form_Data(ThumbnailUrl, title, 0)
+          body: Form_Data(ThumbnailUrl, 0)
         });
 
         const { success, error } = await response.json();
@@ -98,7 +97,6 @@ const GalleryUploadByUrl = ({
           console.error(error);
           Notify(error.message, false);
           setLoading(() => false);
-          // LOGS
         }
 
         if (success) {
@@ -108,8 +106,7 @@ const GalleryUploadByUrl = ({
           setThumbnailUrl(null);
         }
       } catch (error) {
-        console.log('error :>> ', { message: error.message, error });
-        // LOGS
+        Logs({ message: 'SubmitThumbnail URL', error })
       }
     }
   };
@@ -143,7 +140,7 @@ const GalleryUploadByUrl = ({
             headers: {
               Authorization: 'Bearer ' + token
             },
-            body: Form_Data(ImagesUrl[i], title, i)
+            body: Form_Data(ImagesUrl[i], i)
           })
         );
       }
@@ -165,6 +162,7 @@ const GalleryUploadByUrl = ({
           data.forEach(({ success, error }, index) => {
             if (success) count++;
             if (error) {
+              Logs({ message: 'SubmitImages [forEach] URL', error })
               ErrorImages.push(ImagesUrl[index]);
               Notify(`Can't upload ${ImagesUrl[index]?.file?.name}`, false);
               // LOGS
@@ -175,14 +173,11 @@ const GalleryUploadByUrl = ({
             Notify(`🚀 ${count} Gallery Images successfully uploaded`, true);
           }
           setLoading(() => false);
-          console.log('ErrorImages :>> ', { ErrorImages });
           setImagesUrl([...ErrorImages]);
         })
-        .catch((err) => {
-          console.log(err);
+        .catch(() => {
           Notify(`🚀 Ops, something happened`, false);
           setLoading(() => false);
-          // LOGS
         });
     }
   };

@@ -10,6 +10,7 @@ import {
   CreateProductMutation,
   UpdateProductMutation
 } from '@/graphql/mutations/index';
+import { Logs } from '@/utils/index'
 
 const Form = ({
   ProductState,
@@ -105,15 +106,13 @@ const Form = ({
             const ErrorMessage =
               response?.message ?? response?.errors[0]?.message;
             Notify(ErrorMessage, !response);
-            // LOGS
           });
       } else {
         Notify('Fields should not be empty!', false);
       }
-    } catch (err) {
-      console.log(`Error =>`, err);
+    } catch (error) {
+      Logs({ message: 'SubmitProductDetails Form.jsx', error })
       Notify('Ops something went wrong.', false);
-      // LOGS
     }
     setLoading(false);
   };

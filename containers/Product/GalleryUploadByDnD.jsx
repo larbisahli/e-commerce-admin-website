@@ -8,6 +8,7 @@ import ImageUploading from 'react-images-uploading';
 
 import { LoadingContainer } from '@/components/index';
 import { DeleteSvg, EditSvg } from '@/components/svg';
+import { Logs } from '@/utils/index'
 import { replace } from '@/utils/index';
 
 let QDcurrent = 0;
@@ -24,7 +25,6 @@ const GalleryUploadByDnD = ({
   ThumbnailImage,
   setThumbnailImage,
   Notify,
-  title,
   MutateProduct
 }) => {
   const router = useRouter();
@@ -41,10 +41,9 @@ const GalleryUploadByDnD = ({
     setThumbnailImage(imageList);
   };
 
-  const Form_Data = (image, title, index) => {
+  const Form_Data = (image, index) => {
     const formData = new FormData();
     formData.append('image', image?.data_url);
-    formData.append('title', title);
     formData.append('product_uid', pid);
     formData.append('index', index);
     return formData;
@@ -76,7 +75,7 @@ const GalleryUploadByDnD = ({
           headers: {
             Authorization: 'Bearer ' + token
           },
-          body: Form_Data(ThumbnailImage[0], title, 0)
+          body: Form_Data(ThumbnailImage[0], 0)
         });
 
         const { success, error } = await response.json();
@@ -85,7 +84,6 @@ const GalleryUploadByDnD = ({
           console.error(error);
           Notify(error?.message ?? 'Ops, something happened', false);
           setLoading(() => false);
-          // LOGS
         }
 
         if (success) {
@@ -96,8 +94,7 @@ const GalleryUploadByDnD = ({
           MutateProduct();
         }
       } catch (error) {
-        console.log('error :>> ', { message: error?.message, error });
-        // LOGS
+        Logs({ message: 'SubmitThumbnail DND', error })
       }
     }
   };
@@ -133,7 +130,7 @@ const GalleryUploadByDnD = ({
             headers: {
               Authorization: 'Bearer ' + token
             },
-            body: Form_Data(images[i], title, i + 1)
+            body: Form_Data(images[i], i + 1)
           })
         );
       }
@@ -155,12 +152,12 @@ const GalleryUploadByDnD = ({
           data.forEach(({ success, error }, index) => {
             if (success) count++;
             if (error) {
+              Logs({ message: 'SubmitImages (data.forEach) DND', error })
               ErrorImages.push(images[index]);
               Notify(
                 `Couldn't upload ${images[index]?.file?.name ?? 'an image'}`,
                 false
               );
-              // LOGS
             }
           });
 
@@ -171,8 +168,7 @@ const GalleryUploadByDnD = ({
           setImages([...ErrorImages]);
           MutateProduct();
         })
-        .catch((err) => {
-          console.log(err);
+        .catch(() => {
           Notify(`🚀 Ops, something happened`, false);
           setLoading(() => false);
         });

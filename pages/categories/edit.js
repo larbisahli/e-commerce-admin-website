@@ -11,6 +11,7 @@ import { Request } from '@/graphql/index';
 import { UpdateCategoryMutation } from '@/graphql/mutations/index';
 import { GetCategoryQuery } from '@/graphql/queries/index';
 import { getAppCookies, verifyToken } from '@/middleware/utils';
+import { Logs } from '@/utils/index'
 
 import ArrowLeft from '../../assets/svg/arrow-left.svg';
 
@@ -60,14 +61,14 @@ const EditCategory = ({ token, userInfo }) => {
         is_active: data?.Category?.is_active
       });
     } else if (error) {
-      console.log(`error`, error);
+      Logs({ message: 'useEffect /edit', error })
     }
   }, [data, error]);
 
   useEffect(() => {
-    const { account_uid, email, first_name, last_name, privileges } = userInfo;
+    const { account_uid, email, first_name, last_name, username, profile_img, privileges } = userInfo;
     setUserStore((prev) => {
-      return { ...prev, account_uid, email, first_name, last_name, privileges };
+      return { ...prev, account_uid, email, first_name, last_name, username, profile_img, privileges };
     });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [setUserStore, userInfo]);
@@ -117,15 +118,13 @@ const EditCategory = ({ token, userInfo }) => {
             const ErrorMessage =
               response?.message ?? response?.errors[0]?.message;
             Notify(ErrorMessage, !response);
-            // LOGS
           });
       } else {
         Notify('Fields should not be empty!', false);
       }
-    } catch (err) {
-      console.log(`Error =>`, err);
+    } catch (error) {
+      Logs({ message: 'SubmitForm /edit', error })
       Notify('Ops something went wrong.', false);
-      // LOGS
     }
     setLoading(false);
   };

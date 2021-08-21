@@ -22,6 +22,7 @@ import {
   DeleteOptionMutation
 } from '@/graphql/mutations/option';
 import classNames from 'classnames';
+import { Logs } from '@/utils/index'
 
 const Attribute = ({ token, Notify }) => {
   const router = useRouter();
@@ -121,15 +122,13 @@ const Attribute = ({ token, Notify }) => {
             const ErrorMessage =
               response?.message ?? response?.errors[0]?.message;
             Notify(ErrorMessage, !response);
-            // LOGS
           });
       } else {
         Notify('Fields should not be empty!', false);
       }
-    } catch (err) {
-      console.log(`Error =>`, err);
+    } catch (error) {
+      Logs({ message: 'CreateAttribute Attribute.jsx', error })
       Notify('Ops something went wrong.', false);
-      // LOGS
     }
     setLoading(false);
   };
@@ -163,7 +162,6 @@ const Attribute = ({ token, Notify }) => {
       .catch(({ response }) => {
         const ErrorMessage = response?.message ?? response?.errors[0]?.message;
         Notify(ErrorMessage, !response);
-        // LOGS
       });
     setLoading(false);
   };
@@ -211,10 +209,8 @@ const Attribute = ({ token, Notify }) => {
         Clear({ option: true, attribute: true });
       })
       .catch(({ response }) => {
-        console.log(`Error response :>`, { response });
         const ErrorMessage = response?.message ?? response?.errors[0]?.message;
         Notify(ErrorMessage, !response);
-        // LOGS
       });
     setLoading(false);
   };
@@ -271,7 +267,6 @@ const Attribute = ({ token, Notify }) => {
             const ErrorMessage =
               response?.message ?? response?.errors[0]?.message;
             Notify(ErrorMessage, !response);
-            // LOGS
           });
         setLoading(false);
       } else {
@@ -319,7 +314,6 @@ const Attribute = ({ token, Notify }) => {
           const ErrorMessage =
             response?.message ?? response?.errors[0]?.message;
           Notify(ErrorMessage, !response);
-          // LOGS
         });
       setLoading(false);
     } else {
@@ -364,7 +358,6 @@ const Attribute = ({ token, Notify }) => {
           const ErrorMessage =
             response?.message ?? response?.errors[0]?.message;
           Notify(ErrorMessage, !response);
-          // LOGS
         });
       setLoading(false);
     } else if (!attr_uid && _option_uid) {

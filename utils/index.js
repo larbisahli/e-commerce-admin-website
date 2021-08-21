@@ -40,3 +40,9 @@ export const replace = (array, index, replacerIndex) => {
     return array;
   }
 };
+
+export const Logs = ({ message, error }) => {
+  if (process.env.NODE_ENV === 'production') return
+  console.log(`<: ${message} :>`, { error })
+  return
+}
