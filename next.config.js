@@ -17,7 +17,7 @@ const moduleExports = {
     ADMIN_API_URL: 'https://admin-api.dropgala.com',
     MEDIA_URL_DEV: 'https://dropspace.sgp1.digitaloceanspaces.com',
     MEDIA_URL: 'https://media.dropgala.com',
-    GTAG_MEASUREMENT_ID: '',
+    GTAG_MEASUREMENT_ID: 'G-TQMWTHM2FF',
     FB_APPID: '',
     SENTRY_DSN:
       'https://37ded038a57b4b9fb298ff89015192ef@o912422.ingest.sentry.io/5849453',
