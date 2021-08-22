@@ -92,38 +92,38 @@ const Attribute = ({ token, Notify }) => {
     }
 
     if (attribute_name && CurrentOptions.length > 0) {
-        setLoading(true);
+      setLoading(true);
 
-        await Request({
-          token,
-          mutation: CreateAttributeMutation,
-          variables: {
-            product_uid: pid,
-            attribute_name,
-            options: CurrentOptions
-          }
+      await Request({
+        token,
+        mutation: CreateAttributeMutation,
+        variables: {
+          product_uid: pid,
+          attribute_name,
+          options: CurrentOptions
+        }
+      })
+        .then(({ CreateAttribute }) => {
+          const attribute_name = CreateAttribute?.attribute_name;
+
+          const message = `🚀 Attribute ${
+            attribute_name ?? ''
+          } successfully Created`;
+
+          Notify(message, attribute_name);
+          setCurrentOptions([]);
+          setAttributeName('');
+          MutateAttribute();
+          Clear({ option: true, attribute: true });
         })
-          .then(({ CreateAttribute }) => {
-            const attribute_name = CreateAttribute?.attribute_name;
-
-            const message = `🚀 Attribute ${
-              attribute_name ?? ''
-            } successfully Created`;
-
-            Notify(message, attribute_name);
-            setCurrentOptions([]);
-            setAttributeName('');
-            MutateAttribute();
-            Clear({ option: true, attribute: true });
-          })
-          .catch(({ response }) => {
-            const ErrorMessage =
-              response?.message ?? response?.errors[0]?.message;
-            Notify(ErrorMessage, !response);
-          });
-      } else {
-        Notify('Fields should not be empty!', false);
-      }
+        .catch(({ response }) => {
+          const ErrorMessage =
+            response?.message ?? response?.errors[0]?.message;
+          Notify(ErrorMessage, !response);
+        });
+    } else {
+      Notify('Fields should not be empty!', false);
+    }
     setLoading(false);
   };
 

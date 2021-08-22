@@ -5,16 +5,23 @@ import { useRouter } from 'next/router';
 import React, { memo, useState } from 'react';
 
 import { ImageComponent } from '@/components/index';
-import { DeleteSvg, EmptyBox, LoadingSvg,Refresh, SaveSvg, WarningSvg } from '@/components/svg';
+import {
+  DeleteSvg,
+  EmptyBox,
+  LoadingSvg,
+  Refresh,
+  SaveSvg,
+  WarningSvg
+} from '@/components/svg';
 import { Request } from '@/graphql/index';
-import {UpdateImageOrderMutation} from '@/graphql/mutations/index'
+import { UpdateImageOrderMutation } from '@/graphql/mutations/index';
 
 const HostUrl =
   process.env.NODE_ENV === 'production'
     ? process.env.ADMIN_API_URL
     : 'http://localhost:5001';
 
-const Gallery = ({ token,Notify, thumbnail, gallery, MutateProduct }) => {
+const Gallery = ({ token, Notify, thumbnail, gallery, MutateProduct }) => {
   const router = useRouter();
   const { pid } = router.query;
 
@@ -105,152 +112,158 @@ const Gallery = ({ token,Notify, thumbnail, gallery, MutateProduct }) => {
   );
 };
 
-const ProductCard = memo(({ token,Notify, index, url, image_uid, MutateProduct }) => {
-  const [ShowMessageBox, setShowMessageBox] = useState(false);
-  const [order, setOrder] = useState(index);
-  const [Loading, setLoading] = useState(false);
+const ProductCard = memo(
+  ({ token, Notify, index, url, image_uid, MutateProduct }) => {
+    const [ShowMessageBox, setShowMessageBox] = useState(false);
+    const [order, setOrder] = useState(index);
+    const [Loading, setLoading] = useState(false);
 
-  const HandleDelete = (e) => {
-    e.preventDefault();
+    const HandleDelete = (e) => {
+      e.preventDefault();
 
-    if (image_uid) {
-      fetch(`${HostUrl}/api/upload`, {
-        method: 'DELETE',
-        withCredentials: true,
-        credentials: 'include',
-        headers: {
-          Authorization: 'Bearer ' + token,
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({ image_uid })
-      })
-        .then((r) => r.json())
-        .then(({ success }) => {
-          if (success) {
-            Notify(`Image successfully deleted.`, true);
-            MutateProduct();
-          } else {
-            Notify(`Ops, something went wrong.`, false);
+      if (image_uid) {
+        fetch(`${HostUrl}/api/upload`, {
+          method: 'DELETE',
+          withCredentials: true,
+          credentials: 'include',
+          headers: {
+            Authorization: 'Bearer ' + token,
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({ image_uid })
+        })
+          .then((r) => r.json())
+          .then(({ success }) => {
+            if (success) {
+              Notify(`Image successfully deleted.`, true);
+              MutateProduct();
+            } else {
+              Notify(`Ops, something went wrong.`, false);
+            }
+          })
+          .catch((error) => {
+            console.log('error :>> ', error);
+            // LOGS
+          });
+      }
+
+      setShowMessageBox(false);
+    };
+
+    const SubmitSort = async (e) => {
+      e.preventDefault();
+
+      if (Loading) return;
+
+      if (order > 0) {
+        setLoading(true);
+
+        await Request({
+          token,
+          mutation: UpdateImageOrderMutation,
+          variables: {
+            image_uid,
+            display_order: order
           }
         })
-        .catch((error) => {
-          console.log('error :>> ', error);
-          // LOGS
-        });
-    }
+          .then(({ UpdateImageOrder }) => {
+            const display_order = UpdateImageOrder?.display_order;
+            const message = `Successfully updated image order to position ${display_order}`;
+            Notify(message, display_order);
+          })
+          .catch(({ response }) => {
+            const ErrorMessage =
+              response?.message ?? response?.errors[0]?.message;
+            Notify(ErrorMessage, !response);
+          });
+      } else {
+        Notify('The Order value should not be 0!', false);
+      }
+      setLoading(false);
+    };
 
-    setShowMessageBox(false);
-  };
-
-  const SubmitSort = async(e) => {
-    e.preventDefault();
-
-    if(Loading) return
-
-    if (order > 0) {
-      setLoading(true);
-
-      await Request({
-        token,
-        mutation: UpdateImageOrderMutation,
-        variables: {
-          image_uid,
-          display_order: order,
-        }
-      })
-        .then(({ UpdateImageOrder }) => {
-          const display_order = UpdateImageOrder?.display_order;
-          const message = `Successfully updated image order to position ${display_order}`;
-          Notify(message, display_order);
-        })
-        .catch(({ response }) => {
-          const ErrorMessage =
-            response?.message ?? response?.errors[0]?.message;
-          Notify(ErrorMessage, !response);
-        });
-    } else {
-      Notify('The Order value should not be 0!', false);
-    }
-     setLoading(false);
-  };
-
-  
-  return (
-    <div className="card-container m-3 flex-col product-card-wrapper">
-      <div className="">
-        <div className="relative">
-          <ImageComponent
-            quality={95}
-            width={250}
-            height={250}
-            alt="product-image"
-            className="bg-blue-100 rounded-t"
-            url={url}
-          />
-          {index > 0 && <>
-          <div className="flex justify-start items-center pr-1 pl-1">
-              <label
-                htmlFor="order"
-                className="whitespace-nowrap pr-1 text-sm font-medium text-gray-700"
-              >
-                Order:
-              </label>
-              <input
-                required
-                type="number"
-                id="order"
-                min={1}
-                value={order}
-                onChange={(e)=> setOrder(()=> Number(e.target.value))}
-                className="mt-1 focus:border-indigo-500 w-12
+    return (
+      <div className="card-container m-3 flex-col product-card-wrapper">
+        <div className="">
+          <div className="relative">
+            <ImageComponent
+              quality={95}
+              width={250}
+              height={250}
+              alt="product-image"
+              className="bg-blue-100 rounded-t"
+              url={url}
+            />
+            {index > 0 && (
+              <>
+                <div className="flex justify-start items-center pr-1 pl-1">
+                  <label
+                    htmlFor="order"
+                    className="whitespace-nowrap pr-1 text-sm font-medium text-gray-700"
+                  >
+                    Order:
+                  </label>
+                  <input
+                    required
+                    type="number"
+                    id="order"
+                    min={1}
+                    value={order}
+                    onChange={(e) => setOrder(() => Number(e.target.value))}
+                    className="mt-1 focus:border-indigo-500 w-12
                             shadow-sm border-2 border-solid border-gray-300 rounded"
-              />
-            </div>
-            <p className="mt-1 text-xs text-gray-500 pl-1">
-                Sort your image using order value.
-            </p>
-          </>}
-          
-          <div className="flex justify-center rounded-b border-gray-300 border-solid items-center">
-            <button
-              className="flex items-center w-full justify-center text-sm p-2 pb-1 bg-red-600 hover:bg-red-700"
-              onClick={(e) => {
-                e.preventDefault();
-                setShowMessageBox(true);
-              }}
-            >
-              <DeleteSvg width={25} height={25} />
-            </button>
-            {
-              index > 0 && <>
-              <div
-               style={{
-                height: '100%',
-                width: '2px',
-                background: 'gray'
-                }}
-              ></div>
-            <button
-              className="flex items-center w-full justify-center text-sm p-2 pb-1 bg-green-600 hover:bg-green-700"
-              onClick={SubmitSort}
-            >
-              {Loading? <LoadingSvg width={25} height={25} />: <SaveSvg width={25} height={25} />}
-            </button>
+                  />
+                </div>
+                <p className="mt-1 text-xs text-gray-500 pl-1">
+                  Sort your image using order value.
+                </p>
               </>
-            }
+            )}
+
+            <div className="flex justify-center rounded-b border-gray-300 border-solid items-center">
+              <button
+                className="flex items-center w-full justify-center text-sm p-2 pb-1 bg-red-600 hover:bg-red-700"
+                onClick={(e) => {
+                  e.preventDefault();
+                  setShowMessageBox(true);
+                }}
+              >
+                <DeleteSvg width={25} height={25} />
+              </button>
+              {index > 0 && (
+                <>
+                  <div
+                    style={{
+                      height: '100%',
+                      width: '2px',
+                      background: 'gray'
+                    }}
+                  ></div>
+                  <button
+                    className="flex items-center w-full justify-center text-sm p-2 pb-1 bg-green-600 hover:bg-green-700"
+                    onClick={SubmitSort}
+                  >
+                    {Loading ? (
+                      <LoadingSvg width={25} height={25} />
+                    ) : (
+                      <SaveSvg width={25} height={25} />
+                    )}
+                  </button>
+                </>
+              )}
+            </div>
           </div>
-          
         </div>
+        {ShowMessageBox && (
+          <DeleteConfirmation
+            setShowMessageBox={setShowMessageBox}
+            HandleDelete={HandleDelete}
+          />
+        )}
       </div>
-      {ShowMessageBox && (
-        <DeleteConfirmation
-          setShowMessageBox={setShowMessageBox}
-          HandleDelete={HandleDelete}
-        />
-      )}
-    </div>
-  );
-});
+    );
+  }
+);
 
 ProductCard.displayName = 'ProductCard';
 

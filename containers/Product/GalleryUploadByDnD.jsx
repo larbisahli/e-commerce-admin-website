@@ -114,11 +114,11 @@ const GalleryUploadByDnD = ({
 
     let FetchArray = [];
 
-    try{
+    try {
       if (!Loading && images[0] && pid) {
         setLoading(() => true);
         setProgress(0);
-  
+
         for (let i = 0; i < images.length; i++) {
           FetchArray.push(
             fetch(`${HostUrl}/api/upload`, {
@@ -132,7 +132,7 @@ const GalleryUploadByDnD = ({
             })
           );
         }
-  
+
         let progress = 0;
         FetchArray.forEach((p) =>
           p.then(() => {
@@ -140,13 +140,13 @@ const GalleryUploadByDnD = ({
             setProgress((progress / FetchArray.length) * 100);
           })
         );
-  
+
         await Promise.all(FetchArray)
           .then((response) => Promise.all(response.map((r) => r.json())))
           .then((data) => {
             let count = null;
             const ErrorImages = [];
-  
+
             data.forEach(({ success, error }, index) => {
               if (success) count++;
               if (error) {
@@ -158,7 +158,7 @@ const GalleryUploadByDnD = ({
                 );
               }
             });
-  
+
             if (count) {
               Notify(`🚀 ${count} Gallery Images successfully uploaded!`, true);
             }
@@ -171,7 +171,7 @@ const GalleryUploadByDnD = ({
             setLoading(() => false);
           });
       }
-    }catch(error){
+    } catch (error) {
       Logs({ message: 'SubmitImages (data.forEach) catch DND', error });
     }
   };

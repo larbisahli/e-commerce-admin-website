@@ -26,12 +26,14 @@ const ImageComponent = (props) => {
             const base64data = reader.result;
             return resolve(base64data);
           };
-        }).then((res) => {
-          setBase64Placeholder(res);
-          return res;
-        }).catch(error=>{
-          Logs({ message: 'ImageComponent /u', error });
         })
+          .then((res) => {
+            setBase64Placeholder(res);
+            return res;
+          })
+          .catch((error) => {
+            Logs({ message: 'ImageComponent /u', error });
+          });
       } catch (error) {
         Logs({ message: 'ImageComponent /d', error });
       }

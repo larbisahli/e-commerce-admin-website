@@ -69,14 +69,8 @@ export const UpdateProductMutation = gql`
 `;
 
 export const UpdateImageOrderMutation = gql`
-  mutation UpdateImageOrder(
-    $image_uid: ID!
-    $display_order: Int!
-  ) {
-    UpdateImageOrder(
-      image_uid: $image_uid
-      display_order: $display_order
-    ) {
+  mutation UpdateImageOrder($image_uid: ID!, $display_order: Int!) {
+    UpdateImageOrder(image_uid: $image_uid, display_order: $display_order) {
       display_order
     }
   }

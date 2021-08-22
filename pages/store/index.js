@@ -79,8 +79,7 @@ const Store = ({ token, userInfo }) => {
         setCount(() => ProductsCount?.count ?? 0);
       })
       .catch(({ response }) => {
-        const ErrorMessage =
-          response?.message ?? response?.errors[0]?.message;
+        const ErrorMessage = response?.message ?? response?.errors[0]?.message;
         Notify(ErrorMessage, !response);
       });
   }, [token]);
@@ -156,9 +155,13 @@ const Store = ({ token, userInfo }) => {
         </div>
         {/* ------- Product Showcase ------- */}
         <div className="flex flex-wrap">
-          {data?.Products.length > 0 ? data?.Products?.map((product) => {
-            return <ProductCard key={product.product_uid} product={product} />;
-          }) : (
+          {data?.Products.length > 0 ? (
+            data?.Products?.map((product) => {
+              return (
+                <ProductCard key={product.product_uid} product={product} />
+              );
+            })
+          ) : (
             <span className="text-gray-500 self-center justify-self-center p-12">
               <LoadingSvg width={30} height={30} />
             </span>
