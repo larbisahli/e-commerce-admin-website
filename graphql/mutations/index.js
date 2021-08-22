@@ -8,3 +8,4 @@ export { UpdateOptionMutation } from './option';
 export { DeleteOptionMutation } from './option';
 export { CreateProductMutation } from './product';
 export { UpdateProductMutation } from './product';
+export { UpdateImageOrderMutation } from './product'

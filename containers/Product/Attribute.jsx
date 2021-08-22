@@ -22,7 +22,6 @@ import {
   DeleteOptionMutation
 } from '@/graphql/mutations/option';
 import classNames from 'classnames';
-import { Logs } from '@/utils/index';
 
 const Attribute = ({ token, Notify }) => {
   const router = useRouter();
@@ -92,8 +91,7 @@ const Attribute = ({ token, Notify }) => {
       return;
     }
 
-    try {
-      if (attribute_name && CurrentOptions.length > 0) {
+    if (attribute_name && CurrentOptions.length > 0) {
         setLoading(true);
 
         await Request({
@@ -126,10 +124,6 @@ const Attribute = ({ token, Notify }) => {
       } else {
         Notify('Fields should not be empty!', false);
       }
-    } catch (error) {
-      Logs({ message: 'CreateAttribute Attribute.jsx', error });
-      Notify('Ops something went wrong.', false);
-    }
     setLoading(false);
   };
 

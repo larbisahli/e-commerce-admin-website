@@ -3,17 +3,18 @@
 import classNames from 'classnames';
 import { useRouter } from 'next/router';
 import React, { memo, useState } from 'react';
-import { toast } from 'react-toastify';
 
 import { ImageComponent } from '@/components/index';
-import { DeleteSvg, EmptyBox, Refresh, WarningSvg } from '@/components/svg';
+import { DeleteSvg, EmptyBox, LoadingSvg,Refresh, SaveSvg, WarningSvg } from '@/components/svg';
+import { Request } from '@/graphql/index';
+import {UpdateImageOrderMutation} from '@/graphql/mutations/index'
 
 const HostUrl =
   process.env.NODE_ENV === 'production'
     ? process.env.ADMIN_API_URL
     : 'http://localhost:5001';
 
-const Gallery = ({ token, thumbnail, gallery, MutateProduct }) => {
+const Gallery = ({ token,Notify, thumbnail, gallery, MutateProduct }) => {
   const router = useRouter();
   const { pid } = router.query;
 
@@ -59,9 +60,11 @@ const Gallery = ({ token, thumbnail, gallery, MutateProduct }) => {
       <div className="flex justify-center items-center p-2">
         {thumbnail[0]?.image && (
           <ProductCard
+            index={thumbnail[0]?.display_order}
             url={thumbnail[0]?.image}
             image_uid={thumbnail[0]?.image_uid}
             token={token}
+            Notify={Notify}
             MutateProduct={MutateProduct}
           />
         )}
@@ -79,13 +82,15 @@ const Gallery = ({ token, thumbnail, gallery, MutateProduct }) => {
       </div>
       {/* Gallery */}
       <div className="flex flex-wrap justify-center items-center">
-        {gallery?.map(({ image_uid, image }) => {
+        {gallery?.map(({ image_uid, image, display_order }) => {
           return (
             <ProductCard
+              index={display_order}
               key={image_uid}
               url={image}
               image_uid={image_uid}
               token={token}
+              Notify={Notify}
               MutateProduct={MutateProduct}
             />
           );
@@ -100,25 +105,10 @@ const Gallery = ({ token, thumbnail, gallery, MutateProduct }) => {
   );
 };
 
-const ProductCard = memo(({ url, image_uid, token, MutateProduct }) => {
+const ProductCard = memo(({ token,Notify, index, url, image_uid, MutateProduct }) => {
   const [ShowMessageBox, setShowMessageBox] = useState(false);
-
-  const Notify = (Message, success) => {
-    const Options = {
-      position: 'bottom-right',
-      autoClose: 5000,
-      hideProgressBar: true,
-      closeOnClick: true,
-      pauseOnHover: true,
-      draggable: true,
-      progress: undefined
-    };
-    if (success) {
-      toast.success(Message, Options);
-    } else {
-      toast.error(Message, Options);
-    }
-  };
+  const [order, setOrder] = useState(index);
+  const [Loading, setLoading] = useState(false);
 
   const HandleDelete = (e) => {
     e.preventDefault();
@@ -152,6 +142,39 @@ const ProductCard = memo(({ url, image_uid, token, MutateProduct }) => {
     setShowMessageBox(false);
   };
 
+  const SubmitSort = async(e) => {
+    e.preventDefault();
+
+    if(Loading) return
+
+    if (order > 0) {
+      setLoading(true);
+
+      await Request({
+        token,
+        mutation: UpdateImageOrderMutation,
+        variables: {
+          image_uid,
+          display_order: order,
+        }
+      })
+        .then(({ UpdateImageOrder }) => {
+          const display_order = UpdateImageOrder?.display_order;
+          const message = `Successfully updated image order to position ${display_order}`;
+          Notify(message, display_order);
+        })
+        .catch(({ response }) => {
+          const ErrorMessage =
+            response?.message ?? response?.errors[0]?.message;
+          Notify(ErrorMessage, !response);
+        });
+    } else {
+      Notify('The Order value should not be 0!', false);
+    }
+     setLoading(false);
+  };
+
+  
   return (
     <div className="card-container m-3 flex-col product-card-wrapper">
       <div className="">
@@ -164,15 +187,59 @@ const ProductCard = memo(({ url, image_uid, token, MutateProduct }) => {
             className="bg-blue-100 rounded-t"
             url={url}
           />
-          <button
-            className="flex items-center w-full justify-center text-sm p-2 pb-1 bg-red-600 hover:bg-red-700"
-            onClick={(e) => {
-              e.preventDefault();
-              setShowMessageBox(true);
-            }}
-          >
-            <DeleteSvg width={25} height={25} />
-          </button>
+          {index > 0 && <>
+          <div className="flex justify-start items-center pr-1 pl-1">
+              <label
+                htmlFor="order"
+                className="whitespace-nowrap pr-1 text-sm font-medium text-gray-700"
+              >
+                Order:
+              </label>
+              <input
+                required
+                type="number"
+                id="order"
+                min={1}
+                value={order}
+                onChange={(e)=> setOrder(()=> Number(e.target.value))}
+                className="mt-1 focus:border-indigo-500 w-12
+                            shadow-sm border-2 border-solid border-gray-300 rounded"
+              />
+            </div>
+            <p className="mt-1 text-xs text-gray-500 pl-1">
+                Sort your image using order value.
+            </p>
+          </>}
+          
+          <div className="flex justify-center rounded-b border-gray-300 border-solid items-center">
+            <button
+              className="flex items-center w-full justify-center text-sm p-2 pb-1 bg-red-600 hover:bg-red-700"
+              onClick={(e) => {
+                e.preventDefault();
+                setShowMessageBox(true);
+              }}
+            >
+              <DeleteSvg width={25} height={25} />
+            </button>
+            {
+              index > 0 && <>
+              <div
+               style={{
+                height: '100%',
+                width: '2px',
+                background: 'gray'
+                }}
+              ></div>
+            <button
+              className="flex items-center w-full justify-center text-sm p-2 pb-1 bg-green-600 hover:bg-green-700"
+              onClick={SubmitSort}
+            >
+              {Loading? <LoadingSvg width={25} height={25} />: <SaveSvg width={25} height={25} />}
+            </button>
+              </>
+            }
+          </div>
+          
         </div>
       </div>
       {ShowMessageBox && (

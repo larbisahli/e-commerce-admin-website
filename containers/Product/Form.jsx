@@ -10,7 +10,7 @@ import {
   CreateProductMutation,
   UpdateProductMutation
 } from '@/graphql/mutations/index';
-import { Logs } from '@/utils/index';
+import { Logs } from '@/lib/index';
 
 const Form = ({
   ProductState,

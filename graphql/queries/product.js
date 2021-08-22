@@ -45,10 +45,12 @@ export const GetProductQuery = gql`
       thumbnail {
         image_uid
         image
+        display_order
       }
       gallery {
         image_uid
         image
+        display_order
       }
     }
   }

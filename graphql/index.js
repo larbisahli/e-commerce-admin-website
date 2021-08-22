@@ -1,5 +1,7 @@
 import { GraphQLClient } from 'graphql-request';
 
+import { Logs } from '@/lib/index';
+
 const IsProduction = process.env.NODE_ENV === 'production';
 const HostUrl = IsProduction
   ? process.env.ADMIN_API_URL
@@ -34,7 +36,7 @@ export async function Request({ token, mutation, variables }) {
   try {
     return await graphQLClient.request(mutation, variables);
   } catch (error) {
-    console.error(JSON.stringify(error, undefined, 2));
+    Logs({ message: 'graphQLClient.request', error });
     let err = new Error('There is an error in the response from the service');
     err.response = error.response;
     err.status = error.response.status;

@@ -7,8 +7,8 @@ import { LoadingSvg } from '@/components/svg';
 import { UserStoreContext } from '@/context/UserStore';
 import { Request } from '@/graphql/index';
 import { CreateCategoryMutation } from '@/graphql/mutations/index';
+import { Logs } from '@/lib/index';
 import { getAppCookies, verifyToken } from '@/middleware/utils';
-import { Logs } from '@/utils/index';
 
 import ArrowLeft from '../../assets/svg/arrow-left.svg';
 

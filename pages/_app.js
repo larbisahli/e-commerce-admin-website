@@ -14,6 +14,7 @@ import { SWRConfig } from 'swr';
 import { NavGuide } from '@/containers/index';
 import { UserStoreProvider } from '@/context/UserStore';
 import { fetcher } from '@/graphql/index';
+import { Logs } from '@/lib/index';
 import GlobalStyle from '@/styles/Globals';
 import { PageContainer } from '@/styles/index';
 
@@ -42,10 +43,10 @@ function App({ Component, pageProps }) {
   }, []);
 
   const onError = (error) => {
-    // if (error.status !== 403 && error.status !== 404) {
-    //   // We can send the error to Sentry,
-    //   // or show a notification UI.
-    // }
+    if (error.status !== 403 && error.status !== 404) {
+      // Send the error to Sentry,
+      Logs({ message: 'useSWR', error });
+    }
     const ErrorMessage = error?.response?.message;
     // const ErrorStatus = error?.response?.status
     Notify(ErrorMessage, false);

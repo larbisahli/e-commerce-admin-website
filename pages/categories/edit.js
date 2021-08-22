@@ -10,8 +10,8 @@ import { UserStoreContext } from '@/context/UserStore';
 import { Request } from '@/graphql/index';
 import { UpdateCategoryMutation } from '@/graphql/mutations/index';
 import { GetCategoryQuery } from '@/graphql/queries/index';
+import { Logs } from '@/lib/index';
 import { getAppCookies, verifyToken } from '@/middleware/utils';
-import { Logs } from '@/utils/index';
 
 import ArrowLeft from '../../assets/svg/arrow-left.svg';
 
@@ -25,7 +25,7 @@ const EditCategory = ({ token, userInfo }) => {
     return { category_uid: cid };
   }, [cid]);
 
-  const { data, error } = useSWR([token, GetCategoryQuery, variables]);
+  const { data } = useSWR([token, GetCategoryQuery, variables]);
 
   const [Loading, setLoading] = useState(false);
 
@@ -56,14 +56,12 @@ const EditCategory = ({ token, userInfo }) => {
   useEffect(() => {
     if (data?.Category?.category_name) {
       setState({
-        category_name: data?.Category?.category_name,
-        category_description: data?.Category?.category_description,
-        is_active: data?.Category?.is_active
+        category_name: data.Category?.category_name,
+        category_description: data.Category?.category_description,
+        is_active: data.Category?.is_active
       });
-    } else if (error) {
-      Logs({ message: 'useEffect /edit', error });
     }
-  }, [data, error]);
+  }, [data]);
 
   useEffect(() => {
     const {

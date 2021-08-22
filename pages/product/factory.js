@@ -13,6 +13,7 @@ import { Tab, TabList, TabPanel } from 'react-tabs';
 import { toast } from 'react-toastify';
 import useSWR, { mutate } from 'swr';
 
+import { LoadingContainer } from '@/components/index';
 import {
   Attribute,
   Form,
@@ -204,6 +205,7 @@ const NewProduct = ({ token, userInfo }) => {
 
   return (
     <div className="form-container">
+      {pid && !Product && <LoadingContainer />}
       <div className="form-wrapper">
         <section className="flex justify-between items-center md:ml-0 ml-2 mb-9">
           <button
@@ -271,6 +273,7 @@ const NewProduct = ({ token, userInfo }) => {
                     token={token}
                     thumbnail={thumbnail}
                     gallery={gallery}
+                    Notify={Notify}
                     MutateProduct={MutateProduct}
                   />
                 </TabPanel>

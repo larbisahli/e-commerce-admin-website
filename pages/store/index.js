@@ -9,11 +9,13 @@ import React, {
   useState
 } from 'react';
 import ReactPaginate from 'react-paginate';
+import { toast } from 'react-toastify';
 import useSWR from 'swr';
 
 import { ImageComponent } from '@/components/index';
 import {
   EditSvg,
+  LoadingSvg,
   PaginationLArrowSvg,
   PaginationRArrowSvg
 } from '@/components/svg';
@@ -21,6 +23,7 @@ import { StoreHead } from '@/containers/index';
 import { UserStoreContext } from '@/context/UserStore';
 import { Request } from '@/graphql/index';
 import { GetProductsQuery, ProductCountQuery } from '@/graphql/queries/index';
+import { Logs } from '@/lib/index';
 import { getAppCookies, verifyToken } from '@/middleware/utils';
 
 import Add from '../../assets/svg/add.svg';
@@ -49,6 +52,23 @@ const Store = ({ token, userInfo }) => {
 
   const { data } = useSWR([token, GetProductsQuery, ProductVariable]);
 
+  const Notify = (Message, success) => {
+    const Options = {
+      position: 'bottom-right',
+      autoClose: 5000,
+      hideProgressBar: true,
+      closeOnClick: true,
+      pauseOnHover: true,
+      draggable: true,
+      progress: undefined
+    };
+    if (success) {
+      toast.success(Message, Options);
+    } else {
+      toast.error(Message, Options);
+    }
+  };
+
   const fetchData = useCallback(async () => {
     await Request({
       token,
@@ -59,7 +79,9 @@ const Store = ({ token, userInfo }) => {
         setCount(() => ProductsCount?.count ?? 0);
       })
       .catch(({ response }) => {
-        console.log(`Count response Error:>`, { response });
+        const ErrorMessage =
+          response?.message ?? response?.errors[0]?.message;
+        Notify(ErrorMessage, !response);
       });
   }, [token]);
 
@@ -67,7 +89,8 @@ const Store = ({ token, userInfo }) => {
     try {
       fetchData();
     } catch (error) {
-      console.log('count error :>> ', { error });
+      Logs({ message: 'useEffect /store', error });
+      Notify('Ops something went wrong.', false);
     }
   }, [fetchData]);
 
@@ -126,16 +149,20 @@ const Store = ({ token, userInfo }) => {
           </a>
         </Link>
       </section>
-      <div className="bg-white py-3 flex items-center flex-col justify-between border-t border-gray-200 rounded ">
+      <div className="bg-white py-3 flex  flex-col justify-center border-t border-gray-200 rounded ">
         {/* ------- Search Header ------- */}
         <div className="pr-3 pl-3 border-b pt-3 border-solid border-gray-200 w-full flex-col-reverse sm:flex-row mb-3 flex items-center justify-between">
           <StoreHead></StoreHead>
         </div>
         {/* ------- Product Showcase ------- */}
         <div className="flex flex-wrap">
-          {data?.Products?.map((product) => {
+          {data?.Products.length > 0 ? data?.Products?.map((product) => {
             return <ProductCard key={product.product_uid} product={product} />;
-          })}
+          }) : (
+            <span className="text-gray-500 self-center justify-self-center p-12">
+              <LoadingSvg width={30} height={30} />
+            </span>
+          )}
         </div>
         {/* ------- Pagination Area ------- */}
         <div

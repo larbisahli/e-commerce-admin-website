@@ -1,12 +1,12 @@
 import Image from 'next/image';
 import React, { memo, useEffect, useState } from 'react';
 
+import { Logs } from '@/lib/index';
+
 const ImageComponent = (props) => {
   const [Base64Placeholder, setBase64Placeholder] = useState(
     'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8+utrPQAJNQNlcqdyCgAAAABJRU5ErkJggg=='
   );
-
-  console.log('===== :>> ', { props });
 
   useEffect(() => {
     async function toBase64() {
@@ -27,12 +27,13 @@ const ImageComponent = (props) => {
             return resolve(base64data);
           };
         }).then((res) => {
-          console.log(`res`, res);
           setBase64Placeholder(res);
           return res;
-        });
+        }).catch(error=>{
+          Logs({ message: 'ImageComponent /u', error });
+        })
       } catch (error) {
-        console.log(`Error placeholder fetch :>`, { error });
+        Logs({ message: 'ImageComponent /d', error });
       }
     }
 

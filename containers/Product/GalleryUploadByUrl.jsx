@@ -3,15 +3,12 @@
 /* eslint-disable jsx-a11y/click-events-have-key-events */
 import classNames from 'classnames';
 import { useRouter } from 'next/router';
-import React, { memo, useEffect, useRef, useState } from 'react';
+import React, { memo, useRef, useState } from 'react';
 
 import { LoadingContainer } from '@/components/index';
-import { replace } from '@/utils/index';
-import { Logs } from '@/utils/index';
+import { Logs } from '@/lib/index';
 
 import Add from '../../assets/svg/add.svg';
-
-let QDcurrent = 0;
 
 const HostUrl =
   process.env.NODE_ENV === 'production'
@@ -127,81 +124,65 @@ const GalleryUploadByUrl = ({
 
     let FetchArray = [];
 
-    if (!Loading && ImagesUrl[0] && pid) {
-      setLoading(() => true);
-      setProgress(0);
-
-      for (let i = 0; i < ImagesUrl.length; i++) {
-        FetchArray.push(
-          fetch(`${HostUrl}/api/upload`, {
-            method: 'POST',
-            withCredentials: true,
-            credentials: 'include',
-            headers: {
-              Authorization: 'Bearer ' + token
-            },
-            body: Form_Data(ImagesUrl[i], i)
+    try{
+      if (!Loading && ImagesUrl[0] && pid) {
+        setLoading(() => true);
+        setProgress(0);
+  
+        for (let i = 0; i < ImagesUrl.length; i++) {
+          FetchArray.push(
+            fetch(`${HostUrl}/api/upload`, {
+              method: 'POST',
+              withCredentials: true,
+              credentials: 'include',
+              headers: {
+                Authorization: 'Bearer ' + token
+              },
+              body: Form_Data(ImagesUrl[i], i + 1)
+            })
+          );
+        }
+  
+        let progress = 0;
+        FetchArray.forEach((p) =>
+          p.then(() => {
+            progress++;
+            setProgress((progress / FetchArray.length) * 100);
           })
         );
-      }
-
-      let progress = 0;
-      FetchArray.forEach((p) =>
-        p.then(() => {
-          progress++;
-          setProgress((progress / FetchArray.length) * 100);
-        })
-      );
-
-      await Promise.all(FetchArray)
-        .then((response) => Promise.all(response.map((r) => r.json())))
-        .then((data) => {
-          let count = null;
-          const ErrorImages = [];
-
-          data.forEach(({ success, error }, index) => {
-            if (success) count++;
-            if (error) {
-              Logs({ message: 'SubmitImages [forEach] URL', error });
-              ErrorImages.push(ImagesUrl[index]);
-              Notify(`Can't upload ${ImagesUrl[index]?.file?.name}`, false);
-              // LOGS
+  
+        await Promise.all(FetchArray)
+          .then((response) => Promise.all(response.map((r) => r.json())))
+          .then((data) => {
+            let count = null;
+            const ErrorImages = [];
+  
+            data.forEach(({ success, error }, index) => {
+              if (success) count++;
+              if (error) {
+                Logs({ message: 'SubmitImages [forEach] URL', error });
+                ErrorImages.push(ImagesUrl[index]);
+                Notify(
+                  `Couldn't upload ${error?.response?.message ?? 'image'}`,
+                  false
+                );
+              }
+            });
+  
+            if (count) {
+              Notify(`🚀 ${count} Gallery Images successfully uploaded`, true);
             }
+            setLoading(() => false);
+            setImagesUrl([...ErrorImages]);
+          })
+          .catch(() => {
+            Notify(`🚀 Ops, something happened`, false);
+            setLoading(() => false);
           });
-
-          if (count) {
-            Notify(`🚀 ${count} Gallery Images successfully uploaded`, true);
-          }
-          setLoading(() => false);
-          setImagesUrl([...ErrorImages]);
-        })
-        .catch(() => {
-          Notify(`🚀 Ops, something happened`, false);
-          setLoading(() => false);
-        });
+      }
+    }catch(error){
+      Logs({ message: 'SubmitImages (data.forEach) catch DND', error });
     }
-  };
-
-  // --------- Sort ----------
-
-  useEffect(() => {
-    const draggable = document.querySelectorAll(`.drag-img-url`);
-    draggable.forEach((draggable) => {
-      draggable.addEventListener('dragstart', () => {
-        draggable.classList.add('img-dragging');
-        QDcurrent = draggable.id;
-      });
-      draggable.addEventListener('dragend', () => {
-        draggable.classList.remove('img-dragging');
-        QDcurrent = 0;
-      });
-    });
-  }, []);
-
-  const onDragOver = (event) => {
-    const CurrentTarget = event.currentTarget;
-    const results = replace(ImagesUrl, CurrentTarget.id, QDcurrent);
-    setImagesUrl(() => results);
   };
 
   return (
@@ -373,14 +354,12 @@ const GalleryUploadByUrl = ({
                             {ImagesUrl?.map((url, index) => (
                               <div
                                 id={index}
-                                draggable={true}
-                                onDragEnter={onDragOver}
                                 key={index}
-                                className="card-container rounded m-2 drag-img-url"
+                                className="card-container rounded m-2"
                               >
                                 <div
                                   style={{ width: '100px', height: '100px' }}
-                                  className="group relative cursor-move"
+                                  className="relative"
                                 >
                                   {/* eslint-disable-next-line @next/next/no-img-element */}
                                   <img
@@ -389,13 +368,6 @@ const GalleryUploadByUrl = ({
                                     alt=""
                                     style={{ width: '100px', height: '100px' }}
                                   />
-                                  <span className="absolute cursor-move border border-solid border-green-500 inset-0 opacity-0 group-hover:opacity-100"></span>
-                                  <span
-                                    style={{ width: '18px', height: '18px' }}
-                                    className="absolute text-center text-white bg-black top-0 right-0"
-                                  >
-                                    {index + 1}
-                                  </span>
                                 </div>
                                 <div className="flex justify-center rounded-b border-gray-300 border-solid items-center">
                                   <div

@@ -2,18 +2,42 @@
   "compilerOptions": {
     "baseUrl": ".",
     "paths": {
-      "@/components/*": ["components/*"],
-      "@/context/*": ["context/*"],
-      "@/utils/*": ["utils/*"],
-      "@/hooks/*": ["hooks/*"],
-      "@/lib/*": ["lib/*"],
-      "@/assets/*": ["assets/*"],
-      "@/containers/*": ["containers/*"],
-      "@/styles/*": ["styles/*"],
-      "@/middleware/*": ["middleware/*"],
-      "@/data/*": ["data/*"],
-      "@/graphql/*": ["graphql/*"]
+      "@/components/*": [
+        "components/*"
+      ],
+      "@/context/*": [
+        "context/*"
+      ],
+      "@/utils/*": [
+        "utils/*"
+      ],
+      "@/hooks/*": [
+        "hooks/*"
+      ],
+      "@/lib/*": [
+        "lib/*"
+      ],
+      "@/assets/*": [
+        "assets/*"
+      ],
+      "@/containers/*": [
+        "containers/*"
+      ],
+      "@/styles/*": [
+        "styles/*"
+      ],
+      "@/middleware/*": [
+        "middleware/*"
+      ],
+      "@/data/*": [
+        "data/*"
+      ],
+      "@/graphql/*": [
+        "graphql/*"
+      ]
     }
   },
-  "exclude": ["node_modules"]
+  "exclude": [
+    "node_modules"
+  ]
 }
