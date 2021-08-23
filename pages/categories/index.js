@@ -92,11 +92,11 @@ const CategoryCard = ({ categoryName, categoryId }) => {
         style={{ height: '120px' }}
         className="flex justify-center items-center flex-col"
       >
-        <div className="bg-blue-100 rounded-full p-3">
+        <div className="rounded-full">
           <Image
             quality={95}
-            width={35}
-            height={35}
+            width={65}
+            height={65}
             alt=""
             src={
               imgSrc

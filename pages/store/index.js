@@ -15,6 +15,7 @@ import useSWR from 'swr';
 import { ImageComponent } from '@/components/index';
 import {
   EditSvg,
+  EmptyBox,
   LoadingSvg,
   PaginationLArrowSvg,
   PaginationRArrowSvg
@@ -51,6 +52,8 @@ const Store = ({ token, userInfo }) => {
   }, [cid, Page, limit, userInfo]);
 
   const { data } = useSWR([token, GetProductsQuery, ProductVariable]);
+
+  const Products = data?.Products
 
   const Notify = (Message, success) => {
     const Options = {
@@ -131,7 +134,7 @@ const Store = ({ token, userInfo }) => {
       <section className="flex justify-end items-center mx-3 mb-3">
         <Link
           href={{
-            pathname: '/product/create',
+            pathname: '/product/factory',
             query: { cid }
           }}
         >
@@ -155,14 +158,16 @@ const Store = ({ token, userInfo }) => {
         </div>
         {/* ------- Product Showcase ------- */}
         <div className="flex flex-wrap">
-          {data?.Products.length > 0 ? (
-            data?.Products?.map((product) => {
+          {typeof Products !== 'undefined' ? (
+            Products?.length > 0 ? Products?.map((product) => {
               return (
                 <ProductCard key={product.product_uid} product={product} />
               );
-            })
+            }) : <span className="text-gray-500 flex justify-center items-center p-32 w-full">
+              <EmptyBox width={30} height={30} />
+            </span>
           ) : (
-            <span className="text-gray-500 self-center justify-self-center p-12">
+            <span className="text-gray-500 flex justify-center items-center p-32 w-full">
               <LoadingSvg width={30} height={30} />
             </span>
           )}
@@ -238,7 +243,7 @@ const ProductCard = ({ product }) => {
             style={{ background: 'rgba(0, 0, 0, 0.8)' }}
             className="absolute right-0 bottom-12 flex justify-center items-center p-1 rounded-sm"
           >
-            <span className="text-white text-sm font-normal">{`$${price}`}</span>
+            <span className="text-white text-base font-normal">{`$${price}`}</span>
           </div>
           {/* Edit */}
           <div
