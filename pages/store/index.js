@@ -53,7 +53,7 @@ const Store = ({ token, userInfo }) => {
 
   const { data } = useSWR([token, GetProductsQuery, ProductVariable]);
 
-  const Products = data?.Products
+  const Products = data?.Products;
 
   const Notify = (Message, success) => {
     const Options = {
@@ -159,13 +159,17 @@ const Store = ({ token, userInfo }) => {
         {/* ------- Product Showcase ------- */}
         <div className="flex flex-wrap">
           {typeof Products !== 'undefined' ? (
-            Products?.length > 0 ? Products?.map((product) => {
-              return (
-                <ProductCard key={product.product_uid} product={product} />
-              );
-            }) : <span className="text-gray-500 flex justify-center items-center p-32 w-full">
-              <EmptyBox width={30} height={30} />
-            </span>
+            Products?.length > 0 ? (
+              Products?.map((product) => {
+                return (
+                  <ProductCard key={product.product_uid} product={product} />
+                );
+              })
+            ) : (
+              <span className="text-gray-500 flex justify-center items-center p-32 w-full">
+                <EmptyBox width={30} height={30} />
+              </span>
+            )
           ) : (
             <span className="text-gray-500 flex justify-center items-center p-32 w-full">
               <LoadingSvg width={30} height={30} />
