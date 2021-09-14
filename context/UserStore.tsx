@@ -3,7 +3,7 @@ import { createContext, Dispatch, ReactNode, useState } from 'react';
 import { UserType } from '../interfaces';
 
 export const UserStoreContext = createContext<{
-  UserStore: UserType | null;
+  UserStore: UserType;
   setUserStore: Dispatch<UserType>;
 }>({
   UserStore: null,
@@ -15,7 +15,7 @@ interface Props {
 }
 
 export const UserStoreProvider = ({ children }: Props) => {
-  const [UserStore, setUserStore] = useState<UserType | null>(null);
+  const [UserStore, setUserStore] = useState<UserType>(null);
 
   return (
     <UserStoreContext.Provider value={{ UserStore, setUserStore }}>

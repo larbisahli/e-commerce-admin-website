@@ -18,31 +18,11 @@ import Add from '../assets/svg/add.svg';
 function Dashboard({ token, userInfo }: AuthPageProps) {
   const router = useRouter();
 
-  const [, setUserStore] = useContext(UserStoreContext);
+  const { setUserStore } = useContext(UserStoreContext);
 
   useEffect(() => {
     if (userInfo) {
-      const {
-        account_uid,
-        email,
-        first_name,
-        last_name,
-        username,
-        profile_img,
-        privileges
-      } = userInfo;
-      setUserStore((prev) => {
-        return {
-          ...prev,
-          account_uid,
-          email,
-          first_name,
-          last_name,
-          privileges,
-          username,
-          profile_img
-        };
-      });
+      setUserStore(userInfo);
     } else {
       router.push('/');
     }

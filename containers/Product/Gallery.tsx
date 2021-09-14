@@ -232,6 +232,7 @@ const ProductCard = memo(
                     type="number"
                     id="order"
                     min={1}
+                    onWheel={(e) => e.currentTarget.blur()}
                     value={order}
                     onChange={(e) => setOrder(() => Number(e.target.value))}
                     className="mt-1 focus:border-indigo-500 w-12

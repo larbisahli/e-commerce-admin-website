@@ -24,38 +24,17 @@ interface CategoryCardProps {
 
 const Categories = ({ token, userInfo }: AuthPageProps) => {
   const router = useRouter();
-  const [, setUserStore] = useContext(UserStoreContext);
+  const { setUserStore } = useContext(UserStoreContext);
   const { data } = useSWR<CGType, any>([token, GetCategoriesQuery]);
 
   const category = data?.Categories;
 
   useEffect(() => {
     if (userInfo) {
-      const {
-        account_uid,
-        email,
-        first_name,
-        last_name,
-        username,
-        profile_img,
-        privileges
-      } = userInfo;
-      setUserStore((prev) => {
-        return {
-          ...prev,
-          account_uid,
-          email,
-          first_name,
-          last_name,
-          privileges,
-          username,
-          profile_img
-        };
-      });
+      setUserStore(userInfo);
     } else {
       router.push('/');
     }
-
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [setUserStore, userInfo]);
 

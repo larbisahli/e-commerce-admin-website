@@ -30,7 +30,7 @@ const EditCategory = ({ token, userInfo }: AuthPageProps) => {
   const router = useRouter();
   const { cid } = router.query;
 
-  const [, setUserStore] = useContext(UserStoreContext);
+  const { setUserStore } = useContext(UserStoreContext);
 
   const variables = useMemo(() => {
     return { category_uid: cid };
@@ -50,6 +50,15 @@ const EditCategory = ({ token, userInfo }: AuthPageProps) => {
     });
 
   useEffect(() => {
+    if (userInfo) {
+      setUserStore(userInfo);
+    } else {
+      router.push('/');
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [setUserStore, userInfo]);
+
+  useEffect(() => {
     if (category?.category_name) {
       setState({
         category_name: category?.category_name,
@@ -58,31 +67,6 @@ const EditCategory = ({ token, userInfo }: AuthPageProps) => {
       });
     }
   }, [category]);
-
-  useEffect(() => {
-    const {
-      account_uid,
-      email,
-      first_name,
-      last_name,
-      username,
-      profile_img,
-      privileges
-    } = userInfo;
-    setUserStore((prev) => {
-      return {
-        ...prev,
-        account_uid,
-        email,
-        first_name,
-        last_name,
-        username,
-        profile_img,
-        privileges
-      };
-    });
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [setUserStore, userInfo]);
 
   const HandleInputChange = (
     e: React.ChangeEvent<

@@ -1,4 +1,4 @@
-import React, { memo, useEffect, useState } from 'react';
+import React, { memo, useContext, useEffect, useMemo, useState } from 'react';
 import SimpleBar from 'simplebar-react';
 
 import {
@@ -10,6 +10,7 @@ import {
   InvoiceSvg,
   StoreSvg
 } from '@/components/svg/index';
+import { UserStoreContext } from '@/context/UserStore';
 import { useMediaQuery } from '@/hooks/useMediaQuery';
 import type { GuideIState } from '@/interfaces/index';
 
@@ -26,6 +27,7 @@ const MiniGuide = ({ GuideState }: Props) => {
   const [QueryMatches1330, setQueryMatches1330] = useState<boolean>(false);
   const MediaQueryMatchesMin1330 = useMediaQuery('min-width', 1330);
   const MediaQueryMatchesMax1330 = useMediaQuery('max-width', 1330);
+  const { UserStore } = useContext(UserStoreContext);
 
   useEffect(() => {
     const absWidth = window.innerWidth;
@@ -38,6 +40,11 @@ const MiniGuide = ({ GuideState }: Props) => {
       setQueryMatches1330(false);
     }
   }, [MediaQueryMatchesMin1330, MediaQueryMatchesMax1330]);
+
+  const IsAdmin = useMemo(
+    () => UserStore?.privileges?.includes('has_admin_privilege'),
+    [UserStore]
+  );
 
   return (
     <Container Mode={mode} Show={show} QueryMatches={QueryMatches1330}>
@@ -52,10 +59,12 @@ const MiniGuide = ({ GuideState }: Props) => {
         <ItemLink mode={1} href="/dashboard" label="Dashboard">
           <DashboardSvg width={24} height={24} />
         </ItemLink>
-        <div className="line"></div>
-        <ItemLink mode={1} href="/categories" label="Categories">
-          <CategorySvg width={24} height={24} />
-        </ItemLink>
+        {IsAdmin && <div className="line"></div>}
+        {IsAdmin && (
+          <ItemLink mode={1} href="/categories" label="Categories">
+            <CategorySvg width={24} height={24} />
+          </ItemLink>
+        )}
         <ItemLink mode={1} href="/store" label="Store">
           <StoreSvg width={24} height={24} />
         </ItemLink>
@@ -65,14 +74,14 @@ const MiniGuide = ({ GuideState }: Props) => {
         <div className="line"></div>
         <ItemLink mode={1} href="/notifications" label="Notifications">
           <BellSvg width={20} height={20} />
-          <span style={{ display: 'block' }} className="num-notify mode-2-top">
-            2
+          <span style={{ display: 'flex' }} className="num-notify mode-2-top">
+            {2}
           </span>
         </ItemLink>
         <ItemLink mode={1} href="/orders" label="Orders">
           <DollarSvg width={24} height={24} />
-          <span style={{ display: 'block' }} className="num-notify mode-2-top">
-            4
+          <span style={{ display: 'flex' }} className="num-notify mode-2-top">
+            {4}
           </span>
         </ItemLink>
         <ItemLink mode={1} href="/invoices" label="Invoices">

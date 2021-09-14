@@ -54,7 +54,7 @@ const Store = ({ token, userInfo }: AuthPageProps) => {
   const router = useRouter();
   const { cid } = router.query;
 
-  const [, setUserStore] = useContext(UserStoreContext);
+  const { setUserStore } = useContext(UserStoreContext);
 
   const [Page, setPage] = useState<number>(0);
   // eslint-disable-next-line no-unused-vars
@@ -96,6 +96,15 @@ const Store = ({ token, userInfo }: AuthPageProps) => {
   }, [token]);
 
   useEffect(() => {
+    if (userInfo) {
+      setUserStore(userInfo);
+    } else {
+      router.push('/');
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [setUserStore, userInfo]);
+
+  useEffect(() => {
     try {
       fetchData();
     } catch (error) {
@@ -103,33 +112,6 @@ const Store = ({ token, userInfo }: AuthPageProps) => {
       Notify('Ops something went wrong.', false);
     }
   }, [fetchData]);
-
-  useEffect(() => {
-    if (userInfo) {
-      const {
-        account_uid,
-        email,
-        first_name,
-        last_name,
-        username,
-        profile_img,
-        privileges
-      } = userInfo;
-      setUserStore((prev) => {
-        return {
-          ...prev,
-          account_uid,
-          email,
-          first_name,
-          last_name,
-          privileges,
-          username,
-          profile_img
-        };
-      });
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [setUserStore, userInfo]);
 
   const handlePageClick = (data) => {
     let selected = data.selected;
@@ -141,10 +123,16 @@ const Store = ({ token, userInfo }: AuthPageProps) => {
     <div className="m-auto product-cart-container mb-20">
       <section className="flex justify-end items-center mx-3 mb-3">
         <Link
-          href={{
-            pathname: '/product/factory',
-            query: { cid }
-          }}
+          href={
+            cid
+              ? {
+                  pathname: '/product/factory',
+                  query: { cid }
+                }
+              : {
+                  pathname: '/product/factory'
+                }
+          }
         >
           <a>
             <div

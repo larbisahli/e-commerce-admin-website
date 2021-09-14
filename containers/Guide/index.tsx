@@ -1,4 +1,12 @@
-import React, { Fragment, memo, useCallback, useEffect, useState } from 'react';
+import React, {
+  Fragment,
+  memo,
+  useCallback,
+  useContext,
+  useEffect,
+  useMemo,
+  useState
+} from 'react';
 import SimpleBar from 'simplebar-react';
 
 import {
@@ -10,6 +18,7 @@ import {
   InvoiceSvg,
   StoreSvg
 } from '@/components/svg';
+import { UserStoreContext } from '@/context/UserStore';
 import { useMediaQuery } from '@/hooks/useMediaQuery';
 import type { GuideIState } from '@/interfaces/index';
 
@@ -27,6 +36,7 @@ const Guide = ({ GuideState, setGuideState }: Props) => {
   const [QueryMatches1330, setQueryMatches1330] = useState<boolean>(false);
   const MediaQueryMatchesMin1330 = useMediaQuery('min-width', 1330);
   const MediaQueryMatchesMax1330 = useMediaQuery('max-width', 1330);
+  const { UserStore } = useContext(UserStoreContext);
 
   const HandleCloseGuide = useCallback(
     (event) => {
@@ -66,6 +76,11 @@ const Guide = ({ GuideState, setGuideState }: Props) => {
     }
   }, [MediaQueryMatchesMin1330, MediaQueryMatchesMax1330]);
 
+  const IsAdmin = useMemo(
+    () => UserStore?.privileges?.includes('has_admin_privilege'),
+    [UserStore]
+  );
+
   return (
     <Fragment>
       <Bg Mode={mode} Show={show}></Bg>
@@ -88,10 +103,12 @@ const Guide = ({ GuideState, setGuideState }: Props) => {
               <ItemLink mode={2} href="/dashboard" label="Dashboard">
                 <DashboardSvg width={20} height={20} />
               </ItemLink>
-              <div className="line"></div>
-              <ItemLink mode={2} href="/categories" label="Categories">
-                <CategorySvg width={20} height={20} />
-              </ItemLink>
+              {IsAdmin && <div className="line"></div>}
+              {IsAdmin && (
+                <ItemLink mode={2} href="/categories" label="Categories">
+                  <CategorySvg width={20} height={20} />
+                </ItemLink>
+              )}
               <ItemLink mode={2} href="/store" label="Store">
                 <StoreSvg width={20} height={20} />
               </ItemLink>

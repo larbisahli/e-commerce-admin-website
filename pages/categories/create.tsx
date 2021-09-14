@@ -26,32 +26,16 @@ const NewCategory = ({ token, userInfo }: AuthPageProps) => {
   const CategoryDescriptionRef = useRef<HTMLTextAreaElement>(null);
   const IsActiveRef = useRef<HTMLInputElement>(null);
 
-  const [, setUserStore] = useContext(UserStoreContext);
+  const { setUserStore } = useContext(UserStoreContext);
 
   const [Loading, setLoading] = useState<boolean>(false);
 
   useEffect(() => {
-    const {
-      account_uid,
-      email,
-      first_name,
-      last_name,
-      username,
-      profile_img,
-      privileges
-    } = userInfo;
-    setUserStore((prev) => {
-      return {
-        ...prev,
-        account_uid,
-        email,
-        first_name,
-        last_name,
-        username,
-        profile_img,
-        privileges
-      };
-    });
+    if (userInfo) {
+      setUserStore(userInfo);
+    } else {
+      router.push('/');
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [setUserStore, userInfo]);
 

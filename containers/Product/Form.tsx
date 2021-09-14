@@ -238,6 +238,7 @@ const Form = ({
                 type="number"
                 name="price"
                 id="price"
+                onWheel={(e) => e.currentTarget.blur()}
                 min={0}
                 step={0.01}
                 value={price}
@@ -258,6 +259,7 @@ const Form = ({
               <input
                 type="number"
                 name="discount"
+                onWheel={(e) => e.currentTarget.blur()}
                 max={100}
                 min={0}
                 step={0.01}
@@ -317,6 +319,8 @@ const Form = ({
                 type="number"
                 name="inventory"
                 id="inventory"
+                onWheel={(e) => e.currentTarget.blur()}
+                min={0}
                 value={inventory}
                 onChange={HandleInputChange}
                 className="mt-1 focus:border-indigo-500 block w-full 
@@ -341,6 +345,7 @@ const Form = ({
                 type="number"
                 name="product_weight"
                 id="product_weight"
+                onWheel={(e) => e.currentTarget.blur()}
                 step={0.01}
                 min={0}
                 value={product_weight}
@@ -368,12 +373,12 @@ const Form = ({
                   required
                   id="product_description"
                   name="product_description"
-                  rows={5}
+                  rows={7}
                   value={product_description}
                   onChange={HandleInputChange}
                   className="shadow-sm border-2 focus:border-indigo-500 mt-1 
                                       block w-full border-solid border-gray-300 rounded-md p-1"
-                  placeholder="This product is awesome"
+                  placeholder="Describe what you are selling and include any details a buyer might be interested in. People love items with stories!"
                 />
               </div>
               <p className="mt-2 text-xs text-gray-500">
@@ -402,7 +407,7 @@ const Form = ({
                   onChange={HandleInputChange}
                   className="shadow-sm border-2 focus:border-indigo-500 mt-1 
                                       block w-full border-solid border-gray-300 rounded-md p-1"
-                  placeholder="This product is awesome"
+                  placeholder="A brief description about your product."
                 />
               </div>
               <p className="flex mt-2 flex-col text-xs text-gray-500">

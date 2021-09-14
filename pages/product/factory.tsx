@@ -112,7 +112,7 @@ const ProductFactory = ({ token, userInfo }: AuthPageProps) => {
   const Categories = AvailableCategories?.Categories;
   const Product = CurrentProduct?.Product;
 
-  const [, setUserStore] = useContext(UserStoreContext);
+  const { setUserStore } = useContext(UserStoreContext);
   const [ProductState, dispatchProduct] = useReducer(
     ProductReducer,
     initialState
@@ -121,31 +121,11 @@ const ProductFactory = ({ token, userInfo }: AuthPageProps) => {
   // ------- User Info -------
   useEffect(() => {
     if (userInfo) {
-      const {
-        account_uid,
-        email,
-        first_name,
-        last_name,
-        username,
-        profile_img,
-        privileges
-      } = userInfo;
-      setUserStore((prev) => {
-        return {
-          ...prev,
-          account_uid,
-          email,
-          first_name,
-          last_name,
-          privileges,
-          username,
-          profile_img
-        };
-      });
+      setUserStore(userInfo);
       dispatchProduct({
         type: ProductActions.INSERT,
         payload: {
-          value: account_uid,
+          value: userInfo?.account_uid,
           field: 'account_uid'
         }
       });
@@ -189,6 +169,16 @@ const ProductFactory = ({ token, userInfo }: AuthPageProps) => {
     mutate([token, GetProductQuery, ProductVariable]);
   }, [token, ProductVariable]);
 
+  const Clear = () => {
+    dispatchProduct({
+      type: ProductActions.RESET,
+      payload: {}
+    });
+    router.push({
+      pathname: '/product/factory'
+    });
+  };
+
   //  Input Change
   const HasChange = useMemo(() => {
     if (Product) {
@@ -227,6 +217,13 @@ const ProductFactory = ({ token, userInfo }: AuthPageProps) => {
               <ArrowLeft width={20} height={20} />
             </div>
             <span className="px-1 text-base text-white">Back</span>
+          </button>
+          <button
+            className="flex justify-center items-center 
+            bg-red-400 py-2 px-3  rounded-sm hover:shadow-inner shadow-lg hover:bg-red-500"
+            onClick={Clear}
+          >
+            <span className="px-1 text-base text-white">Reset</span>
           </button>
         </section>
         <Tabs>

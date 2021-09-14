@@ -638,6 +638,7 @@ const Attribute = ({ token }: Props) => {
                     type="number"
                     id="additional_price"
                     name="additional_price"
+                    onWheel={(e) => e.currentTarget.blur()}
                     value={additional_price}
                     min={0}
                     step={0.01}
