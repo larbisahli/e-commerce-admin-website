@@ -13,7 +13,6 @@ export type User = {
 export type SvgProps = {
   width?: number;
   height?: number;
-  isNav?: boolean;
   fill?: string;
   title?: string;
   className?: string;

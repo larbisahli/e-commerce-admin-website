@@ -162,20 +162,21 @@ export const ContentContainer = styled(DisFlex)`
   }
 
   .link-active {
-    color: #fafafa;
-    background: rgba(255, 255, 255, 0.2);
+    color: #fff;
+    background: var(--orangy-300);
     border-left: 3px solid var(--color-success-600);
+    border-left: 3px solid #fff;
 
     &:hover {
-      background: rgba(255, 255, 255, 0.25);
+      background: var(--orangy-200);
     }
 
     .svg-active {
-      fill: var(--color-success-600) !important;
+      fill: #fff !important;
     }
 
     .svg-active-stroke {
-      stroke: var(--color-success-600) !important;
+      stroke: #fff !important;
     }
   }
 `;

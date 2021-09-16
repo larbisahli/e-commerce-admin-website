@@ -1,5 +1,6 @@
 import React, { Fragment, useEffect, useState } from 'react';
 
+import { LoadingBar } from '@/components/index';
 import { Guide, MiniGuide, Navbar } from '@/containers/index';
 import { useMediaQuery } from '@/hooks/useMediaQuery';
 import type { GuideIState } from '@/interfaces/index';
@@ -60,7 +61,8 @@ const NavGuide = () => {
 
   return (
     <Fragment>
-      <Navbar setGuideState={setGuideState} />
+      <LoadingBar setGuideState={setGuideState}></LoadingBar>
+      <Navbar GuideState={GuideState} setGuideState={setGuideState} />
       <Guide GuideState={GuideState} setGuideState={setGuideState} />
       <MiniGuide GuideState={GuideState} />
     </Fragment>

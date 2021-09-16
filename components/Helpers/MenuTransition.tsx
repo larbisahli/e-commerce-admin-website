@@ -1,15 +1,21 @@
-import React, { forwardRef, memo, ReactNode, useEffect, useState } from 'react';
+import React, { forwardRef, memo, ReactElement, useEffect } from 'react';
 import { CSSTransition } from 'react-transition-group';
 
 type Props = {
-  children: ReactNode;
-  disTran?: boolean;
+  children: ReactElement;
+  Id: string;
   Show: boolean;
   unMount: boolean;
+  setShow: React.Dispatch<React.SetStateAction<boolean>>;
+};
+
+type DropProps = {
+  children: ReactElement;
+  setShow: React.Dispatch<React.SetStateAction<boolean>>;
+  Id: string;
 };
 
 const defaultProps = {
-  disTran: false,
   Show: false,
   unMount: false
 };
@@ -22,19 +28,7 @@ interface CN {
 }
 
 const MenuTransition = forwardRef<HTMLElement, Props & typeof defaultProps>(
-  ({ children, disTran, Show, unMount }, ref) => {
-    const [disable, setdisable] = useState<boolean>(false);
-
-    useEffect(() => {
-      if (disTran && Show) {
-        setdisable(true);
-      } else {
-        setdisable(false);
-      }
-    }, [Show, disTran]);
-
-    const { current }: any = ref;
-
+  ({ children, Id, Show, setShow, unMount }, ref) => {
     const Class: CN = {
       enter: 'menu-enter',
       enterActive: 'menu-enter-active',
@@ -42,22 +36,59 @@ const MenuTransition = forwardRef<HTMLElement, Props & typeof defaultProps>(
       exitActive: 'menu-exit-active'
     };
 
+    useEffect(() => {
+      const button = document.getElementById(Id);
+      // button event listener
+      button.addEventListener('click', () => setShow((prev) => !prev));
+      // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
+
     return (
       <CSSTransition
         nodeRef={ref}
         in={Show}
-        timeout={disable ? 0 : 200}
+        timeout={200}
         unmountOnExit={unMount}
-        onEnter={() => current && (current.style.display = 'block')}
-        onExited={() => current && (current.style.display = 'none')}
+        // onEnter={() => current && (current.style.display = 'block')}
+        // onExited={() => current && (current.style.display = 'none')}
         classNames={Class}
       >
-        {children}
+        <EventDrop ref={ref} Id={Id} setShow={setShow}>
+          {children}
+        </EventDrop>
       </CSSTransition>
     );
   }
 );
 
+const EventDrop = memo(
+  forwardRef<HTMLElement, DropProps>(({ children, setShow, Id }, ref) => {
+    function handleClick(e: React.MouseEvent<HTMLElement>) {
+      const NodeBtn = document.getElementById(Id);
+      const { current }: any = ref;
+      const { target }: any = e;
+
+      // Inside click
+      if (current?.contains(target)) return;
+      // Close if Outside click except drop btn
+      if (!NodeBtn?.contains(target)) setShow(false);
+    }
+
+    useEffect(() => {
+      // Add when mounted
+      document.addEventListener<any>('click', handleClick);
+      // Return function to be called when unmounted
+      return () => {
+        document.removeEventListener<any>('click', handleClick);
+      };
+      // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
+
+    return children;
+  })
+);
+
+EventDrop.displayName = 'EventDrop';
 MenuTransition.displayName = 'MenuTransition';
 
 export default memo(MenuTransition);

@@ -2,8 +2,7 @@ import Image from 'next/image';
 import { useRouter } from 'next/router';
 import React, { memo, useContext, useRef, useState } from 'react';
 
-import { RippleEffect } from '@/components/index';
-import { EventDrop, LoadingBar } from '@/components/index';
+import { MenuTransition, RippleEffect } from '@/components/index';
 import { BellSvg } from '@/components/svg';
 import { Menuburger } from '@/components/svg/index';
 import { UserStoreContext } from '@/context/UserStore';
@@ -25,16 +24,20 @@ import {
 } from './styles';
 
 type Props = {
+  GuideState: {
+    show: boolean;
+    mode: number;
+  };
   setGuideState: React.Dispatch<React.SetStateAction<GuideIState>>;
 };
 
-const Navbar = ({ setGuideState }: Props) => {
+const Navbar = ({ GuideState, setGuideState }: Props) => {
   const { asPath } = useRouter();
 
   const ProfileDropNodeRef = useRef<HTMLDivElement>(null);
   const NotificationDropNodeRef = useRef<HTMLDivElement>(null);
 
-  const [UserStore] = useContext(UserStoreContext);
+  const { UserStore } = useContext(UserStoreContext);
 
   const [ShowNotificationDrop, setShowNotificationDrop] =
     useState<boolean>(false);
@@ -71,7 +74,6 @@ const Navbar = ({ setGuideState }: Props) => {
 
   return (
     <Nav>
-      <LoadingBar></LoadingBar>
       <LeftContainer>
         <MenuContainer>
           <div
@@ -82,7 +84,12 @@ const Navbar = ({ setGuideState }: Props) => {
             className="menu-btn"
           >
             <RippleEffect Style={{ padding: '10px', borderRadius: '3px' }}>
-              <Menuburger menuIsOpen={false} />
+              <Menuburger
+                menuIsOpen={
+                  (GuideState.mode === 1 || GuideState.mode === 0) &&
+                  GuideState.show
+                }
+              />
             </RippleEffect>
           </div>
         </MenuContainer>
@@ -94,33 +101,30 @@ const Navbar = ({ setGuideState }: Props) => {
       <RightContainer>
         <NotificationContainer>
           <div className="notify-container"></div>
-          <NotificationWrapper
-            id="notification-btn"
-            onClick={() => setShowNotificationDrop((prev) => !prev)}
-          >
+          <NotificationWrapper id="notification-btn">
             <RippleEffect Style={{ padding: '8px', borderRadius: '50%' }}>
-              <BellSvg width={24} height={24} isNav={true} />
+              <BellSvg width={24} height={24} fill="#f1f1f1" />
             </RippleEffect>
           </NotificationWrapper>
           {/* Start Notification DropDown */}
-          <EventDrop
+          <MenuTransition
             ref={NotificationDropNodeRef}
-            btnId="notification-btn"
-            setState={setShowNotificationDrop}
-            state={ShowNotificationDrop}
+            Show={ShowNotificationDrop}
+            unMount={true}
+            setShow={setShowNotificationDrop}
+            Id="notification-btn"
           >
             <NotificationCartContainer ref={NotificationDropNodeRef}>
               <NotificationCartWrap>
                 <NotificationEmpty />
               </NotificationCartWrap>
             </NotificationCartContainer>
-          </EventDrop>
+          </MenuTransition>
           {/* End Notification DropDown */}
         </NotificationContainer>
         <ProfileContainer>
           <RippleEffect
             Id="profile-btn"
-            onClick={() => setShowProfileDrop((prev) => !prev)}
             Style={{ margin: '0 1em 0 1em', borderRadius: '999px' }}
           >
             <ProfileWrapper>
@@ -146,16 +150,17 @@ const Navbar = ({ setGuideState }: Props) => {
             </ProfileWrapper>
           </RippleEffect>
           {/* Start Profile DropDown */}
-          <EventDrop
+          <MenuTransition
             ref={ProfileDropNodeRef}
-            btnId="profile-btn"
-            setState={setShowProfileDrop}
-            state={ShowProfileDrop}
+            Show={ShowProfileDrop}
+            unMount={true}
+            setShow={setShowProfileDrop}
+            Id="profile-btn"
           >
             <ProfileCartContainer ref={ProfileDropNodeRef}>
               <span>Sign out</span>
             </ProfileCartContainer>
-          </EventDrop>
+          </MenuTransition>
           {/* End Profile DropDown */}
         </ProfileContainer>
       </RightContainer>

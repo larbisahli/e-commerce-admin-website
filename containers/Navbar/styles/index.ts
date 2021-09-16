@@ -141,7 +141,7 @@ export const NotificationWrapper = styled.div`
 `;
 
 const NotificationCart_Container = styled(AbsolutePosition)`
-  display: none;
+  display: block;
   top: 50px;
   background: #fff;
   z-index: 100;
@@ -272,7 +272,7 @@ interface PCCType {
 }
 
 export const ProfileCartContainer = styled(AbsolutePosition)<PCCType>`
-  display: none;
+  display: block;
   top: 50px;
   background: #fff;
   z-index: 100;

@@ -2,7 +2,6 @@ export { default as CustomersAnalyticCard } from './AnalyticsCard/CustomersAnaly
 export { default as NewOrdersAnalyticCard } from './AnalyticsCard/NewOrdersAnalyticCard';
 export { default as RevenueAnalyticCard } from './AnalyticsCard/RevenueAnalyticCard';
 export { default as ActiveLink } from './Helpers/ActiveLink';
-export { default as EventDrop } from './Helpers/EventDrop';
 export { default as LazyRender } from './Helpers/LazyRender';
 export { default as MenuTransition } from './Helpers/MenuTransition';
 export { default as Ripple } from './Helpers/Ripple';

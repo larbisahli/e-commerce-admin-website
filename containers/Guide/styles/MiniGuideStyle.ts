@@ -24,21 +24,20 @@ export const MainContainer = styled(DisFlex)`
   }
 
   .link-active {
-    color: var(--primary-fg);
-    background: rgba(255, 255, 255, 0.2);
-    color: #5c9900;
-    border-left: 3px solid var(--color-success-600);
+    color: #fff;
+    background: var(--orangy-300);
+    border-left: 3px solid #fff;
 
     &:hover {
-      background: rgba(255, 255, 255, 0.25);
+      background: var(--orangy-200);
     }
 
     .svg-active {
-      fill: #70bb00 !important;
+      fill: #fff !important;
     }
 
     .svg-active-stroke {
-      stroke: #70bb00 !important;
+      stroke: #fff !important;
     }
   }
 
