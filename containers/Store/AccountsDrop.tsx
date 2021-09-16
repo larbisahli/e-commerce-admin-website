@@ -1,10 +1,9 @@
 /* eslint-disable @next/next/no-img-element */
 /* eslint-disable jsx-a11y/no-static-element-interactions */
 /* eslint-disable jsx-a11y/click-events-have-key-events */
-import React, { useRef, useState } from 'react';
+import React, { useState } from 'react';
 
-import { EventDrop } from '@/components/index';
-import { CheckSvg, SelectorSvg } from '@/components/svg';
+import { SelectorSvg } from '@/components/svg';
 
 const people = [
   {
@@ -69,18 +68,19 @@ const people = [
   }
 ];
 
-function classNames(...classes) {
-  return classes.filter(Boolean).join(' ');
-}
+// function classNames(...classes) {
+//   return classes.filter(Boolean).join(' ');
+// }
 
 // https://tailwindui.com/components/application-ui/forms/select-menus
 
 const AccountsDrop = () => {
-  const DropNodeRef = useRef(null);
+  // const DropNodeRef = useRef(null);
 
   // eslint-disable-next-line no-unused-vars
   const [selected, setSelected] = useState(people[3]);
   const [ShowDrop, setShowDrop] = useState<boolean>(false);
+  console.log(`object`, ShowDrop);
 
   return (
     <div
@@ -103,7 +103,7 @@ const AccountsDrop = () => {
           </span>
         </div>
         {/* Drop */}
-        <EventDrop
+        {/* <EventDrop
           ref={DropNodeRef}
           btnId="accounts-drop-btn"
           setState={setShowDrop}
@@ -155,7 +155,7 @@ const AccountsDrop = () => {
               </div>
             ))}
           </div>
-        </EventDrop>
+        </EventDrop> */}
       </div>
     </div>
   );
