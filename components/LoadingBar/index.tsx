@@ -15,6 +15,26 @@ const LoadingBar = ({ setGuideState }: Props) => {
   const LoadingStateCache = useRef<boolean>(false);
   LoadingStateCache.current = Loading;
 
+  const HandleGuide = () => {
+    setGuideState((prev) => {
+      const absWidth = window.innerWidth;
+      if (prev.mode === 2) return prev;
+      else if (prev.mode === 1 && absWidth >= 1330) return prev;
+      else if (prev.mode === 1 && prev.show && absWidth <= 1330) {
+        return {
+          show: false,
+          mode: 1
+        };
+      } else if (prev.mode === 0 && prev.show) {
+        return {
+          show: false,
+          mode: 0
+        };
+      }
+      return prev;
+    });
+  };
+
   useEffect(() => {
     Router.events.on('routeChangeStart', () => {
       if (!LoadingStateCache.current) setLoading(true);
@@ -22,12 +42,7 @@ const LoadingBar = ({ setGuideState }: Props) => {
     Router.events.on('routeChangeComplete', () => {
       if (LoadingStateCache.current) {
         setLoading(false);
-        setGuideState((prev) => {
-          return {
-            show: false,
-            mode: prev.mode
-          };
-        });
+        HandleGuide();
       }
     });
     Router.events.on('routeChangeError', () => {
