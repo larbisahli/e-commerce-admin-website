@@ -78,15 +78,9 @@ const HomePage = () => {
     <Container>
       <FormContainer>
         <FormWrapper>
-          <div className="col-left">
-            <div className="login-text">
-              <h2>Welcome Back !</h2>
-              <p>dropgala admin panel</p>
-            </div>
-          </div>
-          <div className="col-right">
-            <Form as="form" onSubmit={LogIn}>
-              <h1>Login</h1>
+          <Form as="form" onSubmit={LogIn}>
+            <div className="form-login-header">Dropgala admin</div>
+            <div className="login-form-wrapper">
               <span>
                 Username or email address<span style={{ color: 'red' }}>*</span>
               </span>
@@ -124,13 +118,13 @@ const HomePage = () => {
                 {Loading && <i className="spinner"></i>}
                 <span>Log in</span>
               </button>
-            </Form>
-          </div>
-          <div className="forget-pass">
-            <Link href="/" passHref>
-              <a>Forget Password?</a>
-            </Link>
-          </div>
+            </div>
+            <div className="forget-pass">
+              <Link href="/" passHref>
+                <a>Forget Password?</a>
+              </Link>
+            </div>
+          </Form>
         </FormWrapper>
       </FormContainer>
       {/* <!--Waves Container--> */}

@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 
-import { LogInSpinner, WavesMovement } from '@/styles/keyframes';
+import { WavesMovement } from '@/styles/keyframes';
 
 import { DisFlex_AIC_JCC } from '../index';
 
@@ -93,34 +93,30 @@ export const FormContainer = styled.div`
 `;
 
 export const FormWrapper = styled.div`
-  position: relative;
   width: 100%;
   max-width: 600px;
   display: flex;
   background: #ffffff;
+  border: 1px solid #eee;
   box-shadow: 0 0 3px #999999;
   height: 350px;
-  border-radius: 3px;
+  border-radius: 2px;
   z-index: 99;
 
-  .col-left,
-  .col-right {
-    padding: 30px;
-    display: flex;
+  .login-form-wrapper {
+    margin: 20px auto;
+    width: 90%;
   }
 
-  .col-left {
-    width: 60%;
-    clip-path: polygon(0 0, 0% 100%, 100% 0);
-    background: #44c7f5;
-    border-top-left-radius: 3px;
-    border-bottom-left-radius: 3px;
-  }
-
-  .col-right {
-    padding: 20px;
-    width: 50%;
-    margin-left: -10%;
+  .form-login-header {
+    margin: 10px auto;
+    border-bottom: 1px solid #ddd;
+    padding: 10px 0;
+    font-size: 1.5em;
+    color: #222;
+    margin-bottom: 5px;
+    text-transform: uppercase;
+    width: 90%;
   }
 
   @media (max-width: 575.98px) {
@@ -128,18 +124,6 @@ export const FormWrapper = styled.div`
     box-shadow: none;
     border-radius: 0;
     height: 100vh;
-
-    .col-left,
-    .col-right {
-      width: 100%;
-      margin: 0;
-      clip-path: none;
-      border-radius: 0;
-    }
-
-    .col-right {
-      padding: 30px;
-    }
   }
 
   .login-text {
@@ -164,14 +148,18 @@ export const FormWrapper = styled.div`
   }
 
   .forget-pass {
-    position: absolute;
-    bottom: 0;
     color: #44c7f5;
     font-size: 0.7em;
     text-decoration: none;
     align-self: flex-start;
-    margin-left: 20px;
-    margin-bottom: 5px;
+    margin-top: 15px;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: flex-end;
+    justify-content: flex-start;
+    padding-left: 10px;
+    padding-bottom: 10px;
   }
 
   /* Loader */
@@ -181,14 +169,6 @@ export const Form = styled(DisFlex_AIC_JCC)`
   flex-direction: column;
   width: 100%;
   height: 100%;
-
-  h1 {
-    font-size: 1.5em;
-    font-weight: 700;
-    color: #444;
-    align-self: flex-start;
-    margin-bottom: 5px;
-  }
 
   span {
     font-size: 0.85em;
@@ -230,7 +210,7 @@ export const Form = styled(DisFlex_AIC_JCC)`
     cursor: pointer;
     background: transparent;
     border: 1px solid #44c7f5;
-    border-radius: 30px;
+    border-radius: 4px;
     box-shadow: inset 0 0 0 0 #44c7f5;
     transition: 0.3s;
 
@@ -248,28 +228,13 @@ export const Form = styled(DisFlex_AIC_JCC)`
       border-radius: 100%;
       top: 25%;
       left: 61%;
-      animation: ${LogInSpinner} 0.6s infinite linear;
       transition: top 0.3s 0.3s ease, opacity 0.3s 0.3s ease,
         border-radius 0.3s ease;
       box-shadow: 0px 1px 0px rgba(0, 0, 0, 0.2);
     }
 
-    @media (max-width: 575.98px) {
-      .spinner {
-        left: 56%;
-      }
-    }
-
     &:hover {
-      box-shadow: inset 250px 0 0 0 #44c7f5;
-
-      span {
-        color: #ffffff;
-      }
-      .spinner {
-        border: 2px solid #ffff;
-        border-top-color: #44c7f5;
-      }
+      box-shadow: inset 10px 0 0 0 #44c7f5;
     }
   }
 
@@ -279,89 +244,13 @@ export const Form = styled(DisFlex_AIC_JCC)`
     margin: 10px 0;
     font-size: 0.7em;
     align-self: flex-start;
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
 
     label {
       color: #777;
-    }
-
-    /* Base for label styling */
-    [type='checkbox']:not(:checked),
-    [type='checkbox']:checked {
-      position: absolute;
-      left: 0;
-      opacity: 0.01;
-    }
-    [type='checkbox']:not(:checked) + label,
-    [type='checkbox']:checked + label {
-      position: relative;
-      padding-left: 2.3em;
-      font-size: 1.05em;
-      line-height: 1.7;
-      cursor: pointer;
-    }
-
-    /* checkbox aspect */
-    [type='checkbox']:not(:checked) + label:before,
-    [type='checkbox']:checked + label:before {
-      content: '';
-      position: absolute;
-      left: 0;
-      top: 0;
-      width: 1.5em;
-      height: 1.5em;
-      border: 1px solid #aaa;
-      background-color: #ecf0f3;
-      border-radius: 50%;
-      transition: all 0.275s;
-      box-shadow: inset 2px 2px 4px #d1d9e6, inset -2px -2px 4px #f9f9f9;
-    }
-
-    /* checked mark aspect */
-    [type='checkbox']:not(:checked) + label:after,
-    [type='checkbox']:checked + label:after {
-      content: '';
-      position: absolute;
-      top: 3px;
-      left: 3px;
-      width: 1em;
-      height: 1em;
-      background: #01b7ff;
-      border-radius: 50%;
-      transition: all 0.2s;
-    }
-
-    /* checked mark aspect changes */
-    [type='checkbox']:not(:checked) + label:after {
-      opacity: 0;
-      transform: scale(0) rotate(45deg);
-    }
-
-    [type='checkbox']:checked + label:after {
-      opacity: 1;
-      transform: scale(1) rotate(0);
-    }
-
-    /* Disabled checkbox */
-    [type='checkbox']:disabled:not(:checked) + label:before,
-    [type='checkbox']:disabled:checked + label:before {
-      box-shadow: none;
-      border-color: #bbb;
-      background-color: #e9e9e9;
-    }
-
-    [type='checkbox']:disabled:checked + label:after {
-      color: #777;
-    }
-
-    [type='checkbox']:disabled + label {
-      color: #aaa;
-    }
-
-    /* Accessibility */
-    [type='checkbox']:checked:focus + label:before,
-    [type='checkbox']:not(:checked):focus + label:before {
-      box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.1),
-        0 0 0 6px rgba(0, 183, 255, 0.2);
+      padding-left: 5px;
     }
   }
 `;
