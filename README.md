@@ -46,3 +46,9 @@ from the creators of Next.js.
 Check out our
 [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more
 details.
+
+## How do I get into a Docker container's shell?
+
+```bash
+$  sudo docker exec -it admin-website sh
+```
