@@ -2,3 +2,6 @@
 .now
 .vercel
 node_modules
+.vscode
+.husky
+.github

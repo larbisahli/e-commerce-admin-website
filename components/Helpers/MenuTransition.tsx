@@ -63,10 +63,10 @@ const MenuTransition = forwardRef<HTMLElement, Props & typeof defaultProps>(
 
 const EventDrop = memo(
   forwardRef<HTMLElement, DropProps>(({ children, setShow, Id }, ref) => {
-    function handleClick(e: React.MouseEvent<HTMLElement>) {
+    function handleClick(e: MouseEvent) {
       const NodeBtn = document.getElementById(Id);
       const { current }: any = ref;
-      const { target }: any = e;
+      const target = e.target as Node;
 
       // Inside click
       if (current?.contains(target)) return;
@@ -76,10 +76,10 @@ const EventDrop = memo(
 
     useEffect(() => {
       // Add when mounted
-      document.addEventListener<any>('click', handleClick);
+      document.addEventListener('click', handleClick);
       // Return function to be called when unmounted
       return () => {
-        document.removeEventListener<any>('click', handleClick);
+        document.removeEventListener('click', handleClick);
       };
       // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
